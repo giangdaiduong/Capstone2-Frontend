@@ -7,7 +7,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ChangePass from './pages/ChangePass';
 import IdeasPage from './pages/IdeasPage';
-
+import ChangePasswordPage from './pages/ChangePasswordPage';
+import UserInformationPage from './pages/UserInformationPage';
 function App() {
   return (
     <Router>
@@ -18,7 +19,9 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<OTPForm />} />
           <Route path="/change-password" element={<ChangePass />} />
+          <Route path="/change-pass" element={<ChangePasswordPage />} />
           <Route path="/ideas-page" element={<IdeasPage />} />
+          <Route path="/user-information" element={<UserInformationPage />} />
         </Route>
       </Routes>
     </Router>
