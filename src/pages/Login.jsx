@@ -1,12 +1,44 @@
 import React, { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import Background from '../assets/background.png';
 import Noti from '../utils/Noti';
 import { NOTIFICATIONS } from '../constants';
 import { Link } from 'react-router-dom';
+import { authService } from '../services/authService';
+import { validateForm } from '../utils/validation';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const loginMutation = useMutation({
+    mutationFn: (credentials) => authService.login(credentials),
+    onSuccess: (data) => {
+      localStorage.setItem('token', data.token);
+      navigate('/dashboard');
+    },
+    onError: (error) => {
+      setError(error.message || 'Đăng nhập thất bại');
+    },
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    // Validate form
+    const validationError = validateForm(email, password);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    // Attempt login
+    loginMutation.mutate({ email, password });
+  };
 
   return (
     <main className="flex-1 flex items-center justify-center p-4">
@@ -19,7 +51,7 @@ const Login = () => {
             Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ
           </p>
 
-          <form onSubmit="" className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
                 htmlFor="email"
@@ -53,15 +85,21 @@ const Login = () => {
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+
+            {error && (
+              <p className="text-sm text-red-500 text-center">{error}</p>
+            )}
+
             <p className="text-sm text-blue-600 hover:underline cursor-pointer text-right">
               Quên mật khẩu?
             </p>
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+              disabled={loginMutation.isPending}
+              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-400"
             >
-              Đăng nhập
+              {loginMutation.isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
             </button>
 
             <Link to={'/register'}>
