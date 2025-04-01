@@ -1,47 +1,56 @@
 import React, { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import Background from '../assets/background.png';
 import Noti from '../utils/Noti';
-import { NOTIFICATIONS } from '../constants';
 import { Link } from 'react-router-dom';
-import { authService } from '../services/authService';
+import { useAuth } from '../contexts/AuthContext';
 import { validateForm } from '../utils/validation';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [notifications, setNotifications] = useState([]);
 
   const loginMutation = useMutation({
-    mutationFn: (credentials) => authService.login(credentials),
-    onSuccess: (data) => {
-      localStorage.setItem('token', data.token);
-      navigate('/dashboard');
+    mutationFn: async () => {
+      try {
+        const redirectPath = await login(email, password);
+        navigate(redirectPath);
+      } catch (error) {
+        throw error;
+      }
     },
     onError: (error) => {
-      setError(error.message || 'Đăng nhập thất bại');
+      setError(error.message);
+      setNotifications([
+        { isSuccess: false, message: error.message || 'Đăng nhập thất bại' },
+      ]);
     },
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setNotifications([]);
 
     // Validate form
     const validationError = validateForm(email, password);
     if (validationError) {
       setError(validationError);
+      setNotifications([{ isSuccess: false, message: validationError }]);
       return;
     }
 
     // Attempt login
-    loginMutation.mutate({ email, password });
+    loginMutation.mutate();
   };
 
   return (
-    <main className="flex-1 flex items-center justify-center p-4">
+    <main className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="flex w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="w-1/2 p-8">
           <h2 className="text-xl font-semibold text-pink-500 mb-2 text-center">
@@ -120,7 +129,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <Noti notifications={NOTIFICATIONS} />
+      <Noti notifications={notifications} />
     </main>
   );
 };

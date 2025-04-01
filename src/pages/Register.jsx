@@ -31,7 +31,7 @@ const Register = () => {
   };
 
   return (
-    <>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-2xl border border-blue-300">
         <h2 className="text-2xl font-bold text-blue-700 text-center mb-2">
           Đăng ký tài khoản
@@ -41,56 +41,54 @@ const Register = () => {
         </p>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {[
-            {
-              id: 'fullName',
-              label: 'Họ và tên',
-              icon: <User className="text-blue-500" />,
-              type: 'text',
-            },
-            {
-              id: 'dob',
-              label: 'Ngày sinh',
-              icon: <Calendar className="text-blue-500" />,
-              type: 'date',
-            },
-            {
-              id: 'email',
-              label: 'Email',
-              icon: <Mail className="text-blue-500" />,
-              type: 'email',
-            },
-            {
-              id: 'password',
-              label: 'Mật khẩu',
-              icon: <Lock className="text-blue-500" />,
-              type: 'password',
-            },
-            {
-              id: 'confirmPassword',
-              label: 'Xác nhận mật khẩu',
-              icon: <Lock className="text-blue-500" />,
-              type: 'password',
-            },
-            {
-              id: 'phone',
-              label: 'Số điện thoại',
-              icon: <Phone className="text-blue-500" />,
-              type: 'text',
-            },
-            {
-              id: 'address',
-              label: 'Địa chỉ',
-              icon: <Home className="text-blue-500" />,
-              type: 'text',
-            },
-            {
-              id: 'idNumber',
-              label: 'Số CMND',
-              icon: <User className="text-blue-500" />,
-              type: 'text',
-            },
-          ].map(({ id, label, icon, type }) => (
+          {[{
+            id: 'fullName',
+            label: 'Họ và tên',
+            icon: <User className="text-blue-500" />,
+            type: 'text',
+          },
+          {
+            id: 'dob',
+            label: 'Ngày sinh',
+            icon: <Calendar className="text-blue-500" />,
+            type: 'date',
+          },
+          {
+            id: 'email',
+            label: 'Email',
+            icon: <Mail className="text-blue-500" />,
+            type: 'email',
+          },
+          {
+            id: 'password',
+            label: 'Mật khẩu',
+            icon: <Lock className="text-blue-500" />,
+            type: 'password',
+          },
+          {
+            id: 'confirmPassword',
+            label: 'Xác nhận mật khẩu',
+            icon: <Lock className="text-blue-500" />,
+            type: 'password',
+          },
+          {
+            id: 'phone',
+            label: 'Số điện thoại',
+            icon: <Phone className="text-blue-500" />,
+            type: 'text',
+          },
+          {
+            id: 'address',
+            label: 'Địa chỉ',
+            icon: <Home className="text-blue-500" />,
+            type: 'text',
+          },
+          {
+            id: 'idNumber',
+            label: 'Số CMND',
+            icon: <User className="text-blue-500" />,
+            type: 'text',
+          }].map(({ id, label, icon, type }) => (
             <div key={id} className="relative">
               <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
                 {icon}
@@ -116,7 +114,7 @@ const Register = () => {
         </form>
       </div>
       <ModalEmail isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </>
+    </div>
   );
 };
 
