@@ -15,9 +15,8 @@ import ChangePass from './pages/ChangePass';
 import Unauthorized from './pages/Unauthorized';
 
 // User Pages
-import UserDashboard from './pages/user/Dashboard';
 import UserProfile from './pages/user/Profile';
-import UserIdeas from './pages/user/Ideas';
+import IdeasPage from './pages/user/IdeasPage';
 
 // Investor Pages
 import InvestorDashboard from './pages/investor/Dashboard';
@@ -28,6 +27,8 @@ import InvestorIdeas from './pages/investor/Ideas';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminUsers from './pages/admin/Users';
 import AdminIdeas from './pages/admin/Ideas';
+import IdeaDetail from './pages/user/IdeaDetail';
+import IdeaPosted from './pages/user/IdeadPosted';
 
 function App() {
   return (
@@ -46,14 +47,16 @@ function App() {
         {/* User Routes */}
         <Route
           element={
-            <ProtectedRoute allowedRoles={['user']}>
-              <UserLayout />
-            </ProtectedRoute>
+            // <ProtectedRoute allowedRoles={['user']}>
+            <UserLayout />
+            // </ProtectedRoute>
           }
         >
-          <Route path="/user/dashboard" element={<UserDashboard />} />
           <Route path="/user/profile" element={<UserProfile />} />
-          <Route path="/user/ideas" element={<UserIdeas />} />
+          <Route path="/user/ideas" element={<IdeasPage />} />
+          {/* <Route path="/user/ideas/:id" element={<IdeaDetail />} /> */}
+          <Route path="/user/ideas/detail" element={<IdeaDetail />} />
+          <Route path="/user/ideas/posted" element={<IdeaPosted />} />
         </Route>
 
         {/* Investor Routes */}

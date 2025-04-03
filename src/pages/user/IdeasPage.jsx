@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { REQUESTS, SIDEBAR_ITEMS } from '../constants';
+import { REQUESTS, SIDEBAR_ITEMS } from '../../constants';
 
 const logger = {
   info: (message, data) => console.log(`[INFO] ${message}`, data),
@@ -30,26 +30,6 @@ const IdeasPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <aside className="w-64 bg-white shadow-md p-4">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Danh mục</h2>
-        <ul className="space-y-2">
-          {SIDEBAR_ITEMS.map((item, index) => (
-            <li key={index}>
-              <a
-                href={item.href}
-                className={`block p-2 rounded-md ${
-                  item.active
-                    ? 'bg-blue-100 text-blue-600'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </aside>
-
       <main className="flex-1 p-6">
         <h1 className="text-2xl font-semibold text-gray-800 mb-6">
           Danh mục yêu cầu
