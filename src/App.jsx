@@ -19,9 +19,9 @@ import UserProfile from './pages/user/Profile';
 import IdeasPage from './pages/user/IdeasPage';
 
 // Investor Pages
-import InvestorDashboard from './pages/investor/Dashboard';
-import InvestorProfile from './pages/investor/Profile';
-import InvestorIdeas from './pages/investor/Ideas';
+import InvestorIdeasList from './pages/investor/InvestorIdeasList';
+import InvestorIdeaDetail from './pages/investor/InvestorIdeaDetail';
+import InvestorIdeasHistory from './pages/investor/InvestorIdeasList';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -29,6 +29,8 @@ import AdminUsers from './pages/admin/Users';
 import AdminIdeas from './pages/admin/Ideas';
 import IdeaDetail from './pages/user/IdeaDetail';
 import IdeaPosted from './pages/user/IdeadPosted';
+import UserPostedIdeas from './pages/user/UserPostedIdeas';
+import IdeaRatings from './pages/user/IdeaRatings';
 
 function App() {
   return (
@@ -57,19 +59,22 @@ function App() {
           {/* <Route path="/user/ideas/:id" element={<IdeaDetail />} /> */}
           <Route path="/user/ideas/detail" element={<IdeaDetail />} />
           <Route path="/user/ideas/posted" element={<IdeaPosted />} />
+          <Route path="/user/ideas/posted/detail" element={<UserPostedIdeas />} />
+          <Route path="/user/ideas/posted/detail/ratings" element={<IdeaRatings />} />
         </Route>
 
         {/* Investor Routes */}
         <Route
           element={
-            <ProtectedRoute allowedRoles={['investor']}>
-              <InvestorLayout />
-            </ProtectedRoute>
+            // <ProtectedRoute allowedRoles={['investor']}>
+            <InvestorLayout />
+            // </ProtectedRoute>
           }
         >
-          <Route path="/investor/dashboard" element={<InvestorDashboard />} />
-          <Route path="/investor/profile" element={<InvestorProfile />} />
-          <Route path="/investor/ideas" element={<InvestorIdeas />} />
+          <Route path="/investor/ideas" element={<InvestorIdeasList />} />
+          {/* <Route path="/investor/ideas/:id" element={<InvestorIdeaDetail />} /> */}
+          <Route path="/investor/ideas/detail" element={<InvestorIdeaDetail />} />
+          <Route path="/investor/ideas/history" element={<InvestorIdeasHistory />} />
         </Route>
 
         {/* Admin Routes */}

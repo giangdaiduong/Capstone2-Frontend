@@ -54,7 +54,8 @@ const IdeaDetail = () => {
   };
 
   return (
-    <div className="flex-1 max-w-5xl mx-auto p-6">
+    <div className="container mx-auto px-4 py-6">
+
       {/* Tiêu đề & thông tin ý tưởng */}
       <div className="bg-blue-100 rounded-lg p-4 mb-6">
         <div className="flex items-center justify-between mb-2">
@@ -116,7 +117,7 @@ const IdeaDetail = () => {
 
       {/* Báo cáo vi phạm */}
       <div className="mb-6 flex justify-end">
-        <button 
+        <button
           onClick={() => setShowReportModal(true)}
           className="flex items-center text-red-600 hover:text-red-800 transition px-3 py-2 rounded-lg hover:bg-red-50"
         >
@@ -136,9 +137,8 @@ const IdeaDetail = () => {
               <span
                 key={star}
                 onClick={() => handleRatingChange(star)}
-                className={`cursor-pointer text-2xl transition ${
-                  star <= rating || star <= idea.ratings ? "text-yellow-400" : "text-gray-300"
-                } hover:scale-110`}
+                className={`cursor-pointer text-2xl transition ${star <= rating || star <= idea.ratings ? "text-yellow-400" : "text-gray-300"
+                  } hover:scale-110`}
               >
                 ★
               </span>
@@ -162,8 +162,8 @@ const IdeaDetail = () => {
             onChange={(e) => setComment(e.target.value)}
           ></textarea>
           <div className="flex justify-end">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded-lg transition hover:bg-blue-700"
             >
               Đăng bình luận
@@ -174,7 +174,7 @@ const IdeaDetail = () => {
 
       {/* Modal báo cáo vi phạm */}
       {showReportModal && (
-        <ReportModal 
+        <ReportModal
           onClose={() => setShowReportModal(false)}
           onSubmit={handleReportSubmit}
           ideaId={id}
