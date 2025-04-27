@@ -4,10 +4,10 @@ import { FaHome, FaUsers, FaLightbulb, FaCog, FaChartBar } from 'react-icons/fa'
 
 const AdminSidebar = () => {
   const menuItems = [
-    { path: '/admin/dashboard', icon: <FaHome />, label: 'Tổng quan' },
-    { path: '/admin/users', icon: <FaUsers />, label: 'Quản lý người dùng' },
-    { path: '/admin/ideas', icon: <FaLightbulb />, label: 'Quản lý ý tưởng' },
-    { path: '/admin/analytics', icon: <FaChartBar />, label: 'Thống kê' },
+    { path: '/admin/dashboard', icon: <FaHome />, label: 'Dashboard' },
+    { path: '/admin/review-posts', icon: <FaLightbulb />, label: 'Xét duyệt bài viết' },
+    { path: '/admin/posts', icon: <FaChartBar />, label: 'Quản lý bài viết' },
+    { path: '/admin/accounts', icon: <FaUsers />, label: 'Quản lý tài khoản' },
     { path: '/admin/settings', icon: <FaCog />, label: 'Cài đặt' },
   ];
 

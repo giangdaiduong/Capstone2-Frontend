@@ -6,131 +6,239 @@ import Noti from '../utils/Noti';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { validateForm } from '../utils/validation';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
+// Hàm giải mã JWT token
+const parseJwt = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Error parsing JWT:', error);
+    return null;
+  }
+};
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
   const loginMutation = useMutation({
     mutationFn: async () => {
       try {
-        const redirectPath = await login(email, password);
-        navigate(redirectPath);
+        console.log('Sending login request with:', { username, password });
+        
+        const response = await axios.post('http://localhost:5182/v1/api/client/Auth', {
+          userName: username,
+          password
+        });
+        
+        console.log('Login response:', response.data);
+        
+        const { token, user } = response.data;
+        
+        if (!token) {
+          throw new Error('Token không được trả về từ server');
+        }
+        
+        // Lưu token vào localStorage
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        // Giải mã token để lấy role
+        const decodedToken = parseJwt(token);
+        console.log('Decoded token full structure:', decodedToken);
+        
+        // Thử tất cả các khả năng để lấy role
+        const possibleRoleKeys = [
+          'role',
+          'Role',
+          'roleName',
+          'RoleName',
+          'roles',
+          'Roles',
+          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role',
+          'userRole',
+          'UserRole'
+        ];
+        
+        let roleName = null;
+        for (const key of possibleRoleKeys) {
+          if (decodedToken[key]) {
+            roleName = decodedToken[key];
+            console.log('Found role in key:', key, 'value:', roleName);
+            break;
+          }
+        }
+        
+        // Nếu không tìm thấy role, thử tìm trong claims nếu có
+        if (!roleName && decodedToken.claims) {
+          console.log('Searching in claims:', decodedToken.claims);
+          for (const key of possibleRoleKeys) {
+            if (decodedToken.claims[key]) {
+              roleName = decodedToken.claims[key];
+              console.log('Found role in claims with key:', key, 'value:', roleName);
+              break;
+            }
+          }
+        }
+
+        // Nếu vẫn không tìm thấy, kiểm tra toàn bộ cấu trúc token
+        if (!roleName) {
+          console.log('Could not find role in standard locations. Full token structure:', JSON.stringify(decodedToken, null, 2));
+          throw new Error('Không thể xác định quyền người dùng. Vui lòng liên hệ admin.');
+        }
+        
+        localStorage.setItem('role', roleName);
+        
+        // Hiển thị thông báo thành công
+        toast.success('Đăng nhập thành công!');
+        
+        // Điều hướng dựa vào roleName
+        switch (roleName.toLowerCase()) {
+          case 'admin':
+            navigate('/admin/dashboard');
+            break;
+          case 'investor':
+            navigate('/investor/danh-sach-y-tuong');
+            break;
+          case 'initiator':
+            navigate('/initiator/list-of-ideas');
+            break;
+          default:
+            console.log('Unknown role:', roleName);
+            navigate('/');
+            break;
+        }
       } catch (error) {
-        throw error;
+        console.error('Login error:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status
+        });
+        
+        const errorMessage = error.response?.data?.message 
+          || error.response?.data?.title
+          || error.message 
+          || 'Đăng nhập thất bại';
+          
+        throw new Error(errorMessage);
       }
     },
     onError: (error) => {
-      setError(error.message);
       setNotifications([
-        { isSuccess: false, message: error.message || 'Đăng nhập thất bại' },
+        { isSuccess: false, message: error.message },
       ]);
     },
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setNotifications([]);
 
     // Validate form
-    const validationError = validateForm(email, password);
+    const validationError = validateForm(username, password);
     if (validationError) {
-      setError(validationError);
       setNotifications([{ isSuccess: false, message: validationError }]);
       return;
     }
 
     // Attempt login
+    setIsLoading(true);
     loginMutation.mutate();
   };
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="flex w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="w-1/2 p-8">
-          <h2 className="text-xl font-semibold text-pink-500 mb-2 text-center">
-            ĐĂNG NHẬP
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Đăng nhập vào tài khoản của bạn
           </h2>
-          <p className="text-gray-600 mb-6">
-            Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label
-                htmlFor="email"
-                className="block text-left text-gray-700 font-medium mb-1"
-              >
-                Địa chỉ Email <span className="text-red-500">[*]</span>
+              <label htmlFor="username" className="sr-only">
+                Tên đăng nhập
               </label>
               <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Tên đăng nhập hoặc email"
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                id="username"
+                name="username"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Tên đăng nhập"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-left text-gray-700 font-medium mb-1"
-              >
-                Mật khẩu <span className="text-red-500">[*]</span>
+            <div className="relative">
+              <label htmlFor="password" className="sr-only">
+                Mật khẩu
               </label>
               <input
                 id="password"
-                type="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mật khẩu"
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  className="h-5 w-5 text-gray-400"
+                />
+              </button>
             </div>
+          </div>
 
-            {error && (
-              <p className="text-sm text-red-500 text-center">{error}</p>
-            )}
-
-            <p className="text-sm text-blue-600 hover:underline cursor-pointer text-right">
-              Quên mật khẩu?
-            </p>
-
+          <div>
             <button
               type="submit"
-              disabled={loginMutation.isPending}
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-400"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {loginMutation.isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
-
-            <Link to={'/register'}>
-              <p className="text-sm text-blue-600 hover:underline cursor-pointer text-center">
-                Đăng ký tài khoản
-              </p>
-            </Link>
-          </form>
-        </div>
-
-        <div
-          className="w-1/2 bg-cover bg-center relative"
-          style={{ backgroundImage: `url(${Background})` }}
-        >
-          <div className="absolute inset-0 bg-blue-500 opacity-50"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-white text-3xl font-bold">IDEAX</span>
           </div>
+        </form>
+        <div className="text-center">
+          <p className="text-sm text-gray-600">
+            Chưa có tài khoản?{" "}
+            <button
+              onClick={() => navigate("/register")}
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
+              Đăng ký ngay
+            </button>
+          </p>
         </div>
       </div>
       <Noti notifications={notifications} />
-    </main>
+    </div>
   );
 };
 

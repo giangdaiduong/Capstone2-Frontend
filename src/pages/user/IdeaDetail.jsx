@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { FaUser, FaCalendarAlt, FaCheckCircle, FaEye, FaThumbsUp, FaComment, FaArrowRight, FaFlag } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser,
+  faTags,
+  faCalendarPlus,
+  faCheckDouble,
+} from "@fortawesome/free-solid-svg-icons";
 import ReportModal from "../../components/user/ReportModal";
 
 const IdeaDetail = () => {
@@ -9,30 +15,59 @@ const IdeaDetail = () => {
   const [comment, setComment] = useState("");
   const [showReportModal, setShowReportModal] = useState(false);
 
-  // Mock data - Fetch từ API trong thực tế
-  const idea = {
-    id: 1,
-    title: "Camera phát hiện người và vật trong xe",
-    author: "Lê Gia Phạm Thanh Cảnh",
-    category: "Công nghệ",
-    status: "Đã duyệt",
-    createdAt: "10/22/2023",
-    views: 100123,
-    content: `
-      Hiện nay, các hệ thống viễn giám khá khó khăn trong việc tối ưu mô hình, phát hiện lỗi và cải thiện hiệu quả. 
-      Ý tưởng của tôi là một nền tảng AI có thể:
-      • Tự động hiệu chỉnh code đầu ra sau khi train
-      • Đề xuất phát minh các lỗi thường gặp từ GitHub, Stack Overflow
-      • Hỗ trợ nhiều ngôn ngữ lập trình (Python, Java, JavaScript, C++, v.v.)
-      • Tích hợp trực tiếp với VS Code, Intellij
-    `,
-    price: "Liên hệ để trao đổi chi tiết",
-    relatedIdeas: [
-      { id: 2, title: "Camera AI giám sát an toàn", category: "Công nghệ" },
-      { id: 3, title: "Hệ thống nhận diện biển số thông minh", category: "Công nghệ" }
-    ],
-    ratings: 4,
-    comments: []
+  // Mock data - Replace with API call later
+  const ideaDetail = {
+    id: "CNKT-100123",
+    title: "Nền tảng AI hỗ trợ quản lý doanh nghiệp",
+    author: "Phạm Thanh Cảnh",
+    date: "10/2/2025",
+    field: "Công nghệ",
+    status: "Đã đăng ký bản quyền",
+    content: {
+      summary: "Chúng tôi phát triển một nền tảng AI tích hợp các công cụ tự động hóa quy trình quản lý doanh nghiệp, bao gồm:",
+      features: [
+        "Phân tích dữ liệu kinh doanh",
+        "Tối ưu hóa quy trình làm việc",
+        "Hỗ trợ quyết định thông minh",
+        "Dự báo tài chính và hiệu suất"
+      ]
+    },
+    funding: {
+      amount: "2 triệu USD",
+      purpose: "Chúng tôi tìm kiếm các nhà đầu tư quan tâm đến công nghệ AI để mở rộng quy mô nền tảng và phát triển các tính năng cao cấp hơn."
+    },
+    timeline: "Từ Q2/2025 đến Q4/2025",
+    businessPlan: {
+      phases: [
+        "Giai đoạn 1: Xây dựng nền tảng cơ bản, thử nghiệm trên một nhóm doanh nghiệp nhỏ.",
+        "Giai đoạn 2: Phát triển các tính năng tiên tiến như AI Machine Learning, chatbot hỗ trợ tự động.",
+        "Giai đoạn 3: Mở rộng thị trường và tìm đối tác toàn cầu."
+      ]
+    },
+    team: {
+      leader: {
+        name: "Trần Minh Quân",
+        role: "CEO",
+        experience: "10+ năm kinh nghiệm trong AI & Data Science"
+      },
+      members: [
+        {
+          name: "Nguyễn Thị Lan",
+          role: "CTO",
+          expertise: "chuyên gia phát triển hệ thống AI"
+        },
+        {
+          name: "Phạm Anh Tuấn",
+          role: "CFO",
+          experience: "8+ năm kinh nghiệm trong tài chính doanh nghiệp"
+        },
+        {
+          name: "Lê Quốc Hà",
+          role: "CMO",
+          expertise: "chuyên gia tiếp thị AI"
+        }
+      ]
+    }
   };
 
   const handleRatingChange = (value) => {
@@ -54,82 +89,113 @@ const IdeaDetail = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
-
-      {/* Tiêu đề & thông tin ý tưởng */}
-      <div className="bg-blue-100 rounded-lg p-4 mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-xl font-bold text-blue-800">{idea.title}</h1>
-          <span className="text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">
-            <FaCheckCircle className="inline mr-1" /> {idea.status}
-          </span>
+    <div className="container mx-auto px-4 py-8">
+      {/* Header */}
+      <div className="bg-[#adc6ee] rounded-xl p-6 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold text-[#0A2273]">{ideaDetail.title}</h1>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center">
+              <FontAwesomeIcon icon={faTags} className="text-[#FBF30F] mr-2" />
+              <span className="text-[#FBF30F] font-bold">Tìm nhà đầu tư</span>
+            </div>
+            <div className="flex items-center">
+              <FontAwesomeIcon icon={faCheckDouble} className="text-green-500 mr-2" />
+              <span className="text-[#0A2273]">{ideaDetail.status}</span>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-          <span><FaUser className="inline mr-1" /> {idea.author}</span>
-          <span><FaCalendarAlt className="inline mr-1" /> Ngày đăng: {idea.createdAt}</span>
-          <span><FaEye className="inline mr-1" /> {idea.views} lượt xem</span>
-        </div>
-      </div>
-
-      {/* Nội dung chính */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">Nội dung ý tưởng</h2>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="whitespace-pre-line">{idea.content}</div>
-
-          <div className="mt-4">
-            <h3 className="font-semibold">Giá thương lượng:</h3>
-            <p className="text-red-600 mt-1 flex items-center">
-              <span>{idea.price}</span>
-              <FaArrowRight className="ml-2" />
-            </p>
+        <div className="flex items-center justify-between text-[#0A2273]">
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faUser} className="mr-2" />
+            <span>{ideaDetail.author}</span>
+          </div>
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faCalendarPlus} className="mr-2" />
+            <span>Ngày đăng: {ideaDetail.date}</span>
+          </div>
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faTags} className="mr-2" />
+            <span>Lĩnh vực: <strong>{ideaDetail.field}</strong></span>
           </div>
         </div>
       </div>
 
-      {/* Hình ảnh */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">Hình ảnh</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-200 p-4 flex items-center justify-center h-40">
-            <span className="text-gray-500">Ảnh</span>
-          </div>
-          <div className="bg-gray-200 p-4 flex items-center justify-center h-40">
-            <span className="text-gray-500">Ảnh</span>
-          </div>
+      {/* Content */}
+      <div className="bg-white rounded-xl p-6 mb-8">
+        <h2 className="text-xl font-bold mb-4">Nội dung ý tưởng</h2>
+        <p className="mb-4">{ideaDetail.content.summary}</p>
+        <ul className="list-disc pl-6 mb-6">
+          {ideaDetail.content.features.map((feature, index) => (
+            <li key={index} className="mb-2">{feature}</li>
+          ))}
+        </ul>
+
+        <h2 className="text-xl font-bold mb-4">Thông tin gọi vốn</h2>
+        <div className="mb-6">
+          <p className="mb-2"><strong>Số vốn cần huy động:</strong> {ideaDetail.funding.amount}</p>
+          <p className="mb-2"><strong>Nội dung gọi vốn:</strong> {ideaDetail.funding.purpose}</p>
+          <p><strong>Thời gian gọi vốn:</strong> {ideaDetail.timeline}</p>
+        </div>
+
+        <h2 className="text-xl font-bold mb-4">Mô tả kế hoạch kinh doanh</h2>
+        <ul className="list-disc pl-6 mb-6">
+          {ideaDetail.businessPlan.phases.map((phase, index) => (
+            <li key={index} className="mb-2">{phase}</li>
+          ))}
+        </ul>
+
+        <h2 className="text-xl font-bold mb-4">Đội ngũ sáng lập</h2>
+        <div className="mb-4">
+          <p className="font-bold">Người đại diện:</p>
+          <p>{ideaDetail.team.leader.name} - {ideaDetail.team.leader.role}, {ideaDetail.team.leader.experience}</p>
+        </div>
+        <div>
+          <p className="font-bold mb-2">Thành viên:</p>
+          <ul className="list-disc pl-6">
+            {ideaDetail.team.members.map((member, index) => (
+              <li key={index} className="mb-2">
+                {member.name} - {member.role}, {member.expertise || member.experience}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
-      {/* Founder */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
-        <p className="text-center text-sm mb-3">
-          Founder có thể cập nhật nhưng vẫn bảo vệ bản quyền. Vui lòng liên hệ trực tiếp để trao đổi.
-        </p>
-        <div className="flex justify-center gap-2">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center transition hover:bg-blue-700">
-            <FaUser className="mr-2" /> Liên hệ trực tiếp
+      {/* Images */}
+      <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="bg-gray-200 aspect-square flex items-center justify-center rounded-lg">
+          <span className="text-gray-500">Ảnh</span>
+        </div>
+        <div className="bg-gray-200 aspect-square flex items-center justify-center rounded-lg">
+          <span className="text-gray-500">Ảnh</span>
+        </div>
+        <div className="bg-gray-200 aspect-square flex items-center justify-center rounded-lg">
+          <span className="text-gray-500">Ảnh</span>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="text-center mb-8">
+        <p className="mb-4">Founder đã cung cấp giấy chứng nhận bản quyền. Vui lòng liên hệ trực tiếp để trao đổi.</p>
+        <div className="flex justify-center gap-4">
+          <button className="bg-[#0A2273] text-white px-6 py-2 rounded-lg hover:bg-opacity-90">
+            Quan tâm
           </button>
-          <button className="bg-blue-800 text-white px-4 py-2 rounded-lg transition hover:bg-blue-900">
-            Bảo vệ ý tưởng
+          <button className="bg-[#0A2273] text-white px-6 py-2 rounded-lg hover:bg-opacity-90">
+            Liên hệ tác giả
+          </button>
+          <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-opacity-90">
+            Báo cáo
           </button>
         </div>
-      </div>
-
-      {/* Báo cáo vi phạm */}
-      <div className="mb-6 flex justify-end">
-        <button
-          onClick={() => setShowReportModal(true)}
-          className="flex items-center text-red-600 hover:text-red-800 transition px-3 py-2 rounded-lg hover:bg-red-50"
-        >
-          <FaFlag className="mr-2" /> Báo cáo vi phạm
-        </button>
       </div>
 
       {/* Đánh giá */}
       <div className="mb-6">
         <div className="bg-blue-50 p-4 rounded-lg mb-4">
           <h3 className="font-semibold flex items-center mb-2">
-            <FaThumbsUp className="mr-2 text-blue-600" />
+            <FontAwesomeIcon icon={faTags} className="mr-2 text-blue-600" />
             Đánh giá
           </h3>
           <div className="flex">
@@ -137,7 +203,7 @@ const IdeaDetail = () => {
               <span
                 key={star}
                 onClick={() => handleRatingChange(star)}
-                className={`cursor-pointer text-2xl transition ${star <= rating || star <= idea.ratings ? "text-yellow-400" : "text-gray-300"
+                className={`cursor-pointer text-2xl transition ${star <= rating ? "text-yellow-400" : "text-gray-300"
                   } hover:scale-110`}
               >
                 ★
@@ -150,7 +216,7 @@ const IdeaDetail = () => {
       {/* Bình luận */}
       <div className="bg-white rounded-lg shadow p-4">
         <h3 className="font-semibold mb-3 flex items-center">
-          <FaComment className="mr-2 text-blue-600" />
+          <FontAwesomeIcon icon={faTags} className="mr-2 text-blue-600" />
           Viết bình luận
         </h3>
         <form onSubmit={handleCommentSubmit}>

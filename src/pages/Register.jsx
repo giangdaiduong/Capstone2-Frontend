@@ -1,119 +1,196 @@
 import React, { useState } from 'react';
-import { Mail, User, Phone, Home, Calendar, Lock } from 'lucide-react';
+import { Mail, User, Phone, Home, Calendar, Lock, Upload } from 'lucide-react';
 import ModalEmail from '../components/ModalEmail';
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
+axios.defaults.baseURL = 'http://localhost:5182';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    address: '',
-    gender: '',
-    job: '',
-    dob: '',
-    password: '',
-    confirmPassword: '',
-    idNumber: '',
-    file1: null,
-    file2: null,
+    username: "",
+    password: "",
+    confirmPassword: "",
+    fullName: "",
+    phoneNumber: "",
+    role: "Initiator", // Mặc định là Initiator
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsModalOpen(true);
+    setIsLoading(true);
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Mật khẩu xác nhận không khớp!");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:5182/v1/api/auth/register", {
+        username: formData.username,
+        password: formData.password,
+        fullName: formData.fullName,
+        phoneNumber: formData.phoneNumber,
+        role: formData.role,
+      });
+
+      if (response.data) {
+        toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Lỗi đăng ký:", error);
+      toast.error(error.response?.data?.message || "Đăng ký thất bại!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-2xl border border-blue-300">
-        <h2 className="text-2xl font-bold text-blue-700 text-center mb-2">
-          Đăng ký tài khoản
-        </h2>
-        <p className="text-gray-500 text-center mb-6">
-          Hãy đăng ký để bắt đầu sử dụng
-        </p>
-
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          {[{
-            id: 'fullName',
-            label: 'Họ và tên',
-            icon: <User className="text-blue-500" />,
-            type: 'text',
-          },
-          {
-            id: 'dob',
-            label: 'Ngày sinh',
-            icon: <Calendar className="text-blue-500" />,
-            type: 'date',
-          },
-          {
-            id: 'email',
-            label: 'Email',
-            icon: <Mail className="text-blue-500" />,
-            type: 'email',
-          },
-          {
-            id: 'password',
-            label: 'Mật khẩu',
-            icon: <Lock className="text-blue-500" />,
-            type: 'password',
-          },
-          {
-            id: 'confirmPassword',
-            label: 'Xác nhận mật khẩu',
-            icon: <Lock className="text-blue-500" />,
-            type: 'password',
-          },
-          {
-            id: 'phone',
-            label: 'Số điện thoại',
-            icon: <Phone className="text-blue-500" />,
-            type: 'text',
-          },
-          {
-            id: 'address',
-            label: 'Địa chỉ',
-            icon: <Home className="text-blue-500" />,
-            type: 'text',
-          },
-          {
-            id: 'idNumber',
-            label: 'Số CMND',
-            icon: <User className="text-blue-500" />,
-            type: 'text',
-          }].map(({ id, label, icon, type }) => (
-            <div key={id} className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                {icon}
-              </span>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Đăng ký tài khoản mới
+          </h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="username" className="sr-only">
+                Tên đăng nhập
+              </label>
               <input
-                id={id}
-                type={type}
-                name={id}
-                value={formData[id]}
-                onChange={handleInputChange}
-                placeholder={label}
-                className="w-full pl-10 p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                id="username"
+                name="username"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Tên đăng nhập"
+                value={formData.username}
+                onChange={handleChange}
               />
             </div>
-          ))}
+            <div>
+              <label htmlFor="fullName" className="sr-only">
+                Họ và tên
+              </label>
+              <input
+                id="fullName"
+                name="fullName"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Họ và tên"
+                value={formData.fullName}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="phoneNumber" className="sr-only">
+                Số điện thoại
+              </label>
+              <input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="tel"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Số điện thoại"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="relative">
+              <label htmlFor="password" className="sr-only">
+                Mật khẩu
+              </label>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Mật khẩu"
+                value={formData.password}
+                onChange={handleChange}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  className="h-5 w-5 text-gray-400"
+                />
+              </button>
+            </div>
+            <div className="relative">
+              <label htmlFor="confirmPassword" className="sr-only">
+                Xác nhận mật khẩu
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Xác nhận mật khẩu"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                <FontAwesomeIcon
+                  icon={showConfirmPassword ? faEyeSlash : faEye}
+                  className="h-5 w-5 text-gray-400"
+                />
+              </button>
+            </div>
+          </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-all shadow-md"
-          >
-            Đăng ký
-          </button>
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              {isLoading ? "Đang đăng ký..." : "Đăng ký"}
+            </button>
+          </div>
         </form>
+        <div className="text-center">
+          <p className="text-sm text-gray-600">
+            Đã có tài khoản?{" "}
+            <button
+              onClick={() => navigate("/login")}
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
+              Đăng nhập ngay
+            </button>
+          </p>
+        </div>
       </div>
-      <ModalEmail isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

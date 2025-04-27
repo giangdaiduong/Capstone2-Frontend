@@ -8,9 +8,9 @@ export const validateOTP = (otp) => {
   return null;
 };
 
-export const validateForm = (email, password) => {
-  if (!email) return 'Email không được để trống.';
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Email không hợp lệ.';
+export const validateForm = (username, password) => {
+  if (!username) return 'Tên đăng nhập không được để trống.';
+  if (username.length < 3) return 'Tên đăng nhập phải có ít nhất 3 ký tự.';
   if (!password) return 'Mật khẩu không được để trống.';
   if (password.length < 6) return 'Mật khẩu phải có ít nhất 6 ký tự.';
   return null;
