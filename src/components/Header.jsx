@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Logo from '../assets/logo.png';
 
 const Header = () => {
@@ -10,22 +11,24 @@ const Header = () => {
       </div>
 
       <nav className="flex space-x-4">
-        <a href="#" className="text-gray-600 hover:text-blue-600">
+        <Link to="/" className="text-gray-600 hover:text-blue-600">
           Trang Chủ
-        </a>
-        <a href="#" className="text-gray-600 hover:text-blue-600">
+        </Link>
+        <Link to="/san-pham" className="text-gray-600 hover:text-blue-600">
           Sản Phẩm
-        </a>
-        <a href="#" className="text-gray-600 hover:text-blue-600">
+        </Link>
+        <Link to="/cong-dong" className="text-gray-600 hover:text-blue-600">
           Cộng Đồng
-        </a>
-        <a href="#" className="text-gray-600 hover:text-blue-600">
+        </Link>
+        <Link to="/dich-vu" className="text-gray-600 hover:text-blue-600">
           Các dịch vụ khác
-        </a>
+        </Link>
       </nav>
 
       <div className="text-gray-600">
-        <span>Đăng ký/Đăng nhập</span>
+        <Link to="/login" className="hover:text-blue-600">
+          Đăng nhập
+        </Link>
       </div>
     </header>
   );

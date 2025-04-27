@@ -10,7 +10,7 @@ import { validateForm } from '../utils/validation';
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [notifications, setNotifications] = useState([]);
@@ -18,7 +18,7 @@ const Login = () => {
   const loginMutation = useMutation({
     mutationFn: async () => {
       try {
-        const redirectPath = await login(email, password);
+        const redirectPath = await login(userName, password);
         navigate(redirectPath);
       } catch (error) {
         throw error;
@@ -37,15 +37,14 @@ const Login = () => {
     setError('');
     setNotifications([]);
 
-    // Validate form
-    const validationError = validateForm(email, password);
+    // Validate form (bạn nên update validateForm cho phù hợp)
+    const validationError = validateForm(userName, password);
     if (validationError) {
       setError(validationError);
       setNotifications([{ isSuccess: false, message: validationError }]);
       return;
     }
 
-    // Attempt login
     loginMutation.mutate();
   };
 
@@ -63,17 +62,17 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
-                htmlFor="email"
+                htmlFor="username"
                 className="block text-left text-gray-700 font-medium mb-1"
               >
-                Địa chỉ Email <span className="text-red-500">[*]</span>
+                Tên đăng nhập <span className="text-red-500">[*]</span>
               </label>
               <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Tên đăng nhập hoặc email"
+                id="username"
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Tên đăng nhập"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>

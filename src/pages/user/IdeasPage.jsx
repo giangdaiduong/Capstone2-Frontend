@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { REQUESTS, SIDEBAR_ITEMS } from '../../constants';
+import React, { useEffect, useState } from 'react';
+import axiosInstance from '../../utils/httpRequest';
 
 const logger = {
   info: (message, data) => console.log(`[INFO] ${message}`, data),
@@ -7,64 +7,103 @@ const logger = {
 };
 
 const IdeasPage = () => {
+  const [ideas, setIdeas] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const requestsPerPage = 5;
-  const totalPages = Math.ceil(REQUESTS.length / requestsPerPage);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
-  const indexOfLastRequest = currentPage * requestsPerPage;
-  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
-  const currentRequests = REQUESTS.slice(
-    indexOfFirstRequest,
-    indexOfLastRequest
-  );
+  const requestsPerPage = 5;
+
+  const fetchIdeas = async (pageIndex) => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get(`/client/Ideas`, {
+        params: {
+          PageIndex: pageIndex - 1,
+          PageSize: requestsPerPage,
+        },
+      });
+      const data = response.data;
+      setIdeas(data.items);
+      setTotalPages(Math.ceil(data.total / requestsPerPage));
+      logger.info('Fetched Ideas', data);
+    } catch (err) {
+      logger.error('Fetch Ideas Failed', { error: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchIdeas(currentPage);
+  }, [currentPage]);
 
   const handlePageChange = (page) => {
-    try {
-      if (page < 1 || page > totalPages) return;
-      setCurrentPage(page);
-      logger.info('Page Changed', { page });
-    } catch (err) {
-      logger.error('Page Change Failed', { error: err.message });
-    }
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
       <main className="flex-1 p-6">
         <h1 className="text-2xl font-semibold text-gray-800 mb-6">
-          Danh mục yêu cầu
+          Danh mục ý tưởng
         </h1>
 
-        <div className="space-y-4">
-          {currentRequests.map((request) => (
-            <div
-              key={request.id}
-              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-500"
-            >
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {request.title}
-                </h3>
-                <span
-                  className={`px-2 py-1 rounded-md text-sm ${
-                    request.status === 'Đã xử lý'
-                      ? 'bg-green-100 text-green-600'
-                      : request.status === 'Đang xử lý'
-                      ? 'bg-yellow-100 text-yellow-600'
-                      : 'bg-red-100 text-red-600'
-                  }`}
+        {loading ? (
+          <div className="text-center text-gray-600">Đang tải dữ liệu...</div>
+        ) : (
+          <div className="space-y-6">
+            {ideas.length > 0 ? (
+              ideas.map((idea) => (
+                <div
+                  key={idea.id}
+                  className="bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-500"
                 >
-                  {request.status}
-                </span>
-              </div>
-              <p className="text-gray-600 mb-1">
-                Tên: {request.user} - {request.date}
-              </p>
-              <p className="text-gray-600">{request.details}</p>
-            </div>
-          ))}
-        </div>
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {idea.title} ({idea.ideaCode})
+                    </h3>
+                    <span
+                      className={`px-2 py-1 rounded-md text-sm ${
+                        idea.status === 'New'
+                          ? 'bg-green-100 text-green-600'
+                          : idea.status === 'Approved'
+                          ? 'bg-blue-100 text-blue-600'
+                          : 'bg-yellow-100 text-yellow-600'
+                      }`}
+                    >
+                      {idea.status}
+                    </span>
+                  </div>
 
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-gray-600 text-sm">
+                    <p><strong>Người khởi tạo:</strong> {idea.initiator || 'Ẩn danh'}</p>
+                    <p><strong>Danh mục:</strong> {idea.category}</p>
+                    <p><strong>Giá:</strong> {idea.isForSale ? `${idea.price} đ` : 'Không bán'}</p>
+                    <p><strong>Đầu tư bởi:</strong> {idea.investor || 'Chưa có'}</p>
+                    <p><strong>Ngày đầu tư:</strong> {idea.investmentDate ? new Date(idea.investmentDate).toLocaleString() : 'Chưa có'}</p>
+                    <p><strong>Lượt xem:</strong> {idea.totalViews}</p>
+                    <p><strong>Lượt thích:</strong> {idea.totalLikes}</p>
+                    <p><strong>Bình luận:</strong> {idea.totalComments}</p>
+                    <p><strong>Đánh giá:</strong> {idea.totalRatings}</p>
+                    <p><strong>Bản quyền:</strong> {idea.copyrightStatus ? 'Đã đăng ký' : 'Chưa đăng ký'}</p>
+                    <p><strong>Giấy chứng nhận:</strong> {idea.copyrightCertificate}</p>
+                    <p><strong>Ngày tạo:</strong> {new Date(idea.createdOn).toLocaleString()}</p>
+                  </div>
+
+                  <div className="mt-4 text-gray-700">
+                    <strong>Mô tả:</strong> {idea.description}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center text-gray-600">Không có ý tưởng nào.</div>
+            )}
+          </div>
+        )}
+
+        {/* Pagination */}
         <div className="flex justify-center mt-6 space-x-2">
           <button
             onClick={() => handlePageChange(currentPage - 1)}

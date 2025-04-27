@@ -48,14 +48,15 @@ function App() {
 
         {/* User Routes */}
         <Route
+          path='user'
           element={
             // <ProtectedRoute allowedRoles={['user']}>
             <UserLayout />
             // </ProtectedRoute>
           }
         >
+          <Route index  element={<IdeasPage />} />
           <Route path="/user/profile" element={<UserProfile />} />
-          <Route path="/user/ideas" element={<IdeasPage />} />
           {/* <Route path="/user/ideas/:id" element={<IdeaDetail />} /> */}
           <Route path="/user/ideas/detail" element={<IdeaDetail />} />
           <Route path="/user/ideas/posted" element={<IdeaPosted />} />

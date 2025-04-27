@@ -25,25 +25,12 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (username, password) => {
     try {
-      const response = await axiosInstance.post('/Auth', { email, password });
-      const { token, role } = response.data;
-      
+      const response = await axiosInstance.post('/client/Auth', { username, password });
+      const { token } = response.data;
       localStorage.setItem('token', token);
-      localStorage.setItem('userRole', role);
-      
-      setUser({ role });
-
-      // Redirect based on role
-      switch (role) {
-        case 'admin':
-          return '/admin/dashboard';
-        case 'investor':
-          return '/investor/dashboard';
-        default:
-          return '/user/dashboard';
-      }
+      return '/user';
     } catch (error) {
       throw error.response?.data || { message: 'Đăng nhập thất bại' };
     }
