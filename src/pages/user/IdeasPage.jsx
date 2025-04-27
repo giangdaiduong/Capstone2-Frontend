@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../utils/httpRequest';
+import { Link } from 'react-router-dom';
 
 const logger = {
   info: (message, data) => console.log(`[INFO] ${message}`, data),
@@ -61,9 +62,11 @@ const IdeasPage = () => {
                   className="bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-500"
                 >
                   <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      {idea.title}
-                    </h3>
+                    <Link to={`/user/ideas/${idea.id}`}>
+                      <h3 className="text-lg font-semibold text-gray-800 hover:text-blue-600">
+                        {idea.title}
+                      </h3>
+                    </Link>
                     <span
                       className={`px-2 py-1 rounded-md text-sm ${
                         idea.status === 'New'
@@ -93,6 +96,15 @@ const IdeasPage = () => {
 
                   <div className="mt-4 text-gray-700">
                     <strong>Mô tả:</strong> {idea.description}
+                  </div>
+
+                  <div className="mt-4">
+                    <Link 
+                      to={`/user/ideas/${idea.id}`}
+                      className="text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      Xem chi tiết &rarr;
+                    </Link>
                   </div>
                 </div>
               ))

@@ -1,39 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { FaUser, FaCalendarAlt, FaCheckCircle, FaEye, FaThumbsUp, FaComment, FaArrowRight, FaFlag } from "react-icons/fa";
+import { FaUser, FaCalendarAlt, FaCheckCircle, FaEye, FaThumbsUp, FaComment, FaArrowRight, FaFlag, FaCopyright, FaMapMarkerAlt, FaChartLine } from "react-icons/fa";
 import ReportModal from "../../components/user/ReportModal";
+import axiosInstance from "../../utils/httpRequest";
+
+const logger = {
+  info: (message, data) => console.log(`[INFO] ${message}`, data),
+  error: (message, data) => console.error(`[ERROR] ${message}`, data),
+};
 
 const IdeaDetail = () => {
   const { id } = useParams();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [showReportModal, setShowReportModal] = useState(false);
+  const [idea, setIdea] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock data - Fetch từ API trong thực tế
-  const idea = {
-    id: 1,
-    title: "Camera phát hiện người và vật trong xe",
-    author: "Lê Gia Phạm Thanh Cảnh",
-    category: "Công nghệ",
-    status: "Đã duyệt",
-    createdAt: "10/22/2023",
-    views: 100123,
-    content: `
-      Hiện nay, các hệ thống viễn giám khá khó khăn trong việc tối ưu mô hình, phát hiện lỗi và cải thiện hiệu quả. 
-      Ý tưởng của tôi là một nền tảng AI có thể:
-      • Tự động hiệu chỉnh code đầu ra sau khi train
-      • Đề xuất phát minh các lỗi thường gặp từ GitHub, Stack Overflow
-      • Hỗ trợ nhiều ngôn ngữ lập trình (Python, Java, JavaScript, C++, v.v.)
-      • Tích hợp trực tiếp với VS Code, Intellij
-    `,
-    price: "Liên hệ để trao đổi chi tiết",
-    relatedIdeas: [
-      { id: 2, title: "Camera AI giám sát an toàn", category: "Công nghệ" },
-      { id: 3, title: "Hệ thống nhận diện biển số thông minh", category: "Công nghệ" }
-    ],
-    ratings: 4,
-    comments: []
-  };
+  useEffect(() => {
+    const fetchIdeaDetails = async () => {
+      setLoading(true);
+      try {
+        const response = await axiosInstance.get(`/client/Ideas/${id}`);
+        setIdea(response.data);
+        logger.info('Fetched Idea Details', response.data);
+      } catch (err) {
+        setError(err.message);
+        logger.error('Fetch Idea Details Failed', { error: err.message });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchIdeaDetails();
+  }, [id]);
 
   const handleRatingChange = (value) => {
     setRating(value);
@@ -53,21 +54,80 @@ const IdeaDetail = () => {
     // Thêm code để gửi báo cáo đến API
   };
 
+  if (loading) {
+    return <div className="container mx-auto px-4 py-6 text-center">Đang tải dữ liệu...</div>;
+  }
+
+  if (error) {
+    return <div className="container mx-auto px-4 py-6 text-center text-red-600">Lỗi: {error}</div>;
+  }
+
+  if (!idea) {
+    return <div className="container mx-auto px-4 py-6 text-center">Không tìm thấy ý tưởng</div>;
+  }
+
   return (
     <div className="container mx-auto px-4 py-6">
-
+      {/* Back to ideas */}
+      <div className="mb-4">
+        <Link to="/user" className="text-blue-600 hover:text-blue-800">
+          &larr; Quay lại danh sách ý tưởng
+        </Link>
+      </div>
+      
       {/* Tiêu đề & thông tin ý tưởng */}
       <div className="bg-blue-100 rounded-lg p-4 mb-6">
         <div className="flex items-center justify-between mb-2">
-          <h1 className="text-xl font-bold text-blue-800">{idea.title}</h1>
+          <div>
+            <h1 className="text-xl font-bold text-blue-800">{idea.title}</h1>
+            <div className="text-sm text-gray-600">Mã: {idea.ideaCode}</div>
+          </div>
           <span className="text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">
             <FaCheckCircle className="inline mr-1" /> {idea.status}
           </span>
         </div>
         <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-          <span><FaUser className="inline mr-1" /> {idea.author}</span>
-          <span><FaCalendarAlt className="inline mr-1" /> Ngày đăng: {idea.createdAt}</span>
-          <span><FaEye className="inline mr-1" /> {idea.views} lượt xem</span>
+          <span><FaUser className="inline mr-1" /> {idea.initiatorId || "Ẩn danh"}</span>
+          <span><FaCalendarAlt className="inline mr-1" /> Ngày đăng: {new Date(idea.createdOn !== "0001-01-01T00:00:00" ? idea.createdOn : Date.now()).toLocaleString()}</span>
+          <span><FaEye className="inline mr-1" /> {idea.totalViews} lượt xem</span>
+          {idea.region && <span><FaMapMarkerAlt className="inline mr-1" /> {idea.region}</span>}
+          {idea.stage && <span><FaChartLine className="inline mr-1" /> Giai đoạn: {idea.stage}</span>}
+        </div>
+      </div>
+
+      {/* Loại hợp tác & Danh mục */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h3 className="font-semibold mb-2">Loại hợp tác</h3>
+            <div className="bg-blue-50 p-3 rounded-lg">{idea.collaborationType}</div>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-2">Danh mục</h3>
+            <div className="bg-blue-50 p-3 rounded-lg">{idea.categoryId}</div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Hình ảnh chính & Chứng nhận bản quyền */}
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold mb-2">Hình ảnh</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {idea.imageUrls && (
+            <div className="bg-white shadow p-2 rounded-lg">
+              <h3 className="text-sm font-medium mb-2">Hình ảnh minh họa</h3>
+              <img src={idea.imageUrls} alt="Hình ảnh minh họa" className="w-full h-64 object-cover rounded-lg" />
+            </div>
+          )}
+          
+          {idea.copyrightStatus && idea.copyrightCertificate && (
+            <div className="bg-white shadow p-2 rounded-lg">
+              <h3 className="text-sm font-medium mb-2 flex items-center">
+                <FaCopyright className="mr-1 text-green-600" /> Chứng nhận bản quyền
+              </h3>
+              <img src={idea.copyrightCertificate} alt="Chứng nhận bản quyền" className="w-full h-64 object-cover rounded-lg" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -75,27 +135,35 @@ const IdeaDetail = () => {
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-2">Nội dung ý tưởng</h2>
         <div className="bg-white rounded-lg shadow p-4">
-          <div className="whitespace-pre-line">{idea.content}</div>
+          <div className="whitespace-pre-line">{idea.description}</div>
 
           <div className="mt-4">
             <h3 className="font-semibold">Giá thương lượng:</h3>
             <p className="text-red-600 mt-1 flex items-center">
-              <span>{idea.price}</span>
-              <FaArrowRight className="ml-2" />
+              <span>{idea.isForSale ? `${idea.price.toLocaleString()} VNĐ` : 'Không bán'}</span>
+              {idea.isForSale && <FaArrowRight className="ml-2" />}
             </p>
           </div>
         </div>
       </div>
-
-      {/* Hình ảnh */}
+      
+      {/* Thông tin pháp lý */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">Hình ảnh</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-200 p-4 flex items-center justify-center h-40">
-            <span className="text-gray-500">Ảnh</span>
-          </div>
-          <div className="bg-gray-200 p-4 flex items-center justify-center h-40">
-            <span className="text-gray-500">Ảnh</span>
+        <h2 className="text-lg font-semibold mb-2">Thông tin pháp lý</h2>
+        <div className="bg-white rounded-lg shadow p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h3 className="font-medium">Trạng thái bản quyền</h3>
+              <p className={`mt-1 ${idea.copyrightStatus ? "text-green-600" : "text-yellow-600"}`}>
+                {idea.copyrightStatus ? "Đã đăng ký bản quyền" : "Chưa đăng ký bản quyền"}
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium">Công khai</h3>
+              <p className="mt-1">
+                {idea.isPublic ? "Công khai" : "Riêng tư"}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -137,7 +205,7 @@ const IdeaDetail = () => {
               <span
                 key={star}
                 onClick={() => handleRatingChange(star)}
-                className={`cursor-pointer text-2xl transition ${star <= rating || star <= idea.ratings ? "text-yellow-400" : "text-gray-300"
+                className={`cursor-pointer text-2xl transition ${star <= rating || star <= (idea.totalRatings || 0) ? "text-yellow-400" : "text-gray-300"
                   } hover:scale-110`}
               >
                 ★
