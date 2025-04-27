@@ -98,9 +98,9 @@ const Login = () => {
               <p className="text-sm text-red-500 text-center">{error}</p>
             )}
 
-            <p className="text-sm text-blue-600 hover:underline cursor-pointer text-right">
+            <Link to={'/forgot-password'} className="text-sm text-blue-600 hover:underline cursor-pointer text-right">
               Quên mật khẩu?
-            </p>
+            </Link>
 
             <button
               type="submit"

@@ -1,30 +1,32 @@
 import React, { useState } from 'react';
-import { validateOTP } from '../utils/validation';
-import { logger } from '../utils/logger';
-import { NOTIFICATIONS } from '../constants';
-import Noti from '../utils/Noti';
+import { forgotPassword } from '../api/userApi'; // Import the forgotPassword API function
+import { toast, Toaster } from 'sonner'; // Import toast for notifications
 
 const ForgotPass = () => {
-  const [otp, setOtp] = useState('');
+  const [email, setEmail] = useState(''); // Change otp to email
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const validationError = validateOTP(otp);
-      if (validationError) {
-        setError(validationError);
-        logger.error('OTP Validation Failed', { otp, error: validationError });
+      if (!email) {
+        setError('Email is required');
         return;
       }
 
-      logger.info('OTP Submitted Successfully', { otp });
+      // Call the forgotPassword API with the email
+      const response = await forgotPassword(email);
+      if (response.status === 200) {
+        toast.success('Mã OTP đã được gửi đến email của bạn.'); // Notify success
+      } else {
+        toast.error('Đã có lỗi xảy ra khi gửi mã OTP.');
+      }
+
       setError('');
-      alert('OTP xác nhận thành công!'); // Thay bằng API call thực tế
     } catch (err) {
       setError('Đã có lỗi xảy ra. Vui lòng thử lại.');
-      logger.error('OTP Submission Failed', { error: err.message });
+      toast.error('Có lỗi khi gửi yêu cầu. Vui lòng thử lại.');
     }
   };
 
@@ -35,39 +37,44 @@ const ForgotPass = () => {
           QUÊN MẬT KHẨU
         </h2>
         <p className="text-gray-600 mb-6 text-center">
-          Chào mừng bạn! Nhập mã OTP để xác nhận.
+          Chào mừng bạn! Nhập email để nhận mã OTP.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
-              htmlFor="otp"
+              htmlFor="email"
               className="block text-left text-gray-700 font-medium mb-1"
             >
-              Nhập mã OTP <span className="text-red-500">[*]</span>
+              Nhập email <span className="text-red-500">[*]</span>
             </label>
             <input
-              id="otp"
-              type="text"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              placeholder="Nhập mã OTP"
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Nhập email"
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
           >
-            Kích hoạt
+            Gửi mã OTP
           </button>
 
           <p className="text-sm text-blue-600 hover:underline cursor-pointer text-center">
             Gửi lại mã OTP
           </p>
         </form>
-        <Noti notifications={NOTIFICATIONS} />
+        {/* Display error message */}
+        {error && <p className="text-center text-red-500 mt-2">{error}</p>}
       </div>
+
+      {/* Toaster for toast notifications */}
+      <Toaster position="top-right" />
     </div>
   );
 };

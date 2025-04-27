@@ -88,7 +88,6 @@ const IdeasPage = () => {
                     <p><strong>Bình luận:</strong> {idea.totalComments}</p>
                     <p><strong>Đánh giá:</strong> {idea.totalRatings}</p>
                     <p><strong>Bản quyền:</strong> {idea.copyrightStatus ? 'Đã đăng ký' : 'Chưa đăng ký'}</p>
-                    <p><strong>Giấy chứng nhận:</strong> {idea.copyrightCertificate}</p>
                     <p><strong>Ngày tạo:</strong> {new Date(idea.createdOn).toLocaleString()}</p>
                   </div>
 
