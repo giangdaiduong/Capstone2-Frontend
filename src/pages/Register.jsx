@@ -1,110 +1,191 @@
 import React, { useState } from 'react';
-import { Mail, User, Phone, Home, Calendar, Lock } from 'lucide-react';
-import ModalEmail from '../components/ModalEmail';
+import { Mail, User, Phone, Home, Calendar, Lock, Upload } from 'lucide-react';
+import { registerUser } from '../api/userApi';
+import { toast, Toaster } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+
+// Component FileInput gọn đẹp
+const FileInput = ({ label, onChange, preview, required = false }) => (
+  <div className="space-y-2">
+    <label className="block text-blue-700 font-medium">{label}</label>
+    <div className="flex items-center space-x-4">
+      <label className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md cursor-pointer hover:bg-blue-600 transition">
+        <Upload className="w-5 h-5 mr-2" />
+        Chọn ảnh
+        <input
+          type="file"
+          accept="image/*"
+          onChange={onChange}
+          className="hidden"
+          required={required}
+        />
+      </label>
+
+      {preview && (
+        <div className="relative">
+          <img
+            src={preview}
+            alt="Preview"
+            className="w-32 h-20 object-cover rounded-lg border border-gray-300 shadow hover:scale-105 transition-transform"
+          />
+        </div>
+      )}
+    </div>
+  </div>
+);
 
 const Register = () => {
   const [formData, setFormData] = useState({
     fullName: '',
+    username: '',
     email: '',
-    phone: '',
-    address: '',
-    gender: '',
-    job: '',
-    dob: '',
     password: '',
     confirmPassword: '',
     idNumber: '',
-    file1: null,
-    file2: null,
+    cccdFront: null,
+    cccdBack: null,
+    avatar: null,
+    roleId: '',
+    birthday: '',
+    phone: '',
+    address: '',
+    isDeleted: false,
   });
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const navigate = useNavigate()
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleFileChange = (e, field) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prev) => ({ ...prev, [field]: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsModalOpen(true);
+    try {
+      const payload = {
+        FullName: formData.fullName,
+        Username: formData.username,
+        Email: formData.email,
+        Password: formData.password,
+        ConfirmPassword: formData.confirmPassword,
+        CCCD: formData.idNumber,
+        CCCDBack: formData.cccdBack,
+        CCCDFront: formData.cccdFront,
+        Avatar: formData.avatar,
+        RoleId: formData.roleId,
+        Birthday: formData.birthday,
+        Phone: formData.phone,
+        Address: formData.address,
+        CreatedBy: formData.createdBy,
+        IsDeleted: formData.isDeleted,
+      };
+      await registerUser(payload);
+      navigate('/verify-otp')
+      toast.success('Đăng ký thành công! Vui lòng kiểm tra email để xác thực OTP.');
+    } catch (err) {
+      toast.error('Đăng ký thất bại: ' + (err.response?.data?.message || err.message));
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 py-5">
       <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-2xl border border-blue-300">
-        <h2 className="text-2xl font-bold text-blue-700 text-center mb-2">
-          Đăng ký tài khoản
-        </h2>
-        <p className="text-gray-500 text-center mb-6">
-          Hãy đăng ký để bắt đầu sử dụng
-        </p>
+        <h2 className="text-2xl font-bold text-blue-700 text-center mb-2">Đăng ký tài khoản</h2>
+        <p className="text-gray-500 text-center mb-6">Hãy đăng ký để bắt đầu sử dụng</p>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {[{
-            id: 'fullName',
-            label: 'Họ và tên',
-            icon: <User className="text-blue-500" />,
-            type: 'text',
-          },
-          {
-            id: 'dob',
-            label: 'Ngày sinh',
-            icon: <Calendar className="text-blue-500" />,
-            type: 'date',
-          },
-          {
-            id: 'email',
-            label: 'Email',
-            icon: <Mail className="text-blue-500" />,
-            type: 'email',
-          },
-          {
-            id: 'password',
-            label: 'Mật khẩu',
-            icon: <Lock className="text-blue-500" />,
-            type: 'password',
-          },
-          {
-            id: 'confirmPassword',
-            label: 'Xác nhận mật khẩu',
-            icon: <Lock className="text-blue-500" />,
-            type: 'password',
-          },
-          {
-            id: 'phone',
-            label: 'Số điện thoại',
-            icon: <Phone className="text-blue-500" />,
-            type: 'text',
-          },
-          {
-            id: 'address',
-            label: 'Địa chỉ',
-            icon: <Home className="text-blue-500" />,
-            type: 'text',
-          },
-          {
-            id: 'idNumber',
-            label: 'Số CMND',
-            icon: <User className="text-blue-500" />,
-            type: 'text',
-          }].map(({ id, label, icon, type }) => (
-            <div key={id} className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                {icon}
-              </span>
+          {/* Các input text */}
+          {[
+            { name: 'fullName', icon: <User />, placeholder: 'Họ và tên' },
+            { name: 'username', icon: <User />, placeholder: 'Tên đăng nhập' },
+            { name: 'email', type: 'email', icon: <Mail />, placeholder: 'Email' },
+            { name: 'password', type: 'password', icon: <Lock />, placeholder: 'Mật khẩu' },
+            { name: 'confirmPassword', type: 'password', icon: <Lock />, placeholder: 'Xác nhận mật khẩu' },
+            { name: 'idNumber', icon: <User />, placeholder: 'Số CCCD' },
+            { name: 'roleId', icon: null, placeholder: 'RoleId' },
+            { name: 'phone', icon: <Phone />, placeholder: 'Số điện thoại' },
+            { name: 'address', icon: <Home />, placeholder: 'Địa chỉ' },
+          ].map(({ name, type = 'text', icon, placeholder }) => (
+            <div key={name} className="relative">
+              {icon && (
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                  {React.cloneElement(icon, { className: 'text-blue-500' })}
+                </span>
+              )}
               <input
-                id={id}
+                name={name}
                 type={type}
-                name={id}
-                value={formData[id]}
+                placeholder={placeholder}
+                value={formData[name]}
                 onChange={handleInputChange}
-                placeholder={label}
-                className="w-full pl-10 p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className={`w-full ${icon ? 'pl-10' : 'pl-4'} p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none`}
+                required
               />
             </div>
           ))}
 
+          {/* Ngày sinh */}
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <Calendar className="text-blue-500" />
+            </span>
+            <input
+              name="birthday"
+              type="date"
+              value={formData.birthday}
+              onChange={handleInputChange}
+              className="w-full pl-10 p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
+            />
+          </div>
+
+          {/* Upload ảnh CCCD mặt trước */}
+          <FileInput
+            label="Ảnh CCCD mặt trước"
+            onChange={(e) => handleFileChange(e, 'cccdFront')}
+            preview={formData.cccdFront}
+            required
+          />
+
+          {/* Upload ảnh CCCD mặt sau */}
+          <FileInput
+            label="Ảnh CCCD mặt sau"
+            onChange={(e) => handleFileChange(e, 'cccdBack')}
+            preview={formData.cccdBack}
+            required
+          />
+
+          {/* Upload Avatar */}
+          <FileInput
+            label="Ảnh đại diện"
+            onChange={(e) => handleFileChange(e, 'avatar')}
+            preview={formData.avatar}
+          />
+
+          {/* Checkbox đã xóa */}
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="isDeleted"
+              checked={formData.isDeleted}
+              onChange={handleInputChange}
+              className="form-checkbox h-5 w-5 text-blue-600"
+            />
+            <label className="text-blue-700 font-medium">Đã xóa?</label>
+          </div>
+
+          {/* Submit button */}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-all shadow-md"
@@ -113,7 +194,8 @@ const Register = () => {
           </button>
         </form>
       </div>
-      <ModalEmail isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      <Toaster position="top-right" richColors closeButton />
     </div>
   );
 };

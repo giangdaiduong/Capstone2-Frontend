@@ -62,7 +62,7 @@ const IdeasPage = () => {
                 >
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="text-lg font-semibold text-gray-800">
-                      {idea.title} ({idea.ideaCode})
+                      {idea.title}
                     </h3>
                     <span
                       className={`px-2 py-1 rounded-md text-sm ${

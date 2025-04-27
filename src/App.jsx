@@ -10,7 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import OTPForm from './components/ForgotPass';
+import ForgotPass from './components/ForgotPass';
 import ChangePass from './pages/ChangePass';
 import Unauthorized from './pages/Unauthorized';
 
@@ -31,6 +31,7 @@ import IdeaDetail from './pages/user/IdeaDetail';
 import IdeaPosted from './pages/user/IdeadPosted';
 import UserPostedIdeas from './pages/user/UserPostedIdeas';
 import IdeaRatings from './pages/user/IdeaRatings';
+import VerifyOtp from './components/VerifyOtp';
 
 function App() {
   return (
@@ -41,7 +42,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<OTPForm />} />
+          <Route path="/forgot-password" element={<ForgotPass />} />
+          <Route path="/verify-otp" element={<VerifyOtp />} />
           <Route path="/change-password" element={<ChangePass />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
         </Route>
