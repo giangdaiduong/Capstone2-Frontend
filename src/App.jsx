@@ -61,8 +61,8 @@ function App() {
         >
           <Route index  element={<IdeasPage />} />
           <Route path="/user/profile" element={<UserProfile />} />
-          {/* <Route path="/user/ideas/:id" element={<IdeaDetail />} /> */}
-          <Route path="/user/ideas/detail" element={<IdeaDetail />} />
+          <Route path="/user/ideas/:id" element={<IdeaDetail />} />
+          {/* <Route path="/user/ideas/detail" element={<IdeaDetail />} /> */}
           <Route path="/user/ideas/posted" element={<IdeaPosted />} />
           <Route path="/user/ideas/posted/detail" element={<UserPostedIdeas />} />
           <Route path="/user/ideas/posted/detail/ratings" element={<IdeaRatings />} />

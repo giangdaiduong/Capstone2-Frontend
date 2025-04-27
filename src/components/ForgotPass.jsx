@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { forgotPassword } from '../api/userApi'; // Import the forgotPassword API function
 import { toast, Toaster } from 'sonner'; // Import toast for notifications
+import { useNavigate } from 'react-router-dom';
 
 const ForgotPass = () => {
   const [email, setEmail] = useState(''); // Change otp to email
   const [error, setError] = useState('');
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +20,7 @@ const ForgotPass = () => {
       // Call the forgotPassword API with the email
       const response = await forgotPassword(email);
       if (response.status === 200) {
+        navigate('')
         toast.success('Mã OTP đã được gửi đến email của bạn.'); // Notify success
       } else {
         toast.error('Đã có lỗi xảy ra khi gửi mã OTP.');
