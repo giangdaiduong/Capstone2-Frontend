@@ -6,7 +6,7 @@ import {
     FaUsers, 
     FaHome,
     FaRobot,
-    FaCog 
+    FaSearch
 } from 'react-icons/fa';
 
 const InvestorSidebar = () => {
@@ -28,30 +28,32 @@ const InvestorSidebar = () => {
         },
         {
             icon: <FaHome className="w-5 h-5" />,
-            label: 'Hỗ sơ Nhà đầu tư',
+            label: 'Hồ sơ Nhà đầu tư',
             path: '/investor/profile'
         },
         {
             icon: <FaRobot className="w-5 h-5" />,
             label: 'Chat AI hỗ trợ',
             path: '/investor/chat'
+        },
+        {
+            icon: <FaSearch className="w-5 h-5" />,
+            label: 'Tìm ý tưởng thông minh',
+            path: '/investor/search'
         }
     ];
 
     return (
-        <div className="w-64 bg-white shadow-lg">
-            <div className="p-4">
-                <h1 className="text-xl font-bold text-blue-800">InvestHub</h1>
-            </div>
+        <div className="w-64 bg-white shadow-lg h-screen">
             <nav className="mt-4">
                 {menuItems.map((item, index) => (
                     <NavLink
                         key={index}
                         to={item.path}
                         className={({ isActive }) =>
-                            `flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-800 transition-colors ${
-                                isActive ? 'bg-blue-50 text-blue-800 border-l-4 border-blue-800' : ''
-                            }`
+                            `flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-[#0A2273] transition-colors ${
+                                isActive ? 'bg-blue-50 text-[#0A2273] border-l-4 border-[#0A2273]' : ''
+                            } ${item.label === 'Tìm ý tưởng thông minh' ? 'text-[#0A2273]' : ''}`
                         }
                     >
                         <span className="mr-3">{item.icon}</span>
@@ -59,17 +61,8 @@ const InvestorSidebar = () => {
                     </NavLink>
                 ))}
             </nav>
-            <div className="absolute bottom-0 w-64 p-4">
-                <NavLink
-                    to="/investor/settings"
-                    className="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-800 transition-colors"
-                >
-                    <FaCog className="w-5 h-5 mr-3" />
-                    <span>Cài đặt</span>
-                </NavLink>
-            </div>
         </div>
     );
 };
 
-export default InvestorSidebar; 
+export default InvestorSidebar;
