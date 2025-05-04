@@ -14,6 +14,8 @@ import ForgotPass from './components/ForgotPass';
 import ChangePass from './pages/ChangePass';
 import Unauthorized from './pages/Unauthorized';
 import SettingPassword from './pages/SettingPassword';
+import ChatApp from './components/Chat'; 
+
 
 // User Pages
 import UserProfile from './pages/user/Profile';
@@ -48,6 +50,7 @@ function App() {
           <Route path="/change-password" element={<ChangePass />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/reset-password" element={<SettingPassword />} />
+          <Route path="/chat" element={<ChatApp />} />
         </Route>
 
         {/* User Routes */}

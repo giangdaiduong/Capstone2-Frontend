@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
     FaList, 
@@ -36,7 +36,17 @@ const InvestorSidebar = () => {
             label: 'Chat AI hỗ trợ',
             path: '/investor/chat'
         }
+       
     ];
+
+    const handleCreateGroup = (group) => {
+        setConversations(prev => [group, ...prev]);
+        setSelectedConversation(group);
+    };
+
+    const filteredConversations = useMemo(() => {
+        return conversations.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
+    }, [search, conversations]);
 
     return (
         <div className="w-64 bg-white shadow-lg">
