@@ -113,7 +113,6 @@ const Register = () => {
             { name: 'password', type: 'password', icon: <Lock />, placeholder: 'Mật khẩu' },
             { name: 'confirmPassword', type: 'password', icon: <Lock />, placeholder: 'Xác nhận mật khẩu' },
             { name: 'idNumber', icon: <User />, placeholder: 'Số CCCD' },
-            { name: 'roleId', icon: null, placeholder: 'RoleId' },
             { name: 'phone', icon: <Phone />, placeholder: 'Số điện thoại' },
             { name: 'address', icon: <Home />, placeholder: 'Địa chỉ' },
           ].map(({ name, type = 'text', icon, placeholder }) => (
@@ -134,6 +133,24 @@ const Register = () => {
               />
             </div>
           ))}
+
+          {/* Dropdown Vai trò */}
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <User className="text-blue-500" />
+            </span>
+            <select
+              name="roleId"
+              value={formData.roleId}
+              onChange={handleInputChange}
+              className="w-full pl-10 p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none"
+              required
+            >
+              <option value="">Chọn vai trò</option>
+              <option value="ideator">Ý tưởng viên</option>
+              <option value="investor">Nhà đầu tư</option>
+            </select>
+          </div>
 
           {/* Ngày sinh */}
           <div className="relative">
@@ -165,26 +182,6 @@ const Register = () => {
             preview={formData.cccdBack}
             required
           />
-
-          {/* Upload Avatar */}
-          <FileInput
-            label="Ảnh đại diện"
-            onChange={(e) => handleFileChange(e, 'avatar')}
-            preview={formData.avatar}
-          />
-
-          {/* Checkbox đã xóa */}
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="isDeleted"
-              checked={formData.isDeleted}
-              onChange={handleInputChange}
-              className="form-checkbox h-5 w-5 text-blue-600"
-            />
-            <label className="text-blue-700 font-medium">Đã xóa?</label>
-          </div>
-
           {/* Submit button */}
           <button
             type="submit"
