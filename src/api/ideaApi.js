@@ -6,3 +6,4 @@ export const getIdeasIdeas = (params) => axiosInstance.get('/client/ideads', { p
 export const getIdea = (params) => axiosInstance.get('/client/ideads', { params });
 
 export const getIdeaAuth = (params) => axiosInstance.get('/client/ideads', { params });
+
