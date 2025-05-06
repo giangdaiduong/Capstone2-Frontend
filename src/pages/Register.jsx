@@ -3,8 +3,9 @@ import { Mail, User, Phone, Home, Calendar, Lock, Upload } from 'lucide-react';
 import { registerUser } from '../api/userApi';
 import { toast, Toaster } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import HeaderIdea from '../components/HeaderIdea'; // ✅ Thêm dòng này
 
-// Component FileInput gọn đẹp
+// FileInput component
 const FileInput = ({ label, onChange, preview, required = false }) => (
   <div className="space-y-2">
     <label className="block text-blue-700 font-medium">{label}</label>
@@ -51,7 +52,9 @@ const Register = () => {
     address: '',
     isDeleted: false,
   });
-  const navigate = useNavigate()
+
+  const navigate = useNavigate();
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -91,7 +94,7 @@ const Register = () => {
         IsDeleted: formData.isDeleted,
       };
       await registerUser(payload);
-      navigate('/verify-otp')
+      navigate('/verify-otp');
       toast.success('Đăng ký thành công! Vui lòng kiểm tra email để xác thực OTP.');
     } catch (err) {
       toast.error('Đăng ký thất bại: ' + (err.response?.data?.message || err.message));
@@ -99,101 +102,99 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 py-5">
-      <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-2xl border border-blue-300">
-        <h2 className="text-2xl font-bold text-blue-700 text-center mb-2">Đăng ký tài khoản</h2>
-        <p className="text-gray-500 text-center mb-6">Hãy đăng ký để bắt đầu sử dụng</p>
+    <>
+      <HeaderIdea /> {/* ✅ Chèn header như Home */}
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Các input text */}
-          {[
-            { name: 'fullName', icon: <User />, placeholder: 'Họ và tên' },
-            { name: 'username', icon: <User />, placeholder: 'Tên đăng nhập' },
-            { name: 'email', type: 'email', icon: <Mail />, placeholder: 'Email' },
-            { name: 'password', type: 'password', icon: <Lock />, placeholder: 'Mật khẩu' },
-            { name: 'confirmPassword', type: 'password', icon: <Lock />, placeholder: 'Xác nhận mật khẩu' },
-            { name: 'idNumber', icon: <User />, placeholder: 'Số CCCD' },
-            { name: 'phone', icon: <Phone />, placeholder: 'Số điện thoại' },
-            { name: 'address', icon: <Home />, placeholder: 'Địa chỉ' },
-          ].map(({ name, type = 'text', icon, placeholder }) => (
-            <div key={name} className="relative">
-              {icon && (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 py-5">
+        <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-2xl border border-blue-300">
+          <h2 className="text-2xl font-bold text-blue-700 text-center mb-2">Đăng ký tài khoản</h2>
+          <p className="text-gray-500 text-center mb-6">Hãy đăng ký để bắt đầu sử dụng</p>
+
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            {[
+              { name: 'fullName', icon: <User />, placeholder: 'Họ và tên' },
+              { name: 'username', icon: <User />, placeholder: 'Tên đăng nhập' },
+              { name: 'email', type: 'email', icon: <Mail />, placeholder: 'Email' },
+              { name: 'password', type: 'password', icon: <Lock />, placeholder: 'Mật khẩu' },
+              { name: 'confirmPassword', type: 'password', icon: <Lock />, placeholder: 'Xác nhận mật khẩu' },
+              { name: 'idNumber', icon: <User />, placeholder: 'Số CCCD' },
+              { name: 'phone', icon: <Phone />, placeholder: 'Số điện thoại' },
+              { name: 'address', icon: <Home />, placeholder: 'Địa chỉ' },
+            ].map(({ name, type = 'text', icon, placeholder }) => (
+              <div key={name} className="relative">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
                   {React.cloneElement(icon, { className: 'text-blue-500' })}
                 </span>
-              )}
-              <input
-                name={name}
-                type={type}
-                placeholder={placeholder}
-                value={formData[name]}
+                <input
+                  name={name}
+                  type={type}
+                  placeholder={placeholder}
+                  value={formData[name]}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none`}
+                  required
+                />
+              </div>
+            ))}
+
+            {/* Dropdown vai trò */}
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <User className="text-blue-500" />
+              </span>
+              <select
+                name="roleId"
+                value={formData.roleId}
                 onChange={handleInputChange}
-                className={`w-full ${icon ? 'pl-10' : 'pl-4'} p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none`}
+                className="w-full pl-10 p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none"
+                required
+              >
+                <option value="">Chọn vai trò</option>
+                <option value="ideator">Ý tưởng viên</option>
+                <option value="investor">Nhà đầu tư</option>
+              </select>
+            </div>
+
+            {/* Ngày sinh */}
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <Calendar className="text-blue-500" />
+              </span>
+              <input
+                name="birthday"
+                type="date"
+                value={formData.birthday}
+                onChange={handleInputChange}
+                className="w-full pl-10 p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 required
               />
             </div>
-          ))}
 
-          {/* Dropdown Vai trò */}
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <User className="text-blue-500" />
-            </span>
-            <select
-              name="roleId"
-              value={formData.roleId}
-              onChange={handleInputChange}
-              className="w-full pl-10 p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none"
-              required
-            >
-              <option value="">Chọn vai trò</option>
-              <option value="ideator">Ý tưởng viên</option>
-              <option value="investor">Nhà đầu tư</option>
-            </select>
-          </div>
-
-          {/* Ngày sinh */}
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <Calendar className="text-blue-500" />
-            </span>
-            <input
-              name="birthday"
-              type="date"
-              value={formData.birthday}
-              onChange={handleInputChange}
-              className="w-full pl-10 p-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            {/* Upload CCCD */}
+            <FileInput
+              label="Ảnh CCCD mặt trước"
+              onChange={(e) => handleFileChange(e, 'cccdFront')}
+              preview={formData.cccdFront}
               required
             />
-          </div>
+            <FileInput
+              label="Ảnh CCCD mặt sau"
+              onChange={(e) => handleFileChange(e, 'cccdBack')}
+              preview={formData.cccdBack}
+              required
+            />
 
-          {/* Upload ảnh CCCD mặt trước */}
-          <FileInput
-            label="Ảnh CCCD mặt trước"
-            onChange={(e) => handleFileChange(e, 'cccdFront')}
-            preview={formData.cccdFront}
-            required
-          />
-
-          {/* Upload ảnh CCCD mặt sau */}
-          <FileInput
-            label="Ảnh CCCD mặt sau"
-            onChange={(e) => handleFileChange(e, 'cccdBack')}
-            preview={formData.cccdBack}
-            required
-          />
-          {/* Submit button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-all shadow-md"
-          >
-            Đăng ký
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-all shadow-md"
+            >
+              Đăng ký
+            </button>
+          </form>
+        </div>
+        <Toaster position="top-right" richColors closeButton />
       </div>
-
-      <Toaster position="top-right" richColors closeButton />
-    </div>
+    </>
   );
 };
 

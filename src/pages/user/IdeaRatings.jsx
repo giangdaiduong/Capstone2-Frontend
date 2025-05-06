@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { FaUser, FaCalendarAlt, FaTag, FaThumbsUp, FaStar, FaReply } from 'react-icons/fa';
-
+import HeaderIdea from '../../components/HeaderIdea';
 const IdeaRatings = () => {
     const { id } = useParams();
 
@@ -52,6 +52,8 @@ const IdeaRatings = () => {
     };
 
     return (
+    <>
+        <HeaderIdea /> {/* ✅ Header áp dụng cho trang này */}
         <div className="container mx-auto px-4 py-6">
             {/* Thông tin ý tưởng */}
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -181,6 +183,7 @@ const IdeaRatings = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

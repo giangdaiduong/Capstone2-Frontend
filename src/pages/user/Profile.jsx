@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import HeaderIdea from '../../components/HeaderIdea';
 const UserProfile = () => {
   const [profile, setProfile] = useState({
     fullName: 'Nguyễn Văn A',
@@ -24,6 +24,8 @@ const UserProfile = () => {
   };
 
   return (
+    <>
+        <HeaderIdea /> {/* ✅ Header áp dụng cho trang này */}
     <div className="p-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Thông tin cá nhân</h1>
 
@@ -103,6 +105,7 @@ const UserProfile = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 

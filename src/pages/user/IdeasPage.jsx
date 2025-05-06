@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../utils/httpRequest';
 import { Link } from 'react-router-dom';
+import HeaderIdea from '../../components/HeaderIdea';
 
 const logger = {
   info: (message, data) => console.log(`[INFO] ${message}`, data),
@@ -45,6 +46,8 @@ const IdeasPage = () => {
   };
 
   return (
+    <>
+        <HeaderIdea /> {/* ✅ Header áp dụng cho trang này */}
     <div className="min-h-screen bg-gray-100 flex">
       <main className="flex-1 p-6">
         <h1 className="text-2xl font-semibold text-gray-800 mb-6">
@@ -146,6 +149,7 @@ const IdeasPage = () => {
         </div>
       </main>
     </div>
+    </>
   );
 };
 

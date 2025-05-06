@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { FaUser, FaCalendarAlt, FaCheckCircle, FaEye, FaThumbsUp, FaComment, FaArrowRight, FaFlag, FaCopyright, FaMapMarkerAlt, FaChartLine } from "react-icons/fa";
 import ReportModal from "../../components/user/ReportModal";
 import axiosInstance from "../../utils/httpRequest";
+import HeaderIdea from '../../components/HeaderIdea';
 
 const logger = {
   info: (message, data) => console.log(`[INFO] ${message}`, data),
@@ -67,6 +68,8 @@ const IdeaDetail = () => {
   }
 
   return (
+    <>
+      <HeaderIdea />
     <div className="container mx-auto px-4 py-6">
       {/* Back to ideas */}
       <div className="mb-4">
@@ -249,6 +252,7 @@ const IdeaDetail = () => {
         />
       )}
     </div>
+    </>
   );
 };
 

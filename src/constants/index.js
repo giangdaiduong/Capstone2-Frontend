@@ -31,7 +31,7 @@ export const REQUESTS = [
     title: 'Yêu cầu hỗ trợ về việc xác xe',
     user: 'Phương Thảo',
     date: 'Ngày yêu cầu: 20/10/2023',
-    status: 'Đã xử lý',
+    status: 'Đã duyệt',
     details:
       'Số yêu cầu: 123456 - Quý khách hàng cần hỗ trợ xác xe, quý khách vui lòng cung cấp thêm thông tin để được hỗ trợ nhanh nhất.',
   },
@@ -40,7 +40,7 @@ export const REQUESTS = [
     title: 'Yêu cầu hỗ trợ về việc xác xe',
     user: 'Phương Thảo',
     date: 'Ngày yêu cầu: 20/10/2023',
-    status: 'Đang xử lý',
+    status: 'Đang duyệt',
     details:
       'Số yêu cầu: 123456 - Quý khách hàng cần hỗ trợ xác xe, quý khách vui lòng cung cấp thêm thông tin để được hỗ trợ nhanh nhất.',
   },
@@ -49,7 +49,7 @@ export const REQUESTS = [
     title: 'Yêu cầu hỗ trợ về việc xác xe',
     user: 'Phương Thảo',
     date: 'Ngày yêu cầu: 20/10/2023',
-    status: 'Chưa xử lý',
+    status: 'Không duyệt',
     details:
       'Số yêu cầu: 123456 - Quý khách hàng cần hỗ trợ xác xe, quý khách vui lòng cung cấp thêm thông tin để được hỗ trợ nhanh nhất.',
   },
@@ -58,7 +58,7 @@ export const REQUESTS = [
     title: 'Yêu cầu hỗ trợ về việc xác xe',
     user: 'Phương Thảo',
     date: 'Ngày yêu cầu: 20/10/2023',
-    status: 'Đã xử lý',
+    status: 'Đã duyệt ',
     details:
       'Số yêu cầu: 123456 - Quý khách hàng cần hỗ trợ xác xe, quý khách vui lòng cung cấp thêm thông tin để được hỗ trợ nhanh nhất.',
   },
@@ -67,7 +67,7 @@ export const REQUESTS = [
     title: 'Yêu cầu hỗ trợ về việc xác xe',
     user: 'Phương Thảo',
     date: 'Ngày yêu cầu: 20/10/2023',
-    status: 'Đang xử lý',
+    status: 'Đang duyệt',
     details:
       'Số yêu cầu: 123456 - Quý khách hàng cần hỗ trợ xác xe, quý khách vui lòng cung cấp thêm thông tin để được hỗ trợ nhanh nhất.',
   },
@@ -77,7 +77,7 @@ export const REQUESTS = [
     title: 'Yêu cầu về việc xác xe',
     user: 'Phương Thảo',
     date: 'Ngày yêu cầu: 20/10/2023',
-    status: 'Chưa xử lý',
+    status: 'Đang duyệt',
     details:
       'Số yêu cầu: 123456 - Quý khách hàng cần quý khách vui lòng cung cấp thêm thông tin để được nhanh nhất.',
   },
@@ -86,7 +86,7 @@ export const REQUESTS = [
     title: 'Yêu cầu về việc xác xe',
     user: 'Phương Thảo',
     date: 'Ngày yêu cầu: 20/10/2023',
-    status: 'Đã xử lý',
+    status: 'Đã Duyệt',
     details:
       'Số yêu cầu: 123456 - Quý khách hàng xác xe, quý khách vuiổi cung cấp thêm thông tin để được nhanh nhất.',
   },
@@ -103,9 +103,9 @@ export const FOOTER_LINKS = [
   {
     title: 'Sản Phẩm',
     items: [
-      { label: 'Đăng ký tư vấn', href: '#' },
-      { label: 'Bản ý tưởng', href: '#' },
-      { label: 'Mua ý tưởng', href: '#' },
+      { label: 'Bài viết đã đăng', href: '#' },
+      { label: 'Đăng bài viết mới', href: '#' },
+      { label: 'Gọi vốn đầu tư', href: '#' },
     ],
   },
   {
