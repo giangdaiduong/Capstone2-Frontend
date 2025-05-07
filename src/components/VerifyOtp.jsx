@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { toast, Toaster } from 'sonner'; // Import toast and Toaster from sonner
 import { verifyOtp } from '../api/userApi';
+import { useNavigate } from 'react-router-dom';
 
 const VerifyOtp = () => {
     const [form, setForm] = useState({ email: '', otp: '' });
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,6 +20,7 @@ const VerifyOtp = () => {
             };
             const res = await verifyOtp(payload);
             toast.success(res.data.message || 'Xác thực OTP thành công!'); // Show success toast
+            navigate('/home');
         } catch (err) {
             toast.error('Xác thực thất bại: ' + (err.response?.data?.message || err.message)); // Show error toast
         }

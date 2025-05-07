@@ -3,11 +3,19 @@ import { resetPassword } from '../api/userApi';
 import { toast, Toaster } from 'sonner';
 import HeaderIdea from '../components/HeaderIdea'; // ✅ Thêm Header của idea
 
+const roleOptions = [
+  { id: '3fa85f64-5717-4562-b3fc-2c963f66afa6', label: 'Ý tưởng viên' },
+  { id: '4bb85f64-5717-4562-b3fc-2c963f66afa7', label: 'Nhà đầu tư' }
+];
+
 const SettingPassword = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [formData, setFormData] = useState({
+    roleId: ''
+  });
 
   const getOtpFromUrl = () => {
     const params = new URLSearchParams(window.location.search);
@@ -17,6 +25,7 @@ const SettingPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const now = new Date().toISOString();
     if (!otp) {
       toast.error('Thiếu mã OTP!');
       return;
@@ -26,11 +35,38 @@ const SettingPassword = () => {
       return;
     }
     try {
-      await resetPassword(otp, password, confirmPassword);
+      const payload = {
+        fullName: formData.fullName,
+        username: formData.username,
+        email: formData.email,
+        password: password,
+        confirmPassword: confirmPassword,
+        cccd: formData.idNumber,
+        cccdBack: formData.cccdBack,
+        cccdFront: formData.cccdFront,
+        roleId: formData.roleId,
+        birthday: new Date(formData.birthday).toISOString(),
+        phone: formData.phone,
+        address: formData.address,
+        createdOn: now,
+        createdBy: formData.roleId,
+        updatedOn: now,
+        updatedBy: formData.roleId,
+        isDeleted: false
+      };
+      await resetPassword(otp, password, confirmPassword, formData.roleId);
       toast.success('Đổi mật khẩu thành công!');
     } catch (err) {
       toast.error('Đổi mật khẩu không thành công!');
     }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
   };
 
   return (
@@ -89,6 +125,25 @@ const SettingPassword = () => {
                 {showConfirm ? '🙈' : '👁️'}
               </span>
             </div>
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1 text-[#3B3486]">
+              Vai trò <span className="text-red-500">(*)</span>
+            </label>
+            <select
+              name="roleId"
+              value={formData.roleId}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Chọn vai trò</option>
+              {roleOptions.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <button

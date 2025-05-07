@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ChooseRole from './pages/ChooseRole';
 import ForgotPass from './components/ForgotPass';
 import ChangePass from './pages/ChangePass';
 import Unauthorized from './pages/Unauthorized';
@@ -44,6 +45,7 @@ function App() {
         <Route element={<BaseLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/choose-role" element={<ChooseRole />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
@@ -65,6 +67,7 @@ function App() {
           <Route index  element={<IdeasPage />} />
           <Route path="/user/profile" element={<UserProfile />} />
           <Route path="/user/ideas/:id" element={<IdeaDetail />} />
+  
           {/* <Route path="/user/ideas/detail" element={<IdeaDetail />} /> */}
           <Route path="/user/ideas/posted" element={<IdeaPosted />} />
           <Route path="/user/ideas/posted/detail" element={<UserPostedIdeas />} />

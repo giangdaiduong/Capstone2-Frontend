@@ -1,5 +1,6 @@
 import React from 'react';
 import HeaderIdea from '../components/HeaderIdea'; 
+import { useNavigate } from 'react-router-dom';
 
 const fakeHomeData = {
   userName: 'Nguyễn Văn A',
@@ -7,6 +8,8 @@ const fakeHomeData = {
 };
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <>
     <HeaderIdea />

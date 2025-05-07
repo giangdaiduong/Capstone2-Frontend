@@ -110,8 +110,11 @@ const Login = () => {
                 {loginMutation.isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
               </button>
 
-              <Link to="/register">
-                <p className="text-sm text-blue-600 hover:underline cursor-pointer text-center">
+              <Link to="/choose-role">
+                <p
+                  className="text-sm text-blue-600 hover:underline cursor-pointer text-center"
+                  onClick={() => navigate('/choose-role')}
+                >
                   Đăng ký tài khoản
                 </p>
               </Link>
