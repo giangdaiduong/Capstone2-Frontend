@@ -5,6 +5,7 @@ declare module 'next-auth' {
 
   interface Session {
     user: User;
+    token: string;
   }
 
   interface JWT {
