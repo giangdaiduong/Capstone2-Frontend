@@ -29,12 +29,21 @@ const adminRoutes = () => {
   };
 };
 
+const userRoutes = () => {
+  const base = '/user';
+
+  return {
+    base,
+    ideas: `${base}/ideas`,
+  };
+};
+
 const linkTo = {
   home: '/',
   admin: adminRoutes(),
   login: '/login',
   register: '/register',
-  chooseRole: '/choose-role',
+  user: userRoutes(),
 };
 
 export default linkTo;

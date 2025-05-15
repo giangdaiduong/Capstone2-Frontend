@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import ProgressProvider from '@/components/layouts/providers/ProgressProvider';
 import type { ChildrenType } from '@/types/common';
 import '@/app/globals.css';
+import Providers from '@/components/Providers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -56,9 +57,11 @@ export const metadata: Metadata = {
 
 function RootLayout({ children }: ChildrenType) {
   return (
-    <html id='__next' lang='vi' suppressHydrationWarning>
+    <html id="__next" lang="vi" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ProgressProvider>{children}</ProgressProvider>
+        <ProgressProvider>
+          <Providers>{children}</Providers>
+        </ProgressProvider>
       </body>
     </html>
   );
