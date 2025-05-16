@@ -42,6 +42,8 @@ function HeaderClient() {
       activeIcon === iconName ? 'text-[#1A2B88] border-b-2 border-[#1A2B88]' : 'text-gray-600'
     } text-2xl pb-1 cursor-pointer`;
 
+  console.log(session);
+
   return (
     <header className="bg-white shadow-md py-2 px-4 flex justify-between items-center">
       <div className="flex items-center space-x-2 min-w-[180px]">
@@ -67,7 +69,7 @@ function HeaderClient() {
           </NotificationBadge>
           <Avatar>
             <AvatarImage src={session.user?.avatar} />
-            <AvatarFallback>{session.user?.fullName.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{session.user?.fullName?.charAt(0)}</AvatarFallback>
           </Avatar>
         </div>
       ) : (
