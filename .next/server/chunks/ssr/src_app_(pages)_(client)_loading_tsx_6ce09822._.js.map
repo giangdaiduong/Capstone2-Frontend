@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///Users/thuclinh/Library/CloudStorage/OneDrive-Personal/Capstone2-Frontend/src/app/%28pages%29/%28client%29/loading.tsx"],"sourcesContent":["import LoadingComponent from '@/components/layouts/Loading/LoadingComponent';\n\nfunction LoadingPage() {\n  return <LoadingComponent />;\n}\n\nexport default LoadingPage;\n"],"names":[],"mappings":";;;;AAAA;;;AAEA,SAAS;IACP,qBAAO,8OAAC,4JAAA,CAAA,UAAgB;;;;;AAC1B;uCAEe","debugId":null}}]
+}
