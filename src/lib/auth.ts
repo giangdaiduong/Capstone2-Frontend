@@ -32,7 +32,7 @@ export const authOptions: NextAuthOptions = {
           const { userName, password } = credentials as { userName: string; password: string };
 
           if (!userName || !password) {
-            throw new Error('Thiếu Email hoặc mật khẩu');
+            throw new Error('Thiếu tên đăng nhập hoặc mật khẩu');
           }
 
           const res = await httpServerApi.execService(
@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (!res.ok) {
-            throw new Error('Sai Email hoặc mật khẩu');
+            throw new Error(res?.data?.message || 'Sai tên đăng nhập hoặc mật khẩu');
           }
 
           return res.data as User;

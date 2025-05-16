@@ -44,6 +44,7 @@ const linkTo = {
   login: '/login',
   register: '/register',
   user: userRoutes(),
+  forgotPassword: '/forgot-password',
 };
 
 export default linkTo;

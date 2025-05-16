@@ -6,7 +6,7 @@ function Layout({ children }: ChildrenType) {
   return (
     <>
       <HeaderClient />
-      <div className="p-4 min-h-[calc(100vh-4rem-168px)]">{children}</div>
+      <main className="p-4 min-h-[calc(100vh-4rem-168px)]">{children}</main>
       <FooterClient />
     </>
   );
