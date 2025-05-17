@@ -4,6 +4,7 @@ import ProgressProvider from '@/components/layouts/providers/ProgressProvider';
 import type { ChildrenType } from '@/types/common';
 import '@/app/globals.css';
 import Providers from '@/components/Providers';
+import { ToastContainer } from 'react-toastify';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -62,6 +63,7 @@ function RootLayout({ children }: ChildrenType) {
         <ProgressProvider>
           <Providers>{children}</Providers>
         </ProgressProvider>
+        <ToastContainer />
       </body>
     </html>
   );

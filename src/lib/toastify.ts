@@ -28,3 +28,7 @@ export const warningToast = (message: string | undefined, options?: ToastOptions
     ...options,
   });
 };
+
+export const CloseAllToast = () => {
+  toast.dismiss();
+};
