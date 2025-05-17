@@ -4,6 +4,7 @@ import { MethodAPI } from '@alvin0/http-driver/dist/utils/driver-contracts';
 export enum AuthServiceIds {
   Login = 'auth.login',
   Register = 'auth.register',
+  RefreshToken = 'auth.refresh-token',
 }
 
 export default [
@@ -16,6 +17,12 @@ export default [
   {
     id: AuthServiceIds.Register,
     url: 'register',
+    method: MethodAPI.post,
+    version: 1,
+  },
+  {
+    id: AuthServiceIds.RefreshToken,
+    url: 'v1/api/client/Auth/refresh-token',
     method: MethodAPI.post,
     version: 1,
   },
