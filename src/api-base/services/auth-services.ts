@@ -16,7 +16,7 @@ export default [
   },
   {
     id: AuthServiceIds.Register,
-    url: 'register',
+    url: 'v1/api/client/User',
     method: MethodAPI.post,
     version: 1,
   },
