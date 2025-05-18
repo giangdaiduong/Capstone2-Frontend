@@ -3,18 +3,27 @@
 import { ReactNode, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Logo from '@/assets/logo.png';
-import { FaStore, FaUserPlus, FaUsers, FaHome, FaComments, FaBell } from 'react-icons/fa';
+import { FaStore, FaUserPlus, FaUsers, FaHome, FaComments, FaBell, FaPowerOff } from 'react-icons/fa';
 import Link from 'next/link';
 import linkTo from '@/utils/linkTo';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { RxSlash } from 'react-icons/rx';
 import { NotificationBadge } from '@/components/ui/notification-badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { usePathname } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 function HeaderClient() {
   const [activeIcon, setActiveIcon] = useState('');
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   useEffect(() => {
     switch (pathname) {
@@ -35,14 +44,10 @@ function HeaderClient() {
     }
   }, [pathname]);
 
-  const { data: session } = useSession();
-
   const iconStyle = (iconName: string) =>
     `${
       activeIcon === iconName ? 'text-[#1A2B88] border-b-2 border-[#1A2B88]' : 'text-gray-600'
     } text-2xl pb-1 cursor-pointer`;
-
-  console.log(session);
 
   return (
     <header className="bg-white shadow-md py-2 px-4 flex justify-between items-center">
@@ -67,10 +72,29 @@ function HeaderClient() {
               <FaBell className="text-gray-600 text-xl" />
             </button>
           </NotificationBadge>
-          <Avatar>
-            <AvatarImage src={session.user?.avatar} />
-            <AvatarFallback>{session.user?.fullName?.charAt(0)}</AvatarFallback>
-          </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar>
+                <AvatarImage src={session.user?.avatar} />
+                <AvatarFallback>{session.user?.fullName?.charAt(0)}</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>{session.user?.fullName}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link href={linkTo.user.profile}>Quản lý tài khoản</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href={linkTo.user.changePassword}>Đổi mật khẩu</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => signOut()}>
+                <FaPowerOff />
+                Đăng xuất
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       ) : (
         <div className="flex items-center space-x-1 min-w-[180px]">

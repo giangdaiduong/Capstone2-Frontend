@@ -35,6 +35,8 @@ const userRoutes = () => {
   return {
     base,
     ideas: `${base}/ideas`,
+    profile: `${base}/profile`,
+    changePassword: `${base}/change-password`,
   };
 };
 

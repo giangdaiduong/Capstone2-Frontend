@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { httpServerApi } from '@/api-base';
 import { RoleServiceIds } from '@/api-base/services/role-services';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,10 @@ import { Card } from '@/components/ui/card';
 import { RoleType } from '@/types/RoleTypes';
 import linkTo from '@/utils/linkTo';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Đăng ký',
+};
 
 async function RegisterPage() {
   const res = await httpServerApi.execService({ id: RoleServiceIds.GetPublicRoles });

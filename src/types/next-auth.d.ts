@@ -5,17 +5,23 @@ declare module 'next-auth' {
 
   interface Session {
     user: User;
-    token: string;
+    accessToken: string;
+    refreshToken: string;
   }
 
   interface JWT {
     user: User;
+    accessToken: string;
+    refreshToken: string;
+    accessTokenExpires: number; // timestamp (ms) khi token hết hạn
+    error?: string; // lưu lỗi refresh nếu có
   }
 }
 
-// Không cần khai báo DefaultSession vì đã có User interface ở trên
 declare module 'next-auth/jwt' {
   interface JWT {
     user: User;
+    accessToken: string;
+    refreshToken: string;
   }
 }

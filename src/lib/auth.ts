@@ -43,11 +43,19 @@ export const authOptions: NextAuthOptions = {
             }
           );
 
+          console.log('res:', res);
+
           if (!res.ok) {
-            throw new Error(res?.data?.message || 'Sai tên đăng nhập hoặc mật khẩu');
+            throw new Error(res?.data?.message || 'Đăng nhập thất bại');
           }
 
-          return res.data as User;
+          const { accessToken, refreshToken, user: userFromApi } = res.data;
+
+          return {
+            ...userFromApi,
+            accessToken,
+            refreshToken,
+          };
         } catch (error) {
           if (error instanceof Error) {
             throw error;
@@ -89,7 +97,7 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
 
     // ** Seconds - How long until an idle session expires and is no longer valid
-    maxAge: 7 * 24 * 60 * 60, // ** 7 days
+    maxAge: 7 * 24 * 60, // ** 7 days
   },
 
   // ** Please refer to https://next-auth.js.org/configuration/options#pages for more `pages` options
@@ -109,21 +117,43 @@ export const authOptions: NextAuthOptions = {
      */
     async jwt({ token, user }) {
       if (user) {
-        /*
-         * For adding custom parameters to user in session, we first need to add those parameters
-         * in token which then will be available in the `session()` callback
-         */
-        token.user = user;
+        const { accessToken, refreshToken, ...userFields } = user as any;
+        token.accessToken = accessToken;
+        token.refreshToken = refreshToken;
+        token.user = userFields;
       }
 
-      return token;
+      if (Date.now() < (token.accessTokenExpires as number)) {
+        return token;
+      }
+
+      const res = await httpServerApi.execService(
+        { id: AuthServiceIds.RefreshToken },
+        {
+          refreshToken: token.refreshToken,
+        }
+      );
+
+      if (!res.ok) {
+        token.error = res?.data?.message || 'Lỗi khi refresh token';
+        return token;
+      }
+
+      const data = res.data;
+
+      return {
+        ...token,
+        accessToken: data.accessToken,
+        accessTokenExpires: Date.now() + data.expiresIn * 1000,
+        refreshToken: data.refreshToken ?? token.refreshToken,
+      };
     },
     async session({ session, token }) {
-      if (session.user) {
-        // ** Add custom params to user in session which are added in `jwt()` callback via `token` parameter
-        session.user = token.user;
+      if (session.user && token.user) {
+        session.user = token.user as any;
+        session.accessToken = token.accessToken as string;
+        session.refreshToken = token.refreshToken as string;
       }
-
       return session;
     },
   },
