@@ -5,6 +5,7 @@ export enum AuthServiceIds {
   Login = 'auth.login',
   Register = 'auth.register',
   RefreshToken = 'auth.refresh-token',
+  VerifyOtp = 'auth.verify-otp',
 }
 
 export default [
@@ -16,11 +17,17 @@ export default [
   },
   {
     id: AuthServiceIds.Register,
-    url: 'v1/api/client/User',
+    url: 'v1/api/client/Users',
     method: MethodAPI.post,
     version: 1,
   },
   {
+    id: AuthServiceIds.VerifyOtp,
+    url: '/v1/api/client/Users/verify-otp',
+    method: MethodAPI.post,
+    version: 1,
+  },
+   {
     id: AuthServiceIds.RefreshToken,
     url: 'v1/api/client/Auth/refresh-token',
     method: MethodAPI.post,
