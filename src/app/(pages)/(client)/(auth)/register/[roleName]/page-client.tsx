@@ -14,20 +14,21 @@ import { FaUnlock, FaLock, FaUser, FaUserAstronaut, FaIdCard, FaPhone, FaHouseMe
 import { IoIosMail } from 'react-icons/io';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, fileToBase64 } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
 import { ImageUploader } from '@/components/ui/image-uploader';
 import ShowLoading from '@/components/layouts/Loading/ShowLoading';
 import { httpPageApi } from '@/api-base';
 import { AuthServiceIds } from '@/api-base/services/auth-services';
 import { CloseAllToast, errorToast, successToast } from '@/lib/toastify';
+import VerifyOtp from './component/verify-otp';
 
 export const registerSchema = z.object({
   username: z.string().min(1, 'Vui lòng nhập tên đăng nhập'),
   fullName: z.string().min(1, 'Vui lòng nhập họ tên'),
   email: z.string().email('Vui lòng nhập email hợp lệ'),
-  password: z.string().min(1, 'Vui lòng nhập mật khẩu').min(5, 'Mật khẩu phải lớn hơn 5 ký tự'),
-  confirmPassword: z.string().min(1, 'Vui lòng nhập lại mật khẩu').min(5, 'Mật khẩu phải lớn hơn 5 ký tự'),
+  password: z.string().min(1, 'Vui lòng nhập mật khẩu').min(8, 'Mật khẩu phải lớn hơn 8 ký tự'),
+  confirmPassword: z.string().min(1, 'Vui lòng nhập lại mật khẩu').min(8, 'Mật khẩu phải lớn hơn 8 ký tự'),
   cccd: z.string().min(1, 'Vui lòng nhập số CMND/CCCD'),
   phone: z.string().min(1, 'Vui lòng nhập số điện thoại'),
   address: z.string().min(1, 'Vui lòng nhập địa chỉ'),
@@ -42,8 +43,8 @@ type FormData = z.infer<typeof registerSchema>;
 
 function RegisterPageClient({ role }: { role: RoleType }) {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [isOpenDialog, setIsOpenDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
 
   const form = useForm<FormData>({
     resolver: zodResolver(registerSchema),
@@ -74,13 +75,23 @@ function RegisterPageClient({ role }: { role: RoleType }) {
       return;
     }
 
+    if (data.birthday > new Date()) {
+      errorToast('Ngày sinh phải nhỏ hơn ngày hiện tại');
+      return;
+    }
+
     startTransition(async () => {
       try {
+        const cccdFrontBase64 = await fileToBase64(data.cccdFront!);
+        const cccdBackBase64 = await fileToBase64(data.cccdBack!);
+
         const res = await httpPageApi.execService(
           { id: AuthServiceIds.Register },
           {
             ...data,
-            roleName: role.roleName,
+            roleId: role.id,
+            cccdFront: cccdFrontBase64,
+            cccdBack: cccdBackBase64,
           }
         );
 
@@ -89,8 +100,8 @@ function RegisterPageClient({ role }: { role: RoleType }) {
           return;
         }
 
-        successToast('Đăng ký thành công');
-        // router.push('/login');
+        successToast(res.data.message);
+        setIsOpenDialog(true);
       } catch (error) {
         console.error(error);
       }
@@ -321,11 +332,12 @@ function RegisterPageClient({ role }: { role: RoleType }) {
           </div>
         </div>
 
-        <Button type="submit" className="w-full cursor-pointer">
+        <Button type="submit" className="w-full cursor-pointer" disabled={isPending}>
           Đăng ký
         </Button>
       </form>
       <ShowLoading isPending={isPending} />
+      {isOpenDialog && <VerifyOtp email={form.getValues('email')} onClose={() => setIsOpenDialog(false)} />}
     </Form>
   );
 }
