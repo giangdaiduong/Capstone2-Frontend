@@ -29,12 +29,21 @@ const adminRoutes = () => {
   };
 };
 
+const ideaRoutes = (base: string) => {
+  const ideaBase = `${base}/ideas`;
+
+  return {
+    base: ideaBase,
+    create: `${ideaBase}/create`,
+  };
+};
+
 const userRoutes = () => {
   const base = '/user';
 
   return {
     base,
-    ideas: `${base}/ideas`,
+    ideas: ideaRoutes(base),
     profile: `${base}/profile`,
     changePassword: `${base}/change-password`,
   };

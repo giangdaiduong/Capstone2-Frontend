@@ -30,7 +30,7 @@ function HeaderClient() {
       case linkTo.home:
         setActiveIcon('home');
         break;
-      case linkTo.user.ideas:
+      case linkTo.user.ideas.base:
         setActiveIcon('ideas');
         break;
       case '/user-plus':
@@ -57,7 +57,7 @@ function HeaderClient() {
       <nav className="flex space-x-8">
         {getHeaderIcon(<FaHome className={iconStyle('home')} />, linkTo.home)}
         {getHeaderIcon(<FaUserPlus className={iconStyle('userplus')} />, '/user-plus')}
-        {getHeaderIcon(<FaStore className={iconStyle('ideas')} />, linkTo.user.ideas)}
+        {getHeaderIcon(<FaStore className={iconStyle('ideas')} />, linkTo.user.ideas.base)}
         {getHeaderIcon(<FaUsers className={iconStyle('users')} />, '/users')}
       </nav>
       {session ? (

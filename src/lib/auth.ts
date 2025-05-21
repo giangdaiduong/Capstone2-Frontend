@@ -1,9 +1,10 @@
 // Third-party Imports
 import CredentialProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
+// import GoogleProvider from 'next-auth/providers/google';
 import type { NextAuthOptions, User } from 'next-auth';
 import { httpServerApi } from '@/api-base';
 import { AuthServiceIds } from '@/api-base/services/auth-services';
+import { UserType } from '@/types/UserType';
 
 export const authOptions: NextAuthOptions = {
   // ** Configure one or more authentication providers
@@ -35,7 +36,9 @@ export const authOptions: NextAuthOptions = {
             throw new Error('Thiếu tên đăng nhập hoặc mật khẩu');
           }
 
-          const res = await httpServerApi.execService(
+          const res = await (
+            await httpServerApi()
+          ).execService(
             { id: AuthServiceIds.Login },
             {
               userName,
@@ -43,18 +46,21 @@ export const authOptions: NextAuthOptions = {
             }
           );
 
-          console.log('res:', res);
-
           if (!res.ok) {
             throw new Error(res?.data?.message || 'Đăng nhập thất bại');
           }
 
-          const { accessToken, refreshToken, user: userFromApi } = res.data;
+          const { user, accessToken, refreshToken, expiresIn } = res.data;
 
           return {
-            ...userFromApi,
+            ...user,
             accessToken,
             refreshToken,
+            expiresIn,
+          } as UserType & {
+            accessToken: string;
+            refreshToken: string;
+            expiresIn: number;
           };
         } catch (error) {
           if (error instanceof Error) {
@@ -66,18 +72,18 @@ export const authOptions: NextAuthOptions = {
       },
     }),
 
-    GoogleProvider({
-      clientId:
-        process.env.GOOGLE_CLIENT_ID ??
-        (() => {
-          throw new Error('GOOGLE_CLIENT_ID is not defined');
-        })(),
-      clientSecret:
-        process.env.GOOGLE_CLIENT_SECRET ??
-        (() => {
-          throw new Error('GOOGLE_CLIENT_SECRET is not defined');
-        })(),
-    }),
+    // GoogleProvider({
+    //   clientId:
+    //     process.env.GOOGLE_CLIENT_ID ??
+    //     (() => {
+    //       throw new Error('GOOGLE_CLIENT_ID is not defined');
+    //     })(),
+    //   clientSecret:
+    //     process.env.GOOGLE_CLIENT_SECRET ??
+    //     (() => {
+    //       throw new Error('GOOGLE_CLIENT_SECRET is not defined');
+    //     })(),
+    // }),
 
     // ** ...add more providers here
   ],
@@ -117,43 +123,45 @@ export const authOptions: NextAuthOptions = {
      */
     async jwt({ token, user }) {
       if (user) {
-        const { accessToken, refreshToken, ...userFields } = user as any;
-        token.accessToken = accessToken;
-        token.refreshToken = refreshToken;
+        const { accessToken, refreshToken, expiresIn, ...userFields } = user as UserType;
+
         token.user = userFields;
-      }
-
-      if (Date.now() < (token.accessTokenExpires as number)) {
+        token.accessToken = accessToken ?? '';
+        token.refreshToken = refreshToken ?? '';
+        token.accessTokenExpires = Date.now() + (expiresIn ?? 0) * 1000; // ms
         return token;
       }
 
-      const res = await httpServerApi.execService(
-        { id: AuthServiceIds.RefreshToken },
-        {
-          refreshToken: token.refreshToken,
-        }
-      );
+      return token;
 
-      if (!res.ok) {
-        token.error = res?.data?.message || 'Lỗi khi refresh token';
-        return token;
-      }
+      // if (Date.now() < (token.accessTokenExpires as number)) {
+      //   return token;
+      // }
 
-      const data = res.data;
+      // try {
+      //   const res = await (
+      //     await httpServerApi()
+      //   ).execService({ id: AuthServiceIds.RefreshToken }, { refreshToken: token.refreshToken });
 
-      return {
-        ...token,
-        accessToken: data.accessToken,
-        accessTokenExpires: Date.now() + data.expiresIn * 1000,
-        refreshToken: data.refreshToken ?? token.refreshToken,
-      };
+      //   if (!res.ok) throw new Error(res?.data?.message);
+
+      //   const { accessToken, refreshToken, expiresIn } = res.data;
+
+      //   return {
+      //     ...token,
+      //     accessToken,
+      //     refreshToken: refreshToken ?? token.refreshToken,
+      //     accessTokenExpires: Date.now() + expiresIn * 1000,
+      //   };
+      // } catch (err) {
+      //   console.error('❌ Lỗi refresh token:', err);
+      //   return redirect('/logout');
+      // }
     },
     async session({ session, token }) {
-      if (session.user && token.user) {
-        session.user = token.user as any;
-        session.accessToken = token.accessToken as string;
-        session.refreshToken = token.refreshToken as string;
-      }
+      session.user = token.user as UserType;
+      session.accessToken = token.accessToken as string;
+      session.refreshToken = token.refreshToken as string;
       return session;
     },
   },

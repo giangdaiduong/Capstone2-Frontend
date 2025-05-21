@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 async function RegisterPage({ params }: { params: Params }) {
   const { roleName } = await params;
 
-  const res = await httpServerApi.execService({ id: RoleServiceIds.GetPublicRoles });
+  const res = await (await httpServerApi()).execService({ id: RoleServiceIds.GetPublicRoles });
 
   if (!res.ok) {
     throw new Error(res?.data?.message || 'Lỗi khi lấy danh sách vai trò');

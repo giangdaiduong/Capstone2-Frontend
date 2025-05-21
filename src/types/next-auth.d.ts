@@ -1,16 +1,14 @@
 import { UserType } from './UserType';
 
 declare module 'next-auth' {
-  interface User extends UserType {}
-
   interface Session {
-    user: User;
+    user: UserType;
     accessToken: string;
     refreshToken: string;
   }
 
   interface JWT {
-    user: User;
+    user: UserType;
     accessToken: string;
     refreshToken: string;
     accessTokenExpires: number; // timestamp (ms) khi token hết hạn
@@ -20,8 +18,9 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    user: User;
+    user: UserType;
     accessToken: string;
     refreshToken: string;
+    accessTokenExpires: number;
   }
 }

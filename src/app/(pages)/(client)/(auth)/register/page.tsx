@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 async function RegisterPage() {
-  const res = await httpServerApi.execService({ id: RoleServiceIds.GetPublicRoles });
+  const res = await (await httpServerApi()).execService({ id: RoleServiceIds.GetPublicRoles });
 
   if (!res.ok) {
     throw new Error(res?.data?.message || 'Lỗi khi lấy danh sách vai trò');
