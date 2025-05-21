@@ -14,10 +14,13 @@ import ShowLoading from '@/components/layouts/Loading/ShowLoading';
 import { httpPageApi } from '@/api-base';
 import { AuthServiceIds } from '@/api-base/services/auth-services';
 import { errorToast, successToast } from '@/lib/toastify';
+import { useRouter } from 'next/navigation';
+import linkTo from '@/utils/linkTo';
 
 const VerifyOtp = ({ email, onClose }: { email: string; onClose: () => void }) => {
   const [otp, setOtp] = useState('');
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleVerifyOtp = () => {
     startTransition(async () => {
@@ -36,6 +39,7 @@ const VerifyOtp = ({ email, onClose }: { email: string; onClose: () => void }) =
 
       successToast(res.data.message);
       onClose();
+      router.push(linkTo.login);
     });
   };
 

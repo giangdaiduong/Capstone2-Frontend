@@ -1,7 +1,6 @@
 import { BaseEntity } from './common';
 
 export type UserType = BaseEntity & {
-  id: string;
   username: string;
   email: string;
   roleName: string;
@@ -15,4 +14,6 @@ export type UserType = BaseEntity & {
   createdOn: string;
   accessToken?: string;
   refreshToken?: string;
+  accessTokenExpires?: number;
+  expiresIn?: number;
 };

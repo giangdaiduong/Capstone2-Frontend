@@ -6,9 +6,10 @@ import { getServerSession } from 'next-auth';
 
 // Type Imports
 import type { ChildrenType } from '@/types/common';
+import { authOptions } from '@/lib/auth';
 
 const GuestOnlyRoute = async ({ children }: ChildrenType) => {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (session) {
     redirect('/');

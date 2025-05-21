@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { RoleType } from '@/types/RoleTypes';
 import { EyeOff, Eye, CalendarIcon } from 'lucide-react';
 import { z } from 'zod';
-import { useRouter } from 'next/navigation';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { FaUnlock, FaLock, FaUser, FaUserAstronaut, FaIdCard, FaPhone, FaHouseMedical } from 'react-icons/fa6';
 import { IoIosMail } from 'react-icons/io';

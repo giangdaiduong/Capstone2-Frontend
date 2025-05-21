@@ -37,3 +37,5 @@ export const SOCIAL_LINKS = [
   { platform: 'Twitter', href: '#' },
   { platform: 'Instagram', href: '#' },
 ];
+
+export const PAGE_SIZE = 5;
