@@ -6,6 +6,7 @@ import driveConfig, { services } from './driver';
 import serverDriveConfig, { serverServices } from './server-driver';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import linkTo from '@/utils/linkTo';
 
 export const httpPageApi = new DriverBuilder()
   .withBaseURL(driveConfig.baseURL)
@@ -36,10 +37,10 @@ export const httpServerApi = async () => {
     .withServices(serverServices)
     .withAddResponseTransformAxios(res => {
       if (res.status === 401) {
-        redirect('/logout');
+        redirect(linkTo.refreshToken);
       }
       if (res.status === 403) {
-        redirect('/logout');
+        redirect(linkTo.refreshToken);
       }
     })
     .build();

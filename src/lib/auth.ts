@@ -121,7 +121,16 @@ export const authOptions: NextAuthOptions = {
      * the `session()` callback. So we have to add custom parameters in `token`
      * via `jwt()` callback to make them accessible in the `session()` callback
      */
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === 'update' && session) {
+        return {
+          ...token,
+          accessToken: session.accessToken ?? token.accessToken,
+          refreshToken: session.refreshToken ?? token.refreshToken,
+          accessTokenExpires: session.accessTokenExpires ?? token.accessTokenExpires,
+        };
+      }
+
       if (user) {
         const { accessToken, refreshToken, expiresIn, ...userFields } = user as UserType;
 
@@ -133,30 +142,6 @@ export const authOptions: NextAuthOptions = {
       }
 
       return token;
-
-      // if (Date.now() < (token.accessTokenExpires as number)) {
-      //   return token;
-      // }
-
-      // try {
-      //   const res = await (
-      //     await httpServerApi()
-      //   ).execService({ id: AuthServiceIds.RefreshToken }, { refreshToken: token.refreshToken });
-
-      //   if (!res.ok) throw new Error(res?.data?.message);
-
-      //   const { accessToken, refreshToken, expiresIn } = res.data;
-
-      //   return {
-      //     ...token,
-      //     accessToken,
-      //     refreshToken: refreshToken ?? token.refreshToken,
-      //     accessTokenExpires: Date.now() + expiresIn * 1000,
-      //   };
-      // } catch (err) {
-      //   console.error('❌ Lỗi refresh token:', err);
-      //   return redirect('/logout');
-      // }
     },
     async session({ session, token }) {
       session.user = token.user as UserType;
