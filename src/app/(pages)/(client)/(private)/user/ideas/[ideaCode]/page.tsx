@@ -11,6 +11,8 @@ import { BiCategory } from 'react-icons/bi';
 import { FaArrowLeft } from 'react-icons/fa6';
 import Image from 'next/image';
 import IdeasComment from './page-client';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 type Params = Promise<{ ideaCode: string }>;
 
@@ -25,7 +27,10 @@ export async function generateMetadata({ params }: { params: Params }) {
   });
 
   if (!res.ok) {
-    throw new Error(res?.data?.message || 'Lỗi khi lấy ý tưởng');
+    return {
+      title: 'Ý tưởng không tồn tại',
+      description: 'Không thể tìm thấy ý tưởng này',
+    };
   }
 
   const idea = res.data as IdeaType;
@@ -48,7 +53,12 @@ export default async function IdeasDetailPage({ params }: { params: Params }) {
   });
 
   if (!res.ok) {
-    throw new Error(res?.data?.message || 'Lỗi khi lấy ý tưởng');
+    return (
+      <Alert variant="destructive" className="max-w-md mx-auto">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Không thể tìm thấy ý tưởng này</AlertTitle>
+      </Alert>
+    );
   }
 
   const idea = { ...res.data, id: ideaCode } as IdeaType;
