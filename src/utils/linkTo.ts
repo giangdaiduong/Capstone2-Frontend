@@ -55,6 +55,8 @@ const linkTo = {
   admin: adminRoutes(),
   login: '/login',
   register: '/register',
+  refreshToken: '/refresh-token',
+  logout: '/logout',
   user: userRoutes(),
   forgotPassword: '/forgot-password',
 };
