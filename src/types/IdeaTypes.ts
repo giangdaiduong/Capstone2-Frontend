@@ -22,6 +22,7 @@ export type IdeaType = {
   updatedOn?: string | Date;
   updatedBy?: string;
   isDeleted: boolean;
+  comments: IdeaCommentType[];
 };
 
 export type GetIdeaResponseType = {
@@ -29,4 +30,12 @@ export type GetIdeaResponseType = {
   total: number;
   pageIndex: number;
   pageSize: number;
+};
+
+export type IdeaCommentType = {
+  id: string;
+  content: string;
+  userComment?: string;
+  parentCommentId?: string;
+  replies?: IdeaCommentType[];
 };
