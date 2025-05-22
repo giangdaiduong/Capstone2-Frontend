@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { IdeaType } from '@/types/IdeaTypes';
-import { format } from 'date-fns';
+import { formatDate } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { AiFillLike, AiFillDislike } from 'react-icons/ai';
@@ -13,6 +13,7 @@ import ShowLoading from '@/components/layouts/Loading/ShowLoading';
 import { httpPageApi } from '@/api-base';
 import { IdeaServiceIds } from '@/api-base/services/idea-services';
 import { CloseAllToast, errorToast, successToast } from '@/lib/toastify';
+import linkTo from '@/utils/linkTo';
 
 function IdeaCard({ idea }: { idea: IdeaType }) {
   const { data: session } = useSession();
@@ -61,7 +62,7 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-bold text-gray-800">{idea.title}</h3>
           <p className="text-sm text-gray-500">
-            {idea.initiator} - Ngày đăng: {format(idea.createdOn, 'dd/MM/yyyy')} |{' '}
+            {idea.initiator} - Ngày đăng: {formatDate(idea.createdOn, 'dd/MM/yyyy')} |{' '}
             <span className="italic">Lĩnh vực: {idea.category}</span>
           </p>
         </div>
@@ -102,7 +103,7 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
           </span>
         </div>
         <div className="flex flex-col md:flex-row gap-4">
-          <Link href={''} className="cursor-pointer">
+          <Link href={linkTo.user.ideas.detail.replace('[ideaCode]', idea.id)} className="cursor-pointer">
             <Button variant={'outline'}>Xem chi tiết</Button>
           </Link>
           {session?.user?.id === idea.createdBy && (

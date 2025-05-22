@@ -35,6 +35,7 @@ const ideaRoutes = (base: string) => {
   return {
     base: ideaBase,
     create: `${ideaBase}/create`,
+    detail: `${ideaBase}/[ideaCode]`,
   };
 };
 
