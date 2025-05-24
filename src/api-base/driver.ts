@@ -4,10 +4,17 @@ import authService from './services/auth-services';
 import roleService from './services/role-services';
 import ideaService from './services/idea-services';
 import commentService from './services/comment-services';
+import categoryService from './services/category-service';
 
 const baseURL: string = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api') + '/proxy';
 
-export const services: ServiceApi[] = [...authService, ...roleService, ...ideaService, ...commentService];
+export const services: ServiceApi[] = [
+  ...authService,
+  ...roleService,
+  ...ideaService,
+  ...commentService,
+  ...categoryService,
+];
 
 const driveConfig: DriverInformation = {
   baseURL: baseURL,

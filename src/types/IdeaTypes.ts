@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export type IdeaType = {
   id: string;
   ideaCode: string;
@@ -35,7 +37,28 @@ export type GetIdeaResponseType = {
 export type IdeaCommentType = {
   id: string;
   content: string;
-  userComment?: string;
+  user?: string;
   parentCommentId?: string;
   replies?: IdeaCommentType[];
 };
+
+export const createIdeaSchema = z.object({
+  title: z
+    .string({ required_error: 'Tiêu đề không được để trống' })
+    .max(250, 'Tiêu đề tối đa 250 ký tự')
+    .nonempty('Tiêu đề không được để trống'),
+  categoryId: z.string(),
+  description: z
+    .string({ required_error: 'Nội dung chi tiết không được để trống' })
+    .nonempty('Nội dung chi tiết không được để trống'),
+  copyrightStatus: z.boolean(),
+  copyrightCertificate: z.string().optional().nullable(),
+  initiatorId: z.string(),
+  imageUrls: z.string().optional().nullable(),
+  createdBy: z.string(),
+  status: z.string(),
+  collaborationType: z.string().optional().nullable(),
+  price: z.number({ invalid_type_error: 'Giá phải là số' }).optional().nullable(),
+  isForSale: z.boolean(),
+  isPublic: z.boolean(),
+});

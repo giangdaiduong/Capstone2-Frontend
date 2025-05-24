@@ -7,6 +7,7 @@ export enum IdeaServiceIds {
   LikeIdea = 'idea.likeIdea',
   DislikeIdea = 'idea.dislikeIdea',
   GetIdeaById = 'idea.getIdeaById',
+  CreateIdea = 'idea.createIdea',
 }
 
 export default [
@@ -38,6 +39,12 @@ export default [
     id: IdeaServiceIds.GetIdeaById,
     url: 'v1/api/client/Ideas/{ideaId}',
     method: MethodAPI.get,
+    version: 1,
+  },
+  {
+    id: IdeaServiceIds.CreateIdea,
+    url: 'v1/api/client/Ideas',
+    method: MethodAPI.post,
     version: 1,
   },
 ] as ServiceApi[];
