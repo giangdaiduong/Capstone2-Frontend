@@ -140,10 +140,10 @@ const CommentItem = ({
   return (
     <div className="flex gap-2">
       <Avatar>
-        <AvatarFallback>{comment.userComment?.charAt(0) || 'A'}</AvatarFallback>
+        <AvatarFallback>{comment.user?.charAt(0) || 'A'}</AvatarFallback>
       </Avatar>
       <div className="w-full">
-        <div className="font-bold p-1">{comment.userComment || 'Ẩn danh'}</div>
+        <div className="font-bold p-1">{comment.user || 'Ẩn danh'}</div>
         <div className="text-sm px-2 py-4 rounded-md bg-gray-100">{comment.content}</div>
         {comment.replies && (
           <div className="my-2 flex flex-col gap-2">
