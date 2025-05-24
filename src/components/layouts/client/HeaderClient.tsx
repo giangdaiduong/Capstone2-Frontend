@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, useEffect, useState, useMemo, forwardRef } from 'react';
+import React, { useEffect, useState, useMemo, memo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -13,8 +13,8 @@ import {
   FaComments,
   FaBell,
   FaPowerOff,
-  FaUserCircle, // Example for profile icon
-  FaKey,        // Example for change password icon
+  FaUserCircle,
+  FaKey,
 } from 'react-icons/fa';
 import { RxSlash } from 'react-icons/rx';
 import clsx from 'clsx'; // Utility for conditionally joining CSS class names
@@ -34,10 +34,53 @@ import {
 // --- Utility for consistent paths ---
 import linkTo from '@/utils/linkTo';
 
+// --- Type Definitions ---
+interface NavItemConfig {
+  id: string;
+  href: string;
+  label: string;
+  icon: React.ElementType<{ className?: string }>;
+}
 
-// --- 1. Component con: NavLinkItem ---
-// Dùng forwardRef vì DropdownMenuTrigger có thể cần ref cho một số trường hợp,
-// mặc dù ở đây chúng ta không dùng trực tiếp ref cho Link, nhưng là một practice tốt.
+interface DropdownMenuItemConfig {
+  id: string;
+  label: string;
+  icon?: React.ElementType<{ className?: string }>;
+  href?: string;
+  onClick?: () => void;
+  isSeparator?: boolean;
+  isLabel?: boolean;
+  className?: string;
+}
+
+// --- Custom Hook: useActiveNavigation ---
+/**
+ * Custom hook to manage navigation items and determine the active path.
+ * This separates navigation data and active state logic from the UI component.
+ */
+const useActiveNavigation = () => {
+  const pathname = usePathname();
+
+  // Định nghĩa các mục điều hướng ở đây, tách biệt khỏi component chính
+  const navItems: NavItemConfig[] = useMemo(() => [
+    { id: 'home', href: linkTo.home, label: 'Trang chủ', icon: FaHome },
+    { id: 'userplus', href: '/user-plus', label: 'Thêm người dùng', icon: FaUserPlus },
+    { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore },
+    { id: 'users', href: '/users', label: 'Người dùng', icon: FaUsers },
+  ], []);
+
+  const [activePath, setActivePath] = useState<string>('');
+
+  useEffect(() => {
+    // Xác định đường dẫn đang hoạt động dựa trên `pathname` và `navItems`
+    const currentActive = navItems.find(item => item.href === pathname);
+    setActivePath(currentActive ? currentActive.href : '');
+  }, [pathname, navItems]); // Dependency `navItems` để đảm bảo useEffect chạy lại nếu danh sách navItems thay đổi
+
+  return { navItems, activePath };
+};
+
+// --- Component con: NavLinkItem ---
 interface NavLinkItemProps {
   href: string;
   icon: React.ElementType<{ className?: string }>;
@@ -45,7 +88,7 @@ interface NavLinkItemProps {
   label: string;
 }
 
-const NavLinkItem = React.memo(({ href, icon: Icon, isActive, label }: NavLinkItemProps) => {
+const NavLinkItem = memo(({ href, icon: Icon, isActive, label }: NavLinkItemProps) => {
   const iconClasses = clsx(
     'text-2xl pb-1 cursor-pointer transition-colors duration-200',
     isActive ? 'text-[#1A2B88] border-b-2 border-[#1A2B88]' : 'text-gray-600 hover:text-[#1A2B88]/80'
@@ -54,21 +97,49 @@ const NavLinkItem = React.memo(({ href, icon: Icon, isActive, label }: NavLinkIt
   return (
     <Link href={href} aria-label={label} className="flex flex-col items-center justify-center">
       <Icon className={iconClasses} />
-      {/* <span className={clsx("text-xs mt-1", isActive ? "text-[#1A2B88]" : "text-gray-500")}>
-        {label}
-      </span> */}
     </Link>
   );
 });
-NavLinkItem.displayName = 'NavLinkItem'; // Quan trọng cho React DevTools
+NavLinkItem.displayName = 'NavLinkItem';
 
-// --- 2. Component con: UserAuthSection ---
-// Xử lý phần hiển thị avatar, notification và dropdown menu khi người dùng đăng nhập
+// --- Component con: UserAuthSection ---
 interface UserAuthSectionProps {
   session: any; // Thay thế 'any' bằng kiểu Session thực tế của NextAuth
 }
 
-const UserAuthSection = React.memo(({ session }: UserAuthSectionProps) => {
+const UserAuthSection = memo(({ session }: UserAuthSectionProps) => {
+  // Cấu hình các mục trong Dropdown Menu
+  const userDropdownItems: DropdownMenuItemConfig[] = useMemo(() => [
+    {
+      id: 'profile-label',
+      label: session.user?.fullName,
+      isLabel: true,
+      className: "flex flex-col items-start gap-y-1"
+    },
+    { id: 'email-label', label: session.user?.email, isLabel: true, className: "text-xs text-muted-foreground break-all mt-[-4px]" },
+    { id: 'separator-1', isSeparator: true },
+    {
+      id: 'manage-account',
+      label: 'Quản lý tài khoản',
+      icon: FaUserCircle,
+      href: linkTo.user.profile,
+    },
+    {
+      id: 'change-password',
+      label: 'Đổi mật khẩu',
+      icon: FaKey,
+      href: linkTo.user.changePassword,
+    },
+    { id: 'separator-2', isSeparator: true },
+    {
+      id: 'sign-out',
+      label: 'Đăng xuất',
+      icon: FaPowerOff,
+      onClick: () => signOut({ callbackUrl: linkTo.login }),
+      className: "text-red-600 hover:bg-red-50 focus:bg-red-50"
+    },
+  ], [session]); // Phụ thuộc vào session để cập nhật thông tin người dùng
+
   return (
     <div className="flex items-center space-x-2 min-w-[180px] justify-end">
       <NotificationBadge count={8}>
@@ -98,31 +169,30 @@ const UserAuthSection = React.memo(({ session }: UserAuthSectionProps) => {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel className="font-normal flex flex-col items-start gap-y-1">
-            <p className="text-sm font-semibold leading-none">{session.user?.fullName}</p>
-            <p className="text-xs leading-none text-muted-foreground break-all">{session.user?.email}</p>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link href={linkTo.user.profile} className="flex items-center space-x-2 cursor-pointer">
-              <FaUserCircle className="h-4 w-4 text-gray-500" />
-              <span>Quản lý tài khoản</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href={linkTo.user.changePassword} className="flex items-center space-x-2 cursor-pointer">
-              <FaKey className="h-4 w-4 text-gray-500" />
-              <span>Đổi mật khẩu</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => signOut({ callbackUrl: linkTo.login })} // Chuyển hướng về trang đăng nhập sau khi đăng xuất
-            className="flex items-center space-x-2 text-red-600 cursor-pointer hover:bg-red-50 focus:bg-red-50"
-          >
-            <FaPowerOff className="h-4 w-4" />
-            <span>Đăng xuất</span>
-          </DropdownMenuItem>
+          {userDropdownItems.map(item => {
+            if (item.isLabel) {
+              return <DropdownMenuLabel key={item.id} className={clsx("font-normal", item.className)}>{item.label}</DropdownMenuLabel>;
+            }
+            if (item.isSeparator) {
+              return <DropdownMenuSeparator key={item.id} />;
+            }
+            const IconComponent = item.icon;
+            return (
+              <DropdownMenuItem key={item.id} onClick={item.onClick} asChild={!!item.href}>
+                {item.href ? (
+                  <Link href={item.href} className={clsx("flex items-center space-x-2 cursor-pointer", item.className)}>
+                    {IconComponent && <IconComponent className="h-4 w-4 text-gray-500" />}
+                    <span>{item.label}</span>
+                  </Link>
+                ) : (
+                  <div className={clsx("flex items-center space-x-2 cursor-pointer", item.className)}>
+                    {IconComponent && <IconComponent className="h-4 w-4" />}
+                    <span>{item.label}</span>
+                  </div>
+                )}
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -130,9 +200,8 @@ const UserAuthSection = React.memo(({ session }: UserAuthSectionProps) => {
 });
 UserAuthSection.displayName = 'UserAuthSection';
 
-// --- 3. Component con: GuestAuthLinks ---
-// Xử lý phần đăng nhập/đăng ký khi người dùng chưa đăng nhập
-const GuestAuthLinks = React.memo(() => {
+// --- Component con: GuestAuthLinks ---
+const GuestAuthLinks = memo(() => {
   return (
     <div className="flex items-center space-x-1 min-w-[180px] justify-end">
       <Link
@@ -157,39 +226,21 @@ const GuestAuthLinks = React.memo(() => {
 });
 GuestAuthLinks.displayName = 'GuestAuthLinks';
 
-
 // --- Main Component: HeaderClient ---
 /**
  * Header component for the client-side of the application.
  * Manages navigation, user authentication status display, and notifications.
  */
 function HeaderClient() {
-  const pathname = usePathname();
   const { data: session, status } = useSession(); // Lấy cả status để xử lý trạng thái loading
-  const [activePath, setActivePath] = useState<string>('');
-
-  // Định nghĩa các mục điều hướng
-  const navItems = useMemo(() => [
-    { id: 'home', href: linkTo.home, label: 'Trang chủ', icon: FaHome },
-    { id: 'userplus', href: '/user-plus', label: 'Thêm người dùng', icon: FaUserPlus },
-    { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore },
-    { id: 'users', href: '/users', label: 'Người dùng', icon: FaUsers },
-  ], []);
-
-  // Xác định đường dẫn đang hoạt động
-  useEffect(() => {
-    // Logic phức tạp hơn nếu bạn có các đường dẫn lồng nhau, ví dụ: /users/profile vs /users/settings
-    // Hiện tại, đơn giản là khớp chính xác href
-    const currentActive = navItems.find(item => item.href === pathname);
-    setActivePath(currentActive ? currentActive.href : '');
-  }, [pathname, navItems]); // Dependency `navItems` để đảm bảo useEffect chạy lại nếu danh sách navItems thay đổi
+  const { navItems, activePath } = useActiveNavigation(); // Sử dụng custom hook
 
   return (
     <header className="bg-white shadow-md py-2 px-4 flex justify-between items-center z-10 relative">
       {/* Logo Section */}
       <div className="flex items-center space-x-2 min-w-[180px]">
         <Link href={linkTo.home} aria-label="Go to Home" className="block">
-          <Image src={Logo} alt="Ideax Logo" className="h-10 w-auto" priority />
+          <Image src={process.env.NEXT_PUBLIC_LOGO_URL || '/logo.png'} alt="Ideax Logo" className="h-10 w-auto" priority />
         </Link>
       </div>
 
@@ -200,7 +251,7 @@ function HeaderClient() {
             key={item.id}
             href={item.href}
             icon={item.icon}
-            isActive={activePath === item.href} 
+            isActive={activePath === item.href} // So sánh trực tiếp href
             label={item.label}
           />
         ))}
