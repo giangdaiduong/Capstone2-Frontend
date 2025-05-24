@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ImageUploader } from '@/components/ui/image-uploader';
-import { IdeaStatus } from '@/lib/utils';
+import { IdeaStatus } from '@/utils/constants';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import PolicyDialog from './component/PolicyDialog';
