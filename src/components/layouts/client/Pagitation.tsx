@@ -15,7 +15,6 @@ interface PaginationProps {
 }
 
 export function CustomPagination({ totalPages, currentPage, onPageChange, isLoading = false }: PaginationProps) {
-  // Class để vô hiệu hóa các nút khi không thể click hoặc đang tải
   const disabledClass = 'pointer-events-none opacity-50';
 
   /**
@@ -23,7 +22,7 @@ export function CustomPagination({ totalPages, currentPage, onPageChange, isLoad
    * Logic này đảm bảo luôn hiển thị trang đầu, trang cuối, và các trang xung quanh trang hiện tại.
    */
   const buildPages = (): (number | 'ellipsis')[] => {
-    const pagesToShow = [];
+    const pagesToShow: (number | 'ellipsis')[] = [];
     const maxVisiblePages = 5; // Số lượng trang tối đa muốn hiển thị trực tiếp (bao gồm cả 1 và totalPages)
     const sidePages = Math.floor((maxVisiblePages - 2) / 2); // Số trang hiển thị ở mỗi bên của trang hiện tại
 
@@ -37,9 +36,11 @@ export function CustomPagination({ totalPages, currentPage, onPageChange, isLoad
     let endPage = Math.min(totalPages - 1, currentPage + sidePages);
 
     // Điều chỉnh phạm vi nếu currentPage ở gần đầu hoặc cuối
-    if (currentPage - 1 < sidePages) { // Nếu currentPage ở gần đầu
+    if (currentPage - 1 < sidePages) {
+      // Nếu currentPage ở gần đầu
       endPage = Math.min(totalPages - 1, maxVisiblePages - 1);
-    } else if (totalPages - currentPage < sidePages + 1) { // Nếu currentPage ở gần cuối
+    } else if (totalPages - currentPage < sidePages + 1) {
+      // Nếu currentPage ở gần cuối
       startPage = Math.max(2, totalPages - (maxVisiblePages - 2));
     }
 
@@ -63,20 +64,25 @@ export function CustomPagination({ totalPages, currentPage, onPageChange, isLoad
       pagesToShow.push(totalPages);
     }
 
-    // Loại bỏ các số trang trùng lặp và sắp xếp lại
-    const uniqueSortedPages = Array.from(new Set(pagesToShow)).sort((a, b) => {
-      if (a === 'ellipsis' || b === 'ellipsis') return 0; // Giữ nguyên vị trí ellipsis
-      return (a as number) - (b as number);
+    // Loại bỏ các số trang trùng lặp và giữ nguyên vị trí dấu ba chấm (ellipsis)
+    const uniqueSortedPages: (number | 'ellipsis')[] = [];
+    pagesToShow.forEach(item => {
+      if (!uniqueSortedPages.includes(item)) {
+        uniqueSortedPages.push(item);
+      }
     });
 
-    // Xử lý lại ellipsis nếu có 2 ellipsis cạnh nhau hoặc logic ban đầu chưa tối ưu
+    // Xử lý lại ellipsis nếu có 2 ellipsis cạnh nhau
     const finalPages: (number | 'ellipsis')[] = [];
     uniqueSortedPages.forEach((item, index) => {
       if (item === 'ellipsis' && index > 0 && finalPages[finalPages.length - 1] === 'ellipsis') {
         // Bỏ qua nếu có 2 ellipsis liên tiếp
         return;
       }
-      finalPages.push(item);
+      // Chỉ push nếu item là 'ellipsis' hoặc number
+      if (item === 'ellipsis' || typeof item === 'number') {
+        finalPages.push(item);
+      }
     });
 
     return finalPages;
@@ -129,12 +135,12 @@ export function CustomPagination({ totalPages, currentPage, onPageChange, isLoad
               <span className="px-3 text-sm opacity-60 select-none">…</span>
             </PaginationItem>
           ) : (
-            <PaginationItem key={item}>
+            <PaginationItem key={item.toString()}>
               <PaginationLink
                 href="#"
                 isActive={currentPage === item}
                 className={isLoading ? disabledClass : undefined}
-                onClick={(e) => handlePageClick(e, item)}
+                onClick={e => handlePageClick(e, item)}
               >
                 {item}
               </PaginationLink>

@@ -33,6 +33,7 @@ import {
 
 // --- Utility for consistent paths ---
 import linkTo from '@/utils/linkTo';
+import { Session } from 'next-auth';
 
 // --- Type Definitions ---
 interface NavItemConfig {
@@ -44,7 +45,7 @@ interface NavItemConfig {
 
 interface DropdownMenuItemConfig {
   id: string;
-  label: string;
+  label?: string;
   icon?: React.ElementType<{ className?: string }>;
   href?: string;
   onClick?: () => void;
@@ -62,12 +63,15 @@ const useActiveNavigation = () => {
   const pathname = usePathname();
 
   // Định nghĩa các mục điều hướng ở đây, tách biệt khỏi component chính
-  const navItems: NavItemConfig[] = useMemo(() => [
-    { id: 'home', href: linkTo.home, label: 'Trang chủ', icon: FaHome },
-    { id: 'userplus', href: '/user-plus', label: 'Thêm người dùng', icon: FaUserPlus },
-    { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore },
-    { id: 'users', href: '/users', label: 'Người dùng', icon: FaUsers },
-  ], []);
+  const navItems: NavItemConfig[] = useMemo(
+    () => [
+      { id: 'home', href: linkTo.home, label: 'Trang chủ', icon: FaHome },
+      { id: 'userplus', href: '/user-plus', label: 'Thêm người dùng', icon: FaUserPlus },
+      { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore },
+      { id: 'users', href: '/users', label: 'Người dùng', icon: FaUsers },
+    ],
+    []
+  );
 
   const [activePath, setActivePath] = useState<string>('');
 
@@ -104,41 +108,49 @@ NavLinkItem.displayName = 'NavLinkItem';
 
 // --- Component con: UserAuthSection ---
 interface UserAuthSectionProps {
-  session: any; // Thay thế 'any' bằng kiểu Session thực tế của NextAuth
+  session: Session;
 }
 
 const UserAuthSection = memo(({ session }: UserAuthSectionProps) => {
   // Cấu hình các mục trong Dropdown Menu
-  const userDropdownItems: DropdownMenuItemConfig[] = useMemo(() => [
-    {
-      id: 'profile-label',
-      label: session.user?.fullName,
-      isLabel: true,
-      className: "flex flex-col items-start gap-y-1"
-    },
-    { id: 'email-label', label: session.user?.email, isLabel: true, className: "text-xs text-muted-foreground break-all mt-[-4px]" },
-    { id: 'separator-1', isSeparator: true },
-    {
-      id: 'manage-account',
-      label: 'Quản lý tài khoản',
-      icon: FaUserCircle,
-      href: linkTo.user.profile,
-    },
-    {
-      id: 'change-password',
-      label: 'Đổi mật khẩu',
-      icon: FaKey,
-      href: linkTo.user.changePassword,
-    },
-    { id: 'separator-2', isSeparator: true },
-    {
-      id: 'sign-out',
-      label: 'Đăng xuất',
-      icon: FaPowerOff,
-      onClick: () => signOut({ callbackUrl: linkTo.login }),
-      className: "text-red-600 hover:bg-red-50 focus:bg-red-50"
-    },
-  ], [session]); // Phụ thuộc vào session để cập nhật thông tin người dùng
+  const userDropdownItems: DropdownMenuItemConfig[] = useMemo(
+    () => [
+      {
+        id: 'profile-label',
+        label: session.user?.fullName,
+        isLabel: true,
+        className: 'flex flex-col items-start gap-y-1',
+      },
+      {
+        id: 'email-label',
+        label: session.user?.email,
+        isLabel: true,
+        className: 'text-xs text-muted-foreground break-all mt-[-4px]',
+      },
+      { id: 'separator-1', isSeparator: true },
+      {
+        id: 'manage-account',
+        label: 'Quản lý tài khoản',
+        icon: FaUserCircle,
+        href: linkTo.user.profile,
+      },
+      {
+        id: 'change-password',
+        label: 'Đổi mật khẩu',
+        icon: FaKey,
+        href: linkTo.user.changePassword,
+      },
+      { id: 'separator-2', isSeparator: true },
+      {
+        id: 'sign-out',
+        label: 'Đăng xuất',
+        icon: FaPowerOff,
+        onClick: () => signOut({ callbackUrl: linkTo.login }),
+        className: 'text-red-600 hover:bg-red-50 focus:bg-red-50',
+      },
+    ],
+    [session]
+  ); // Phụ thuộc vào session để cập nhật thông tin người dùng
 
   return (
     <div className="flex items-center space-x-2 min-w-[180px] justify-end">
@@ -171,7 +183,11 @@ const UserAuthSection = memo(({ session }: UserAuthSectionProps) => {
         <DropdownMenuContent align="end" className="w-56">
           {userDropdownItems.map(item => {
             if (item.isLabel) {
-              return <DropdownMenuLabel key={item.id} className={clsx("font-normal", item.className)}>{item.label}</DropdownMenuLabel>;
+              return (
+                <DropdownMenuLabel key={item.id} className={clsx('font-normal', item.className)}>
+                  {item.label}
+                </DropdownMenuLabel>
+              );
             }
             if (item.isSeparator) {
               return <DropdownMenuSeparator key={item.id} />;
@@ -180,12 +196,12 @@ const UserAuthSection = memo(({ session }: UserAuthSectionProps) => {
             return (
               <DropdownMenuItem key={item.id} onClick={item.onClick} asChild={!!item.href}>
                 {item.href ? (
-                  <Link href={item.href} className={clsx("flex items-center space-x-2 cursor-pointer", item.className)}>
+                  <Link href={item.href} className={clsx('flex items-center space-x-2 cursor-pointer', item.className)}>
                     {IconComponent && <IconComponent className="h-4 w-4 text-gray-500" />}
                     <span>{item.label}</span>
                   </Link>
                 ) : (
-                  <div className={clsx("flex items-center space-x-2 cursor-pointer", item.className)}>
+                  <div className={clsx('flex items-center space-x-2 cursor-pointer', item.className)}>
                     {IconComponent && <IconComponent className="h-4 w-4" />}
                     <span>{item.label}</span>
                   </div>
@@ -240,7 +256,14 @@ function HeaderClient() {
       {/* Logo Section */}
       <div className="flex items-center space-x-2 min-w-[180px]">
         <Link href={linkTo.home} aria-label="Go to Home" className="block">
-          <Image src={process.env.NEXT_PUBLIC_LOGO_URL || '/logo.png'} alt="Ideax Logo" className="h-10 w-auto" priority />
+          <Image
+            src={process.env.NEXT_PUBLIC_LOGO_URL || '/logo.png'}
+            alt="Ideax Logo"
+            className="h-10 w-auto"
+            width={100}
+            height={100}
+            priority
+          />
         </Link>
       </div>
 
