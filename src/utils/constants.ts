@@ -84,3 +84,9 @@ export const Policy = [
     agree: true,
   },
 ];
+
+export enum UserRole {
+  Admin = 'Admin',
+  Investor = 'Investor',
+  Founder = 'Founder',
+}

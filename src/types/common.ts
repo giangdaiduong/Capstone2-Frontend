@@ -12,3 +12,29 @@ export type BaseEntity = {
   updatedBy?: string;
   isDeleted: boolean;
 };
+
+export interface NavItemConfig {
+  id: string;
+  href: string;
+  label: string;
+  icon: React.ElementType<{ className?: string }>;
+}
+
+// --- Component con: NavLinkItem ---
+export interface NavLinkItemProps {
+  href: string;
+  icon: React.ElementType<{ className?: string }>;
+  isActive: boolean;
+  label: string;
+}
+
+export interface DropdownMenuItemConfig {
+  id: string;
+  label?: string;
+  icon?: React.ElementType<{ className?: string }>;
+  href?: string;
+  onClick?: () => void;
+  isSeparator?: boolean;
+  isLabel?: boolean;
+  className?: string;
+}
