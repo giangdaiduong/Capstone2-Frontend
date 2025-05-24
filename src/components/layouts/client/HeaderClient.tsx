@@ -5,11 +5,11 @@ import Image from 'next/image';
 import Logo from '@/assets/logo.png';
 import { FaStore, FaUserPlus, FaUsers, FaHome, FaComments, FaBell, FaPowerOff } from 'react-icons/fa';
 import Link from 'next/link';
-import linkTo from '@/utils/linkTo';
+import linkTo from '@/utils/linkTo'; // Assuming this utility provides consistent paths
 import { signOut, useSession } from 'next-auth/react';
 import { RxSlash } from 'react-icons/rx';
-import { NotificationBadge } from '@/components/ui/notification-badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { NotificationBadge } from '@/components/ui/notification-badge'; // Shadcn-ui component
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'; // Shadcn-ui component
 import { usePathname } from 'next/navigation';
 import {
   DropdownMenu,
@@ -18,91 +18,97 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu'; // Shadcn-ui component
 
 /**
- * Renders the header component for the client-side.
- * It displays navigation icons, notification badges, and user-specific options
- * based on the authentication status.
+ * Defines the structure for each navigation item in the header.
+ */
+interface NavItem {
+  id: string;
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  activeKey: string; // Key to match with activeIcon state
+}
+
+/**
+ * Header component for the client-side of the application.
+ * Manages navigation, user authentication status display, and notifications.
  */
 function HeaderClient() {
-  const [activeIcon, setActiveIcon] = useState('');
+  const [activeIcon, setActiveIcon] = useState<string>('');
   const pathname = usePathname();
   const { data: session } = useSession();
 
+  // Define navigation items as an array for easier management and iteration
+  const navItems: NavItem[] = useMemo(() => [
+    { id: 'home', href: linkTo.home, label: 'Trang chủ', icon: FaHome, activeKey: 'home' },
+    { id: 'userplus', href: '/user-plus', label: 'Thêm người dùng', icon: FaUserPlus, activeKey: 'userplus' },
+    { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore, activeKey: 'ideas' },
+    { id: 'users', href: '/users', label: 'Người dùng', icon: FaUsers, activeKey: 'users' },
+  ], []); // Empty dependency array ensures this is memoized once
+
   /**
-   * Updates the active navigation icon based on the current pathname.
+   * Updates the `activeIcon` state based on the current `pathname`.
+   * Iterates through `navItems` to find a match.
    */
   useEffect(() => {
-    const iconMap: Record<string, string> = {
-      [linkTo.home]: 'home',
-      [linkTo.user.ideas.base]: 'ideas',
-      '/user-plus': 'userplus',
-      '/users': 'users',
-    };
-    setActiveIcon(iconMap[pathname] || '');
-  }, [pathname]);
+    const currentActiveItem = navItems.find(item => item.href === pathname);
+    setActiveIcon(currentActiveItem?.activeKey || '');
+  }, [pathname, navItems]); // Re-run if pathname or navItems change
 
   /**
-   * Dynamically applies styles to navigation icons based on their active state.
-   * @param iconName The name of the icon.
-   * @returns Tailwind CSS classes for the icon.
+   * Generates dynamic Tailwind CSS classes for a navigation icon based on its active state.
+   * @param key The activeKey of the navigation item.
+   * @returns A string of Tailwind CSS classes.
    */
-  const getIconStyle = (iconName: string) =>
-    `${
-      activeIcon === iconName ? 'text-[#1A2B88] border-b-2 border-[#1A2B88]' : 'text-gray-600'
-    } text-2xl pb-1 cursor-pointer`;
+  const getIconStyle = (key: string): string =>
+    `${activeIcon === key ? 'text-[#1A2B88] border-b-2 border-[#1A2B88]' : 'text-gray-600'} 
+     text-2xl pb-1 cursor-pointer transition-colors duration-200`;
 
   /**
-   * Helper component to render a navigation icon wrapped in a Link.
-   * @param icon The ReactNode representing the icon.
-   * @param href The URL for the link.
-   * @returns A Link component containing the icon.
+   * Memoized navigation links to prevent unnecessary re-renders.
+   * Renders the navigation icons by mapping over the `navItems` array.
    */
-  const HeaderIcon = ({ icon, href }: { icon: ReactNode; href: string }) => (
-    <Link href={href}>{icon}</Link>
-  );
-
-  // Memoize the navigation links to prevent unnecessary re-renders
   const memoizedNavLinks = useMemo(
     () => (
-      <>
-        <HeaderIcon icon={<FaHome className={getIconStyle('home')} />} href={linkTo.home} />
-        <HeaderIcon icon={<FaUserPlus className={getIconStyle('userplus')} />} href="/user-plus" />
-        <HeaderIcon icon={<FaStore className={getIconStyle('ideas')} />} href={linkTo.user.ideas.base} />
-        <HeaderIcon icon={<FaUsers className={getIconStyle('users')} />} href="/users" />
-      </>
+      <nav className="flex space-x-8">
+        {navItems.map(item => {
+          const IconComponent = item.icon; // Get the icon component from the item
+          return (
+            <Link href={item.href} key={item.id} aria-label={item.label}>
+              <IconComponent className={getIconStyle(item.activeKey)} />
+            </Link>
+          );
+        })}
+      </nav>
     ),
-    [activeIcon] // Re-render if activeIcon changes
+    [navItems, activeIcon] // Re-render if navItems (unlikely) or activeIcon changes
   );
 
   return (
-    <header className="bg-white shadow-md py-2 px-4 flex justify-between items-center">
+    <header className="bg-white shadow-md py-2 px-4 flex justify-between items-center z-10 relative">
       {/* Logo Section */}
       <div className="flex items-center space-x-2 min-w-[180px]">
-        <Image src={Logo} alt="Ideax Logo" className="h-10 w-auto" priority />
+        <Link href={linkTo.home} aria-label="Go to Home">
+          <Image src={Logo} alt="Ideax Logo" className="h-10 w-auto" priority />
+        </Link>
       </div>
 
       {/* Navigation Section */}
-      <nav className="flex space-x-8">{memoizedNavLinks}</nav>
+      {memoizedNavLinks}
 
       {/* User Actions / Auth Section */}
       {session ? (
         <div className="flex items-center space-x-2 min-w-[180px] justify-end">
           {/* Notification Badges */}
           <NotificationBadge count={8}>
-            <button
-              aria-label="Comments"
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
+            <button className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="View comments">
               <FaComments className="text-gray-600 text-xl" />
             </button>
           </NotificationBadge>
           <NotificationBadge count={0}>
-            <button
-              aria-label="Notifications"
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
+            <button className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="View notifications">
               <FaBell className="text-gray-600 text-xl" />
             </button>
           </NotificationBadge>
@@ -110,35 +116,35 @@ function HeaderClient() {
           {/* User Dropdown Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar className="cursor-pointer">
+              <Avatar className="cursor-pointer border border-gray-200 hover:border-[#1A2B88] transition-colors">
                 <AvatarImage src={session.user?.avatar} alt={`${session.user?.fullName}'s avatar`} />
-                <AvatarFallback>{session.user?.fullName?.charAt(0) || 'U'}</AvatarFallback>
+                <AvatarFallback className="bg-gray-200 text-gray-700 font-semibold">
+                  {session.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{session.user?.fullName}</p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {session.user?.email}
-                  </p>
-                </div>
+              <DropdownMenuLabel className="font-normal flex flex-col items-start gap-y-1">
+                <p className="text-sm font-semibold leading-none">{session.user?.fullName}</p>
+                <p className="text-xs leading-none text-muted-foreground break-all">{session.user?.email}</p>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href={linkTo.user.profile} className="flex items-center">
-                  Quản lý tài khoản
+                <Link href={linkTo.user.profile} className="flex items-center space-x-2 cursor-pointer">
+                  {/* <FaUserCircle className="h-4 w-4" /> */}
+                  <span>Quản lý tài khoản</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href={linkTo.user.changePassword} className="flex items-center">
-                  Đổi mật khẩu
+                <Link href={linkTo.user.changePassword} className="flex items-center space-x-2 cursor-pointer">
+                  {/* <FaKey className="h-4 w-4" /> */}
+                  <span>Đổi mật khẩu</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => signOut()} className="flex items-center cursor-pointer">
-                <FaPowerOff className="mr-2 h-4 w-4" />
-                Đăng xuất
+              <DropdownMenuItem onClick={() => signOut()} className="flex items-center space-x-2 text-red-600 cursor-pointer hover:bg-red-50">
+                <FaPowerOff className="h-4 w-4" />
+                <span>Đăng xuất</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -149,7 +155,8 @@ function HeaderClient() {
           <Link
             href={linkTo.login}
             className="bg-gradient-to-l from-[#f64f59] via-[#c471ed] to-[#12c2e9] bg-clip-text text-transparent font-bold
-            transform transition-transform duration-200 ease-in-out hover:scale-110"
+            transform transition-transform duration-200 ease-in-out hover:scale-105 active:scale-95"
+            aria-label="Login"
           >
             Đăng nhập
           </Link>
@@ -157,7 +164,8 @@ function HeaderClient() {
           <Link
             href={linkTo.register}
             className="bg-gradient-to-l to-[#f64f59] via-[#c471ed] from-[#12c2e9] bg-clip-text text-transparent font-bold
-            transform transition-transform duration-200 ease-in-out hover:scale-110"
+            transform transition-transform duration-200 ease-in-out hover:scale-105 active:scale-95"
+            aria-label="Register"
           >
             Đăng ký
           </Link>
