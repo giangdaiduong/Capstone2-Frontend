@@ -99,7 +99,7 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
             <FaComments /> {idea.totalComments} Bình luận
           </span>
           <span className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md h-fit text-yellow-500">
-            <FaStar /> {idea.totalLikes} Điểm đánh giá
+            <FaStar /> {idea.totalRatings} Điểm đánh giá
           </span>
         </div>
         <div className="flex flex-col md:flex-row gap-4">
