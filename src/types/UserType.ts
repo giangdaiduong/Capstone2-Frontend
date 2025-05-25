@@ -16,4 +16,5 @@ export type UserType = BaseEntity & {
   refreshToken?: string;
   accessTokenExpires?: number;
   expiresIn?: number;
+  birthday: string;
 };
