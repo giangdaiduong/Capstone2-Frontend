@@ -40,12 +40,11 @@ export const SOCIAL_LINKS = [
 
 export const PAGE_SIZE = 5;
 
-export const IdeaStatus = [
-  { key: 'new', value: 'Mới' },
-  { key: 'mvp', value: 'MVP (Minimum Viable Product)' },
-  { key: 'growth', value: 'Giai đoạn tăng trưởng' },
-  { key: 'expansion', value: 'Giai đoạn mở rộng' },
-  { key: 'closed', value: 'Đã đóng' },
+export const IdeaStage = [
+  { key: 'NEW', value: 'Mới' },
+  { key: 'MVP', value: 'MVP (Minimum Viable Product)' },
+  { key: 'GROWTH', value: 'Giai đoạn tăng trưởng' },
+  { key: 'EXPANSION', value: 'Giai đoạn mở rộng' },
 ];
 
 export const Policy = [
@@ -83,6 +82,22 @@ export const Policy = [
     child: ['Tôi cam kết thông tin cung cấp là chính xác.', 'Tôi đồng ý với điều khoản và điều kiện của nền tảng.'],
     agree: true,
   },
+];
+
+export const IdeaStatus = [
+  { key: 'draft', value: 'Bản nháp' },
+  { key: 'pending', value: 'Chờ duyệt' },
+  { key: 'approved', value: 'Đã duyệt' },
+  { key: 'rejected', value: 'Từ chối' },
+];
+
+export const IdeaRegion = [
+  { key: 'Hà Nội', value: 'Hà Nội' },
+  { key: 'Hồ Chí Minh', value: 'Hồ Chí Minh' },
+  { key: 'Đà Nẵng', value: 'Đà Nẵng' },
+  { key: 'Đồng Nai', value: 'Đồng Nai' },
+  { key: 'Bình Dương', value: 'Bình Dương' },
+  { key: 'Hải Phòng', value: 'Hải Phòng' },
 ];
 
 export enum UserRole {
