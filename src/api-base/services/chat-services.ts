@@ -4,6 +4,7 @@ import { MethodAPI } from '@alvin0/http-driver/dist/utils/driver-contracts';
 export enum ChatServiceIds {
   GetChatMessages = 'chat.getChatMessages',
   SendMessage = 'chat.sendMessage',
+  GetChatList = 'chat.getChatList',
 }
 
 export default [
@@ -16,6 +17,12 @@ export default [
   {
     id: ChatServiceIds.GetChatMessages,
     url: 'v1/api/client/Chat/{senderId}/{receiverId}',
+    method: MethodAPI.get,
+    version: 1,
+  },
+  {
+    id: ChatServiceIds.GetChatList,
+    url: 'api/Follow/following',
     method: MethodAPI.get,
     version: 1,
   },
