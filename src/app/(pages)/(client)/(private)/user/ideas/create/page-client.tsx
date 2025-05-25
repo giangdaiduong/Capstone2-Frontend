@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ImageUploader } from '@/components/ui/image-uploader';
-import { IdeaStatus } from '@/utils/constants';
+import { IdeaRegion, IdeaStage, IdeaStatus } from '@/utils/constants';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import PolicyDialog from './component/PolicyDialog';
@@ -53,6 +53,8 @@ function CreateIdeaPageClient({ categories }: { categories: CategoryType[] }) {
       price: 0,
       isForSale: false,
       isPublic: false,
+      stage: IdeaStage[0].key,
+      region: IdeaRegion[0].key,
     },
   });
 
@@ -132,7 +134,7 @@ function CreateIdeaPageClient({ categories }: { categories: CategoryType[] }) {
                           <SelectValue placeholder="Chọn lĩnh vực ngành" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="bg-[#F5F8FC]">
+                      <SelectContent>
                         {categories.map(category => (
                           <SelectItem key={category.id} value={category.id}>
                             {category.name}
@@ -266,11 +268,11 @@ function CreateIdeaPageClient({ categories }: { categories: CategoryType[] }) {
             <CardContent className="space-y-6">
               <FormField
                 control={form.control}
-                name="status"
+                name="stage"
                 render={({ field }) => (
-                  <FormItem className="flex gap-4 items-start">
+                  <FormItem className="flex gap-4 items-center">
                     <FormLabel className="font-bold mr-2">
-                      Trạng thái <span className="text-red-500">*</span>
+                      Giai đoạn <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
                       <RadioGroup
@@ -278,7 +280,7 @@ function CreateIdeaPageClient({ categories }: { categories: CategoryType[] }) {
                         defaultValue={field.value}
                         className="flex flex-wrap items-center"
                       >
-                        {IdeaStatus.map(status => {
+                        {IdeaStage.map(status => {
                           return (
                             <FormItem key={status.key} className="flex items-center mr-4">
                               <FormControl>
@@ -290,6 +292,32 @@ function CreateIdeaPageClient({ categories }: { categories: CategoryType[] }) {
                         })}
                       </RadioGroup>
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="region"
+                render={({ field }) => (
+                  <FormItem className="flex gap-4 items-start">
+                    <FormLabel className="font-bold">
+                      Khu vực gọi vốn mong muốn <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl className="w-full">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Chọn khu vực" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {IdeaRegion.map(region => (
+                          <SelectItem key={region.key} value={region.key}>
+                            {region.value}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
