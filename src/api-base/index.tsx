@@ -18,6 +18,9 @@ export const httpPageApi = new DriverBuilder()
         callbackUrl: '/login',
       });
     }
+    if (res.status === 403) {
+      redirect(linkTo.refreshToken);
+    }
   })
   .build();
 

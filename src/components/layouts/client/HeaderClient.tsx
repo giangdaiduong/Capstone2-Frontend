@@ -50,9 +50,9 @@ const useActiveNavigation = () => {
   const navItems: NavItemConfig[] = useMemo(
     () => [
       { id: 'home', href: linkTo.home, label: 'Trang chủ', icon: FaHome },
-      { id: 'userplus', href: '/user-plus', label: 'Thêm người dùng', icon: FaUserPlus },
+      { id: 'flower', href: linkTo.flower, label: 'Người theo dõi', icon: FaUserPlus },
       { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore },
-      { id: 'users', href: '/users', label: 'Người dùng', icon: FaUsers },
+      { id: 'feed', href: linkTo.feed, label: 'Feed', icon: FaUsers },
     ],
     []
   );
@@ -129,13 +129,14 @@ const UserAuthSection = memo(({ session }: UserAuthSectionProps) => {
 
   return (
     <div className="flex items-center space-x-2 min-w-[180px] justify-end">
-      <NotificationBadge count={8}>
-        <button
+      <NotificationBadge count={0}>
+        <Link
+          href={linkTo.chat}
           className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           aria-label="View comments"
         >
           <FaComments className="text-gray-600 text-xl" />
-        </button>
+        </Link>
       </NotificationBadge>
       <NotificationBadge count={0}>
         <button
