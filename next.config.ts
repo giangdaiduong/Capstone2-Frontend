@@ -1,6 +1,17 @@
+import linkTo from '@/utils/linkTo';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  redirects: async () => {
+    return [
+      {
+        source: linkTo.admin.base,
+        destination: linkTo.admin.dashboard,
+        permanent: true,
+        locale: false,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
