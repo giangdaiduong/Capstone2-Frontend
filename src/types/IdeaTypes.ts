@@ -9,6 +9,8 @@ export type IdeaType = {
   category: string;
   imageUrls: string;
   status: string;
+  stage: string;
+  region: string;
   copyrightStatus: boolean;
   copyrightCertificate?: string;
   price?: number;
@@ -61,4 +63,6 @@ export const createIdeaSchema = z.object({
   price: z.number({ invalid_type_error: 'Giá phải là số' }).optional().nullable(),
   isForSale: z.boolean(),
   isPublic: z.boolean(),
+  stage: z.string(),
+  region: z.string(),
 });

@@ -13,7 +13,7 @@ export enum IdeaServiceIds {
 export default [
   {
     id: IdeaServiceIds.GetAllIdeas,
-    url: 'v1/api/ideas',
+    url: 'v1/api/client/Ideas/for-admin',
     method: MethodAPI.get,
     version: 1,
   },

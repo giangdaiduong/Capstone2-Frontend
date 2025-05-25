@@ -1,31 +1,12 @@
 const adminRoutes = () => {
   const base = '/admin';
-  const productBase = `${base}/product`;
-  const postBase = `${base}/post`;
-  const userBase = `${base}/user`;
 
   return {
     base,
-    home: `${base}/home`,
-    theme: `${base}/theme`,
-    setting: `${base}/page-setting`,
-    order: `${base}/order`,
-    category: `${base}/category`,
-    product: {
-      new: `${productBase}/new`,
-      edit: `${productBase}/[id]`,
-      list: `${productBase}`,
-    },
-    post: {
-      new: `${postBase}/new`,
-      edit: `${postBase}/[id]`,
-      category: `${postBase}/category`,
-      tag: `${postBase}/tag`,
-      list: `${postBase}`,
-    },
-    user: {
-      list: `${userBase}`,
-    },
+    dashboard: `${base}/dashboard`,
+    review: `${base}/reviews`,
+    idea: `${base}/idea`,
+    user: `${base}/users`,
   };
 };
 

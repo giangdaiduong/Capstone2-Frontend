@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Policy } from '@/lib/utils';
+import { Policy } from '@/utils/constants';
 
 function PolicyDialog({ onClose, onAgree }: { onClose: () => void; onAgree: () => void }) {
   return (

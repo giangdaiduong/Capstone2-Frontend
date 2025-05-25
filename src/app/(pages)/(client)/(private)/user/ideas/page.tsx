@@ -46,7 +46,7 @@ async function IdeaPage({ searchParams }: { searchParams: SearchParams }) {
         <h1 className="text-2xl font-bold">Danh sách ý tưởng đã đăng</h1>
         <Link href={linkTo.user.ideas.create}>
           <Button>
-            <PlusIcon /> Đăng bài viết mới
+            <PlusIcon /> Đăng ý tưởng mới
           </Button>
         </Link>
       </div>

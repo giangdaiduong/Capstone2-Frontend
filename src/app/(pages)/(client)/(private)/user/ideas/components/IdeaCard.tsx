@@ -14,6 +14,7 @@ import { httpPageApi } from '@/api-base';
 import { IdeaServiceIds } from '@/api-base/services/idea-services';
 import { CloseAllToast, errorToast, successToast } from '@/lib/toastify';
 import linkTo from '@/utils/linkTo';
+import { IdeaStage } from '@/utils/constants';
 
 function IdeaCard({ idea }: { idea: IdeaType }) {
   const { data: session } = useSession();
@@ -77,8 +78,8 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
             </span>
           )}
 
-          <span className={`px-3 py-1 text-sm font-medium rounded-md h-fit text-center ${getStatusStyle(idea.status)}`}>
-            {idea.status}
+          <span className={`px-3 py-1 text-sm font-medium rounded-md h-fit text-center ${getStageStyle(idea.stage)}`}>
+            {IdeaStage.find(stage => stage.key === idea.stage)?.value || 'Chưa xác định'}
           </span>
         </div>
       </div>
@@ -99,7 +100,7 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
             <FaComments /> {idea.totalComments} Bình luận
           </span>
           <span className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md h-fit text-yellow-500">
-            <FaStar /> {idea.totalLikes} Điểm đánh giá
+            <FaStar /> {idea.totalRatings} Điểm đánh giá
           </span>
         </div>
         <div className="flex flex-col md:flex-row gap-4">
@@ -120,14 +121,16 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
 
 export default IdeaCard;
 
-const getStatusStyle = (status: string) => {
-  switch (status) {
-    case 'Đã duyệt':
+const getStageStyle = (stage: string) => {
+  switch (stage) {
+    case 'NEW':
       return 'bg-green-100 text-green-600';
-    case 'Đang đợi xét duyệt':
+    case 'MVP':
       return 'bg-yellow-100 text-yellow-600';
-    case 'Không được xét duyệt':
-      return 'bg-red-100 text-red-600';
+    case 'GROWTH':
+      return 'bg-blue-100 text-blue-600';
+    case 'EXPANSION':
+      return 'bg-purple-100 text-purple-600';
     default:
       return 'bg-gray-100 text-gray-600';
   }
