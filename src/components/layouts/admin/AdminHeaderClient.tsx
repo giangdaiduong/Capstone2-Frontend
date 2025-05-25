@@ -78,7 +78,7 @@ const UserAuthSection = memo(({ session }: UserAuthSectionProps) => {
     if (session?.user?.roleName === UserRole.Admin) {
       items.push({
         id: 'dashboard',
-        label: 'Dashboard',
+        label: 'Trang quản trị',
         icon: FaHome,
         href: linkTo.admin.dashboard,
       });
