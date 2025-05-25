@@ -63,8 +63,8 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-bold text-gray-800">{idea.title}</h3>
           <p className="text-sm text-gray-500">
-            {idea.initiator} - Ngày đăng: {formatDate(idea.createdOn, 'dd/MM/yyyy')} |{' '}
-            <span className="italic">Lĩnh vực: {idea.category}</span>
+            <Link href={`${linkTo.profile}/${idea.createdBy}`}>{idea.initiator}</Link> - Ngày đăng:{' '}
+            {formatDate(idea.createdOn, 'dd/MM/yyyy')} | <span className="italic">Lĩnh vực: {idea.category}</span>
           </p>
         </div>
         <div className="flex flex-col gap-2 items-end ">

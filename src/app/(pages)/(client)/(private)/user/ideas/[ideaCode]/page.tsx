@@ -78,7 +78,8 @@ export default async function IdeasDetailPage({ params }: { params: Params }) {
           <div className="flex flex-wrap gap-4 text-sm text-gray-600 ml-2">
             <span className="flex items-center">
               <FaUser className="inline mr-1" />
-              Người đăng: {idea.initiator || 'Ẩn danh'}
+              Người đăng:{' '}
+              {idea.initiator ? <Link href={`${linkTo.profile}/${idea.createdBy}`}>{idea.initiator}</Link> : 'Ẩn danh'}
             </span>
             <span className="flex items-center">
               <BiCategory className="inline mr-1" />

@@ -69,8 +69,6 @@ async function ChatPage({ params }: { params: Params }) {
     );
   }
 
-  console.log(res.data);
-
   return <ChatPageClient chatData={res.data} receiver={user} userId={senderId} />;
 }
 

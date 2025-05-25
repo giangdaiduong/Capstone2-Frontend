@@ -39,6 +39,7 @@ const linkTo = {
   flower: '/flower',
   feed: '/feed',
   chat: '/chat',
+  profile: '/profile',
   refreshToken: '/refresh-token',
   logout: '/logout',
   user: userRoutes(),
