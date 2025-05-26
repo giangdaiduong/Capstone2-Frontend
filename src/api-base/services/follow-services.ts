@@ -7,6 +7,7 @@ export enum FollowServiceIds {
   GetCountFolow = 'follow.getCountFolow',
   Follow = 'follow.follow',
   Unfollow = 'follow.unfollow',
+  IsFollow = 'follow.isFollow',
 }
 
 export default [
@@ -38,6 +39,12 @@ export default [
     id: FollowServiceIds.Unfollow,
     url: 'api/Follow/unfollow/{userId}',
     method: MethodAPI.post,
+    version: 1,
+  },
+  {
+    id: FollowServiceIds.IsFollow,
+    url: 'api/Follow/is-following/{userId}',
+    method: MethodAPI.get,
     version: 1,
   },
 ] as ServiceApi[];

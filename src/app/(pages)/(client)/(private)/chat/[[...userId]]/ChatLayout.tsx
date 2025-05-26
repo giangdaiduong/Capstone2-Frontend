@@ -30,7 +30,7 @@ function ChatLayout({
               )}
             >
               <Avatar>
-                <AvatarImage src={user.avatar || '/placeholder.svg?height=40&width=40'} alt={user.fullName} />
+                <AvatarImage src={user.avatar || '/user.webp'} alt={user.fullName} />
                 <AvatarFallback>{user.fullName.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
