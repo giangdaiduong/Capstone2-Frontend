@@ -7,6 +7,7 @@ import commentService from './services/comment-services';
 import categoryService from './services/category-service';
 import userService from './services/user-services';
 import chatService from './services/chat-services';
+import followService from './services/follow-services';
 
 const baseURL: string = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api') + '/proxy';
 
@@ -18,6 +19,7 @@ export const services: ServiceApi[] = [
   ...categoryService,
   ...userService,
   ...chatService,
+  ...followService,
 ];
 
 const driveConfig: DriverInformation = {

@@ -36,7 +36,7 @@ const linkTo = {
   admin: adminRoutes(),
   login: '/login',
   register: '/register',
-  flower: '/flower',
+  follower: '/follower',
   feed: '/feed',
   chat: '/chat',
   profile: '/profile',

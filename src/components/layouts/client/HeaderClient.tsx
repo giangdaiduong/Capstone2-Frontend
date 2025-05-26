@@ -50,7 +50,7 @@ const useActiveNavigation = () => {
   const navItems: NavItemConfig[] = useMemo(
     () => [
       { id: 'home', href: linkTo.home, label: 'Trang chủ', icon: FaHome },
-      { id: 'flower', href: linkTo.flower, label: 'Người theo dõi', icon: FaUserPlus },
+      { id: 'flower', href: linkTo.follower, label: 'Người theo dõi', icon: FaUserPlus },
       { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore },
       { id: 'feed', href: linkTo.feed, label: 'Feed', icon: FaUsers },
     ],
