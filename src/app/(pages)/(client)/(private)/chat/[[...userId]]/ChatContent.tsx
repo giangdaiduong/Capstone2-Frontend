@@ -79,7 +79,7 @@ function ChatPageClient({
   };
 
   return (
-    <div className="w-[calc(100%-20rem)] h-[calc(100vh-250px)] flex flex-col">
+    <div className="w-full h-[calc(100vh-250px)] flex flex-col">
       <div className="flex items-center gap-3 p-4 border-b h-16">
         <Avatar>
           <AvatarImage src={receiver.avatar || '/placeholder.svg'} alt={receiver.fullName} />
