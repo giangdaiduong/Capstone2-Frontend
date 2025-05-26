@@ -5,12 +5,20 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { authOptions } from '@/lib/auth';
 import { AlertCircle } from 'lucide-react';
 import { getServerSession } from 'next-auth';
-import ChatPageClient from './page-client';
+import ChatPageClient from './ChatContent';
+import { UserType } from '@/types/UserType';
+import ChatLayout from './ChatLayout';
 
-type Params = Promise<{ userId: string }>;
+type Params = Promise<{ userId: string[] }>;
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { userId } = await params;
+
+  if (!userId) {
+    return {
+      title: `Danh sách chat`,
+    };
+  }
 
   const userRes = await (
     await httpServerApi()
@@ -35,6 +43,27 @@ async function ChatPage({ params }: { params: Params }) {
   const session = await getServerSession(authOptions);
   const senderId = session?.user.id;
 
+  const chatListRes = await (await httpServerApi()).execService({ id: ChatServiceIds.GetChatList });
+
+  if (!chatListRes.ok) {
+    return (
+      <Alert variant="destructive" className="max-w-md mx-auto">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Lỗi khi lấy danh sách chat!</AlertTitle>
+      </Alert>
+    );
+  }
+
+  const chatList = chatListRes.data as UserType[];
+
+  if (!receiverId) {
+    return (
+      <ChatLayout chatList={chatList}>
+        <></>
+      </ChatLayout>
+    );
+  }
+
   const userRes = await (
     await httpServerApi()
   ).execService({
@@ -57,7 +86,7 @@ async function ChatPage({ params }: { params: Params }) {
     await httpServerApi()
   ).execService({
     id: ChatServiceIds.GetChatMessages,
-    params: { senderId, receiverId },
+    params: { receiverId },
   });
 
   if (!res.ok) {
@@ -69,7 +98,11 @@ async function ChatPage({ params }: { params: Params }) {
     );
   }
 
-  return <ChatPageClient chatData={res.data} receiver={user} userId={senderId} />;
+  return (
+    <ChatLayout chatList={chatList}>
+      <ChatPageClient chatData={res.data} receiver={user} userId={senderId} />
+    </ChatLayout>
+  );
 }
 
 export default ChatPage;

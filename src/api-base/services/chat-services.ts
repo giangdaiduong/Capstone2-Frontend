@@ -16,13 +16,13 @@ export default [
   },
   {
     id: ChatServiceIds.GetChatMessages,
-    url: 'v1/api/client/Chat/{senderId}/{receiverId}',
+    url: 'v1/api/client/Chat/{receiverId}',
     method: MethodAPI.get,
     version: 1,
   },
   {
     id: ChatServiceIds.GetChatList,
-    url: 'api/Follow/following',
+    url: 'v1/api/client/Chat/list-chat',
     method: MethodAPI.get,
     version: 1,
   },

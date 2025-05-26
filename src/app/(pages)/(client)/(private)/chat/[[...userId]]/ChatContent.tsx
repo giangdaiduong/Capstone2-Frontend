@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
 import { httpPageApi } from '@/api-base';
 import { ChatServiceIds } from '@/api-base/services/chat-services';
-import { errorToast, successToast } from '@/lib/toastify';
+import { errorToast } from '@/lib/toastify';
 
 function ChatPageClient({
   chatData,
@@ -28,12 +28,12 @@ function ChatPageClient({
   const fetchLatestMessages = useCallback(async () => {
     const res = await httpPageApi.execService({
       id: ChatServiceIds.GetChatMessages,
-      params: { senderId: userId, receiverId: receiver.id },
+      params: { receiverId: receiver.id },
     });
     if (res.ok && Array.isArray(res.data)) {
       setMessages(res.data);
     }
-  }, [userId, receiver.id]);
+  }, [receiver.id]);
 
   useEffect(() => {
     intervalRef.current = setInterval(() => {
@@ -69,10 +69,7 @@ function ChatPageClient({
 
     if (!res.ok) {
       errorToast(res.data?.message || 'Lỗi khi gửi tin nhắn');
-      return;
     }
-
-    successToast(res.data?.message || 'Gửi tin nhắn thành công');
 
     if (intervalRef.current) clearInterval(intervalRef.current);
     await fetchLatestMessages();
@@ -82,8 +79,8 @@ function ChatPageClient({
   };
 
   return (
-    <div className="max-w-3xl mx-auto h-[calc(100vh-250px)] flex flex-col border border-t shadow">
-      <div className="flex items-center gap-3 p-4 border-b">
+    <div className="w-[calc(100%-20rem)] h-[calc(100vh-250px)] flex flex-col">
+      <div className="flex items-center gap-3 p-4 border-b h-16">
         <Avatar>
           <AvatarImage src={receiver.avatar || '/placeholder.svg'} alt={receiver.fullName} />
           <AvatarFallback>{receiver.fullName.charAt(0)}</AvatarFallback>
