@@ -1,11 +1,15 @@
 'use client';
 
+import { httpPageApi } from '@/api-base';
+import { IdeaServiceIds } from '@/api-base/services/idea-services';
+import ShowLoading from '@/components/layouts/Loading/ShowLoading';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { CloseAllToast, errorToast, successToast } from '@/lib/toastify';
 import { ArrowRight } from 'lucide-react';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useTransition } from 'react';
 
 const CRITERIA: { id: number; label: string; point: number }[] = [
   { id: 1, label: 'Tiêu đề (Ngắn gọn, rõ ràng, phản ánh nội dung)', point: 1 },
@@ -23,8 +27,9 @@ type ScoreState = {
   [id: number]: boolean;
 };
 
-function ScoringDialog({ ideaId, onClose }: { ideaId: string; onClose: () => void }) {
+function ScoringDialog({ ideaId, onClose, onSuccess }: { ideaId: string; onClose: () => void; onSuccess: () => void }) {
   const [checked, setChecked] = useState<ScoreState>({});
+  const [isPending, startTransition] = useTransition();
 
   const totalScore = useMemo(
     () => CRITERIA.reduce((sum, cri) => sum + (checked[cri.id] ? cri.point : 0), 0),
@@ -36,9 +41,17 @@ function ScoringDialog({ ideaId, onClose }: { ideaId: string; onClose: () => voi
   }, []);
 
   const handleSubmit = useCallback(() => {
-    alert(`Todo: Gửi điểm đánh giá cho ý tưởng: ${ideaId}\nTổng điểm: ${totalScore}`);
-    onClose();
-  }, [ideaId, totalScore, onClose]);
+    CloseAllToast();
+    startTransition(async () => {
+      const res = await httpPageApi.execService({ id: IdeaServiceIds.ApproveIdea, params: { ideaId } });
+      if (!res.ok) {
+        errorToast(res.data?.message || 'Lỗi khi duyệt ý tưởng!');
+        return;
+      }
+      successToast(res.data?.message || 'Duyệt ý tưởng thành công!');
+      onSuccess();
+    });
+  }, [ideaId, onSuccess]);
 
   return (
     <Dialog defaultOpen={true} onOpenChange={onClose}>
@@ -86,11 +99,12 @@ function ScoringDialog({ ideaId, onClose }: { ideaId: string; onClose: () => voi
           <Button variant="secondary" onClick={onClose}>
             Đóng
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSubmit}>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSubmit} disabled={totalScore < 7}>
             Duyệt
           </Button>
         </div>
       </DialogContent>
+      <ShowLoading isPending={isPending} />
     </Dialog>
   );
 }

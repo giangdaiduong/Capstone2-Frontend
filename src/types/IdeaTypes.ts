@@ -26,6 +26,7 @@ export type IdeaType = {
   updatedOn?: string | Date;
   updatedBy?: string;
   isDeleted: boolean;
+  isApproved: boolean;
   comments: IdeaCommentType[];
 };
 

@@ -16,6 +16,8 @@ import ScoringDialog from './ScoringDialog';
 function ReviewIdeaDialog({ idea, onClose }: { idea: IdeaType; onClose: () => void }) {
   const [isScoringDialogOpen, setIsScoringDialogOpen] = useState(false);
 
+  console.log(idea.status);
+
   return (
     <Dialog defaultOpen={true} onOpenChange={onClose}>
       <DialogContent
@@ -98,7 +100,11 @@ function ReviewIdeaDialog({ idea, onClose }: { idea: IdeaType; onClose: () => vo
         <Separator />
         <div className="p-4 flex justify-around">
           <Button variant="secondary">Liên hệ tác giả</Button>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setIsScoringDialogOpen(true)}>
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            onClick={() => setIsScoringDialogOpen(true)}
+            disabled={idea.isApproved}
+          >
             Chấm điểm
           </Button>
         </div>
@@ -107,6 +113,9 @@ function ReviewIdeaDialog({ idea, onClose }: { idea: IdeaType; onClose: () => vo
         <ScoringDialog
           ideaId={idea.id}
           onClose={() => {
+            setIsScoringDialogOpen(false);
+          }}
+          onSuccess={() => {
             setIsScoringDialogOpen(false);
             onClose();
           }}
