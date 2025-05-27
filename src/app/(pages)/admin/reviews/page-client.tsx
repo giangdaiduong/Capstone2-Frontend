@@ -16,12 +16,21 @@ import { Eye } from 'lucide-react';
 import { useState, useTransition, useEffect } from 'react';
 import ReviewIdeaDialog from './components/ReviewIdeaDialog';
 
+/**
+ * Client component for displaying and managing the review of ideas.
+ *
+ * @param props - Contains the list of ideas to be displayed and filtered.
+ * @returns A React component that renders a table of ideas with filtering and detail view functionality.
+ */
 const ReviewsPageClient = ({ ideas }: { ideas: IdeaType[] }) => {
   const [isPending, startTransition] = useTransition();
   const [ideaDetail, setIdeaDetail] = useState<IdeaType | null>(null);
   const [ideasFilter, setIdeasFilter] = useState<IdeaType[]>([]);
   const [status, setStatus] = useState<string>('all');
 
+  /**
+   * Filters the ideas list based on the selected status.
+   */
   useEffect(() => {
     if (status && status !== 'all') {
       setIdeasFilter(ideas?.filter(idea => idea.status === status) || []);
@@ -30,6 +39,11 @@ const ReviewsPageClient = ({ ideas }: { ideas: IdeaType[] }) => {
     }
   }, [status, ideas]);
 
+  /**
+   * Fetches and displays the details of a selected idea.
+   *
+   * @param id - The ID of the idea to be fetched.
+   */
   const handleView = (id: string) => {
     startTransition(async () => {
       const res = await httpPageApi.execService({ id: IdeaServiceIds.GetIdeaById, params: { ideaId: id } });
@@ -41,6 +55,9 @@ const ReviewsPageClient = ({ ideas }: { ideas: IdeaType[] }) => {
     });
   };
 
+  /**
+   * Column definitions for the DataTable component.
+   */
   const columns: ColumnDef<IdeaType>[] = [
     {
       accessorKey: 'title',
@@ -63,7 +80,9 @@ const ReviewsPageClient = ({ ideas }: { ideas: IdeaType[] }) => {
       accessorKey: 'description',
       header: ({ column }) => <DataTableColumnHeader column={column} title="Mô tả" />,
       cell: ({ row }) => (
-        <div className="max-w-[200px] break-words whitespace-pre-line line-clamp-2">{row.getValue('description')}</div>
+        <div className="max-w-[200px] break-words whitespace-pre-line line-clamp-2">
+          {row.getValue('description')}
+        </div>
       ),
     },
     {
@@ -72,8 +91,10 @@ const ReviewsPageClient = ({ ideas }: { ideas: IdeaType[] }) => {
       cell: ({ row }) => (
         <div className="w-[50px] text-center">
           <span className={`px-3 py-1 text-sm font-medium rounded-md ${getStatusStyle(row.original.status)}`}>
-            {IdeaStatus.find((status: { key: string; value: string }) => status.key === row.original.status)?.value ||
-              'Chưa xác định'}
+            {
+              IdeaStatus.find((status: { key: string; value: string }) => status.key === row.original.status)
+                ?.value || 'Chưa xác định'
+            }
           </span>
         </div>
       ),
@@ -124,6 +145,12 @@ const ReviewsPageClient = ({ ideas }: { ideas: IdeaType[] }) => {
 
 export default ReviewsPageClient;
 
+/**
+ * Returns the appropriate CSS class for a given status value.
+ *
+ * @param status - The status key of the idea.
+ * @returns A string containing the CSS class names for styling the status badge.
+ */
 const getStatusStyle = (status: string) => {
   switch (status) {
     case 'pending':
