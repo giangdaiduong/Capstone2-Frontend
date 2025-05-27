@@ -36,8 +36,6 @@ async function FeedPage() {
 
   const ideas = feedRes.data as IdeaType[];
 
-  console.log(feedRes.data);
-
   return (
     <div className="rounded-lg border border-indigo-300 overflow-hidden">
       <div className="bg-gradient-to-r from-indigo-600 to-pink-100 text-white p-4">

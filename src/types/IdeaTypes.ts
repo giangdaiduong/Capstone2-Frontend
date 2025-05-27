@@ -7,6 +7,7 @@ export type IdeaType = {
   description: string;
   initiator: string;
   category: string;
+  categoryId: string;
   imageUrls: string;
   status: string;
   stage: string;
@@ -15,6 +16,8 @@ export type IdeaType = {
   copyrightCertificate?: string;
   price?: number;
   isForSale?: boolean;
+  isPublic?: boolean;
+  collaborationType?: string;
   investor: string;
   investmentDate?: string | Date;
   totalViews: number;
@@ -66,4 +69,22 @@ export const createIdeaSchema = z.object({
   isPublic: z.boolean(),
   stage: z.string(),
   region: z.string(),
+});
+
+export const editIdeaSchema = z.object({
+  title: z
+    .string({ required_error: 'Tiêu đề không được để trống' })
+    .max(250, 'Tiêu đề tối đa 250 ký tự')
+    .nonempty('Tiêu đề không được để trống'),
+  categoryId: z.string(),
+  description: z
+    .string({ required_error: 'Nội dung chi tiết không được để trống' })
+    .nonempty('Nội dung chi tiết không được để trống'),
+  imageUrls: z.string().optional().nullable(),
+  copyrightStatus: z.boolean(),
+  copyrightCertificate: z.string().optional().nullable(),
+  price: z.number({ invalid_type_error: 'Giá phải là số' }).optional().nullable(),
+  isForSale: z.boolean(),
+  status: z.string(),
+  isPublic: z.boolean(),
 });

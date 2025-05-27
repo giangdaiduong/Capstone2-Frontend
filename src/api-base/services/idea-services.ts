@@ -8,6 +8,7 @@ export enum IdeaServiceIds {
   DislikeIdea = 'idea.dislikeIdea',
   GetIdeaById = 'idea.getIdeaById',
   CreateIdea = 'idea.createIdea',
+  UpdateIdea = 'idea.updateIdea',
   ApproveIdea = 'idea.approveIdea',
   GetIdeaByUserId = 'idea.getIdeaByUserId',
   ReportIdea = 'idea.reportIdea',
@@ -48,6 +49,12 @@ export default [
     id: IdeaServiceIds.CreateIdea,
     url: 'v1/api/client/Ideas',
     method: MethodAPI.post,
+    version: 1,
+  },
+  {
+    id: IdeaServiceIds.UpdateIdea,
+    url: 'v1/api/client/Ideas/{ideaId}',
+    method: MethodAPI.patch,
     version: 1,
   },
   {
