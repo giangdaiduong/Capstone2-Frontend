@@ -122,7 +122,7 @@ async function ProfilePage({ params }: { params: Params }) {
 
         <div className="p-4 flex flex-col gap-4 items-center">
           {ideas.map(idea => (
-            <IdeaPublicCard key={idea.ideaCode} idea={idea} />
+            <IdeaPublicCard key={idea.ideaCode} idea={idea} user={user} />
           ))}
         </div>
       </div>
