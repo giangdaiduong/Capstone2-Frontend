@@ -40,6 +40,8 @@ function EditIdeaPageClient({ categories, idea }: { categories: CategoryType[]; 
       title: idea.title || '',
       description: idea.description || '',
       categoryId: idea.categoryId || categories[0].id,
+      copyrightStatus: idea.copyrightStatus || false,
+      copyrightCertificate: idea.copyrightCertificate || '',
       imageUrls: idea.imageUrls || '',
       status: idea.status || IdeaStatus[0].key,
       price: idea.price || 0,
@@ -62,7 +64,16 @@ function EditIdeaPageClient({ categories, idea }: { categories: CategoryType[]; 
         imageUrlsToSend = data.imageUrls;
       } else {
         // Nếu là dạng link thì bỏ hoặc gán null (không gửi image)
-        imageUrlsToSend = null;
+        imageUrlsToSend = 'NOT_CHANGE';
+      }
+
+      let copyrightCertificateToSend: string | null = null;
+      if (data.copyrightCertificate && data.copyrightCertificate.startsWith('data:image')) {
+        // Trường hợp base64, giữ nguyên
+        copyrightCertificateToSend = data.copyrightCertificate;
+      } else {
+        // Nếu là dạng link thì bỏ hoặc gán null (không gửi image)
+        copyrightCertificateToSend = 'NOT_CHANGE';
       }
 
       const res = await httpPageApi.execService(
@@ -71,15 +82,16 @@ function EditIdeaPageClient({ categories, idea }: { categories: CategoryType[]; 
           ...data,
           updatedBy: session?.user?.id,
           imageUrls: imageUrlsToSend,
+          copyrightCertificate: copyrightCertificateToSend,
         }
       );
 
       if (!res.ok) {
-        errorToast(res.data?.message || 'Lỗi khi tạo ý tưởng');
+        errorToast(res.data?.message || 'Lỗi khi cập nhật ý tưởng');
         return;
       }
 
-      successToast(res.data?.message || 'Tạo ý tưởng thành công');
+      successToast(res.data?.message || 'Cập nhật ý tưởng thành công');
       router.push(linkTo.user.ideas.base);
     });
   };
