@@ -56,11 +56,21 @@ function EditIdeaPageClient({ categories, idea }: { categories: CategoryType[]; 
     }
 
     startTransition(async () => {
+      let imageUrlsToSend: string | null = null;
+      if (data.imageUrls && data.imageUrls.startsWith('data:image')) {
+        // Trường hợp base64, giữ nguyên
+        imageUrlsToSend = data.imageUrls;
+      } else {
+        // Nếu là dạng link thì bỏ hoặc gán null (không gửi image)
+        imageUrlsToSend = null;
+      }
+
       const res = await httpPageApi.execService(
-        { id: IdeaServiceIds.UpdateIdea },
+        { id: IdeaServiceIds.UpdateIdea, params: { ideaId: idea.id } },
         {
           ...data,
           updatedBy: session?.user?.id,
+          imageUrls: imageUrlsToSend,
         }
       );
 
