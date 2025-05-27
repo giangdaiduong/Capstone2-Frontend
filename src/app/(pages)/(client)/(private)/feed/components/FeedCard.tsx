@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useTransition } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { IdeaType } from '@/types/IdeaTypes';
 import { UserType } from '@/types/UserType';
@@ -17,7 +17,7 @@ import linkTo from '@/utils/linkTo';
 import { Button } from '@/components/ui/button';
 import ShowLoading from '@/components/layouts/Loading/ShowLoading';
 
-function IdeaPublicCard({ idea, user }: { idea: IdeaType; user: UserType }) {
+function FeedCard({ idea, user }: { idea: IdeaType; user: UserType }) {
   const [isLiked, setIsLiked] = useState(false);
   const [totalLikes, setTotalLikes] = useState(idea.totalLikes);
   const [isPending, startTransition] = useTransition();
@@ -62,11 +62,10 @@ function IdeaPublicCard({ idea, user }: { idea: IdeaType; user: UserType }) {
       <CardHeader>
         <div className="flex items-center gap-4">
           <Avatar>
-            <AvatarImage src={user.avatar || '/user.webp'} alt={user.fullName} />
-            <AvatarFallback>{user.fullName.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{idea.initiator.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <CardTitle className="font-bold text-xl truncate">{user.fullName}</CardTitle>
+            <CardTitle className="font-bold text-xl truncate">{idea.initiator}</CardTitle>
             <p className="px-1 text-sm text-gray-500">{formatDate(idea.createdOn, 'dd/MM/yyyy')}</p>
           </div>
         </div>
@@ -110,4 +109,4 @@ function IdeaPublicCard({ idea, user }: { idea: IdeaType; user: UserType }) {
   );
 }
 
-export default IdeaPublicCard;
+export default FeedCard;

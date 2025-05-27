@@ -84,7 +84,7 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
         </div>
       </div>
       <div className="text-gray-600 mb-3">
-        <strong>Tóm tắt ý tưởng</strong>:<p>{idea.description}</p>
+        <strong>Tóm tắt ý tưởng</strong>:<div className="whitespace-pre-line">{idea.description}</div>
       </div>
       <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
         <div className="flex flex-col md:flex-row gap-4">

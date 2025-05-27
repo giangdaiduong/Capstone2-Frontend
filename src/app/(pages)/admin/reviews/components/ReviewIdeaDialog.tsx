@@ -16,8 +16,6 @@ import ScoringDialog from './ScoringDialog';
 function ReviewIdeaDialog({ idea, onClose }: { idea: IdeaType; onClose: () => void }) {
   const [isScoringDialogOpen, setIsScoringDialogOpen] = useState(false);
 
-  console.log(idea.status);
-
   return (
     <Dialog defaultOpen={true} onOpenChange={onClose}>
       <DialogContent
@@ -82,7 +80,7 @@ function ReviewIdeaDialog({ idea, onClose }: { idea: IdeaType; onClose: () => vo
         <Separator />
         <div className="p-4 space-y-4">
           <div className="text-xl font-bold text-blue-800">Nội dung ý tưởng:</div>
-          <div className="text-md">{idea.description}</div>
+          <div className="text-md whitespace-pre-line">{idea.description}</div>
           <div>
             <h4 className="text-lg font-bold">Hình ảnh minh hoạ</h4>
             <Image src={idea.imageUrls} alt={idea.title} width={500} height={500} />

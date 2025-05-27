@@ -98,7 +98,9 @@ export default async function IdeasDetailPage({ params }: { params: Params }) {
         <CardHeader>
           <h2 className="text-2xl font-bold text-blue-700">Nội dung ý tưởng</h2>
         </CardHeader>
-        <CardContent>{idea.description}</CardContent>
+        <CardContent>
+          <div className="whitespace-pre-line">{idea.description}</div>
+        </CardContent>
         <CardFooter>
           <div>
             <h4 className="text-lg font-bold">Hình ảnh minh hoạ</h4>

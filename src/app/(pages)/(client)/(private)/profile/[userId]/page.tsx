@@ -66,8 +66,6 @@ async function ProfilePage({ params }: { params: Params }) {
   const user = userRes.data as UserType;
   const ideas = ideaRes.data as IdeaType[];
 
-  console.log(ideas);
-
   return (
     <div className="mx-auto space-y-6">
       {/* Thông tin cá nhân */}
