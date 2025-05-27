@@ -11,16 +11,25 @@ import { CloseAllToast, errorToast, successToast } from '@/lib/toastify';
 import { httpPageApi } from '@/api-base';
 import { IdeaServiceIds } from '@/api-base/services/idea-services';
 import { AiFillDislike, AiFillLike } from 'react-icons/ai';
-import { FaComments, FaStar } from 'react-icons/fa';
+import { FaComments, FaEllipsisV, FaStar } from 'react-icons/fa';
 import Link from 'next/link';
 import linkTo from '@/utils/linkTo';
 import { Button } from '@/components/ui/button';
 import ShowLoading from '@/components/layouts/Loading/ShowLoading';
+import { FeedServiceIds } from '@/api-base/services/feed-services';
+import { useRouter } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 function IdeaPublicCard({ idea, user }: { idea: IdeaType; user: UserType }) {
   const [isLiked, setIsLiked] = useState(false);
   const [totalLikes, setTotalLikes] = useState(idea.totalLikes);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleLikeClick = () => {
     CloseAllToast();
@@ -57,18 +66,68 @@ function IdeaPublicCard({ idea, user }: { idea: IdeaType; user: UserType }) {
     });
   };
 
+  const handleHideClick = () => {
+    CloseAllToast();
+    startTransition(async () => {
+      const res = await httpPageApi.execService({
+        id: FeedServiceIds.HideFeeds,
+        params: { ideaId: idea.id },
+      });
+
+      if (!res.ok) {
+        errorToast(res?.data?.message || 'Lỗi khi ẩn bài viết');
+        return;
+      }
+
+      successToast('Ẩn bài viết thành công');
+    });
+
+    router.refresh();
+  };
+
+  const handleMarkAsReadClick = () => {
+    CloseAllToast();
+    startTransition(async () => {
+      const res = await httpPageApi.execService({
+        id: FeedServiceIds.ReadFeeds,
+        params: { ideaId: idea.id },
+      });
+
+      if (!res.ok) {
+        errorToast(res?.data?.message || 'Lỗi khi đánh dấu đã đọc');
+        return;
+      }
+
+      successToast('Đánh dấu đã đọc thành công');
+    });
+    router.refresh();
+  };
+
   return (
     <Card className="w-[clamp(500px,75%,100%)]">
       <CardHeader>
-        <div className="flex items-center gap-4">
-          <Avatar>
-            <AvatarImage src={user.avatar || '/user.webp'} alt={user.fullName} />
-            <AvatarFallback>{user.fullName.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1">
-            <CardTitle className="font-bold text-xl truncate">{user.fullName}</CardTitle>
-            <p className="px-1 text-sm text-gray-500">{formatDate(idea.createdOn, 'dd/MM/yyyy')}</p>
+        <div className="flex justify-between items-start">
+          <div className="flex items-center gap-4">
+            <Avatar>
+              <AvatarImage src={user.avatar || '/user.webp'} alt={user.fullName} />
+              <AvatarFallback>{user.fullName.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <CardTitle className="font-bold text-xl truncate">{user.fullName}</CardTitle>
+              <p className="px-1 text-sm text-gray-500">{formatDate(idea.createdOn, 'dd/MM/yyyy')}</p>
+            </div>
           </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant={'outline'}>
+                <FaEllipsisV />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={handleHideClick}>Ẩn bài viết</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleMarkAsReadClick}>Đánh dấu đã đọc</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </CardHeader>
       <CardContent>

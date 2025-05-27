@@ -36,6 +36,8 @@ async function FeedPage() {
 
   const ideas = feedRes.data as IdeaType[];
 
+  console.log(feedRes.data);
+
   return (
     <div className="rounded-lg border border-indigo-300 overflow-hidden">
       <div className="bg-gradient-to-r from-indigo-600 to-pink-100 text-white p-4">
@@ -45,9 +47,11 @@ async function FeedPage() {
       </div>
 
       <div className="p-4 flex flex-col gap-4 items-center">
-        {ideas.map(idea => (
-          <FeedCard key={idea.ideaCode} idea={idea} user={user} />
-        ))}
+        {ideas.length > 0 ? (
+          ideas.map(idea => <FeedCard key={idea.ideaCode} idea={idea} user={user} />)
+        ) : (
+          <div className="text-center text-gray-500">Không có bài viết nào</div>
+        )}
       </div>
     </div>
   );

@@ -16,13 +16,13 @@ export default [
   },
   {
     id: FeedServiceIds.ReadFeeds,
-    url: 'api/Feed/read',
+    url: 'api/Feed/read/{ideaId}',
     method: MethodAPI.post,
     version: 1,
   },
   {
     id: FeedServiceIds.HideFeeds,
-    url: 'api/Feed/hide',
+    url: 'api/Feed/hide/{ideaId}',
     method: MethodAPI.post,
     version: 1,
   },
