@@ -24,7 +24,6 @@ import {
 import { Session } from 'next-auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import clsx from 'clsx';
-import { UserRole } from '@/utils/constants';
 
 const useActiveNavigation = () => {
   const pathname = usePathname();
@@ -75,16 +74,13 @@ const UserAuthSection = memo(({ session }: UserAuthSectionProps) => {
       { id: 'separator-1', isSeparator: true },
     ];
 
-    if (session?.user?.roleName === UserRole.Admin) {
-      items.push({
-        id: 'dashboard',
-        label: 'Trang quản trị',
-        icon: FaHome,
-        href: linkTo.admin.dashboard,
-      });
-    }
-
     items.push(
+      {
+        id: 'home',
+        label: 'Trang chủ',
+        icon: FaHome,
+        href: linkTo.home,
+      },
       {
         id: 'manage-account',
         label: 'Quản lý tài khoản',

@@ -93,7 +93,7 @@ export default function IdeasDetailPageClient({ idea }: { idea: IdeaType }) {
   );
 }
 
-const CommentItem = ({
+export const CommentItem = ({
   comment,
   canReply = false,
   userId,

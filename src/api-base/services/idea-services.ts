@@ -8,9 +8,11 @@ export enum IdeaServiceIds {
   DislikeIdea = 'idea.dislikeIdea',
   GetIdeaById = 'idea.getIdeaById',
   CreateIdea = 'idea.createIdea',
+  UpdateIdea = 'idea.updateIdea',
   ApproveIdea = 'idea.approveIdea',
   GetIdeaByUserId = 'idea.getIdeaByUserId',
   ReportIdea = 'idea.reportIdea',
+  GetTopIdeas = 'idea.getTopIdeas',
 }
 
 export default [
@@ -51,6 +53,12 @@ export default [
     version: 1,
   },
   {
+    id: IdeaServiceIds.UpdateIdea,
+    url: 'v1/api/client/Ideas/{ideaId}',
+    method: MethodAPI.patch,
+    version: 1,
+  },
+  {
     id: IdeaServiceIds.ApproveIdea,
     url: 'v1/api/client/Ideas/approve?ideaId={ideaId}',
     method: MethodAPI.patch,
@@ -66,6 +74,12 @@ export default [
     id: IdeaServiceIds.ReportIdea,
     url: 'v1/api/client/Ideas/report?ideaId={ideaId}',
     method: MethodAPI.post,
+    version: 1,
+  },
+  {
+    id: IdeaServiceIds.GetTopIdeas,
+    url: 'v1/api/client/Ideas/top-rated',
+    method: MethodAPI.get,
     version: 1,
   },
 ] as ServiceApi[];

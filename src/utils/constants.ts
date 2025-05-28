@@ -106,3 +106,39 @@ export enum UserRole {
   Investor = 'Investor',
   Founder = 'Founder',
 }
+
+export const PHILOSOPHIES = [
+  {
+    avatar: '/philosophy/steve-jobs.jpg',
+    quote:
+      '“Đừng để tiếng ồn từ những ý kiến khác nhấn chìm tiếng nói sâu thẳm trong lòng bạn. Và điều quan trọng nhất là hãy can đảm để đi theo tiếng gọi của trái tim và trực giác của mình”',
+    name: 'Mr. Steve Job',
+    position: 'Cựu CEO Apple',
+  },
+  {
+    avatar: '/philosophy/jeff-bezos.jpeg',
+    quote: '“Nếu bạn không muốn bị hiểu lầm hay chỉ trích, thì hãy làm ơn, đừng làm gì mới mẻ hay sáng tạo cả”',
+    name: 'Mr. Jeff Bezos',
+    position: 'Ông chủ bán hàng trực tuyến Amazon',
+  },
+  {
+    avatar: '/philosophy/pham-nhat-vuong.jpeg',
+    quote:
+      '“Lỡ làm người, rồi không thể sống một cuộc đời phí hoài được” “Mục tiêu của tôi không có gì thay đổi, về bản chất vẫn là làm đẹp cho đời”',
+    name: 'Ông Phạm Nhật Vượng',
+    position: 'Tỷ phú - Chủ tịch tập đoàn Vingroup',
+  },
+  {
+    avatar: '/philosophy/elon-musk.webp',
+    quote:
+      '“Tôi nghĩ đó là điều quan trọng để có một công việc mà bạn thực sự yêu thích. Nếu không, bạn sẽ không bao giờ cảm thấy vui vẻ.”',
+    name: 'Mr. Elon Musk',
+    position: 'CEO Tesla và SpaceX',
+  },
+  {
+    avatar: '/philosophy/bill-gates.webp',
+    quote: '“Thành công là một người thầy tồi tệ. Nó quyến rũ những người thông minh nghĩ rằng họ không thể thất bại.”',
+    name: 'Mr. Bill Gates',
+    position: 'Nhà sáng lập Microsoft',
+  },
+];

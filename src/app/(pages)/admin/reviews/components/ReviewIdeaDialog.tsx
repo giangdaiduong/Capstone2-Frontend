@@ -78,7 +78,7 @@ function ReviewIdeaDialog({ idea, onClose }: { idea: IdeaType; onClose: () => vo
           </div>
         </DialogHeader>
         <Separator />
-        <div className="p-4 space-y-4">
+        <div className="p-4 space-y-4 overflow-y-auto max-h-[calc(100vh-500px)]">
           <div className="text-xl font-bold text-blue-800">Nội dung ý tưởng:</div>
           <div className="text-md whitespace-pre-line">{idea.description}</div>
           <div>

@@ -17,7 +17,7 @@ const ideaRoutes = (base: string) => {
     base: ideaBase,
     create: `${ideaBase}/create`,
     detail: `${ideaBase}/[ideaCode]`,
-    edit: `${ideaBase}/[ideaCode]/edit`,
+    edit: `${ideaBase}/edit/[ideaCode]`,
   };
 };
 
@@ -39,6 +39,7 @@ const linkTo = {
   register: '/register',
   follower: '/follower',
   feed: '/feed',
+  newsFeed: '/news-feed',
   chat: '/chat',
   profile: '/profile',
   refreshToken: '/refresh-token',

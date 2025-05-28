@@ -5,7 +5,6 @@ import { useState, useTransition } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { IdeaType } from '@/types/IdeaTypes';
-import { UserType } from '@/types/UserType';
 import { formatDate } from 'date-fns';
 import { CloseAllToast, errorToast, successToast } from '@/lib/toastify';
 import { httpPageApi } from '@/api-base';
@@ -24,11 +23,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
 import { FeedServiceIds } from '@/api-base/services/feed-services';
+import IdeaDetailDialog from './IdeaDetailDialog';
 
-function FeedCard({ idea, user }: { idea: IdeaType; user: UserType }) {
+function FeedCard({ idea }: { idea: IdeaType }) {
   const [isLiked, setIsLiked] = useState(false);
   const [totalLikes, setTotalLikes] = useState(idea.totalLikes);
   const [isPending, startTransition] = useTransition();
+  const [isOpenDialog, setIsOpenDialog] = useState(false);
   const router = useRouter();
 
   const handleLikeClick = () => {
@@ -64,25 +65,6 @@ function FeedCard({ idea, user }: { idea: IdeaType; user: UserType }) {
         setTotalLikes(totalLikes + 1);
       }
     });
-  };
-
-  const handleReportClick = () => {
-    CloseAllToast();
-    startTransition(async () => {
-      const res = await httpPageApi.execService({
-        id: IdeaServiceIds.ReportIdea,
-        params: { ideaId: idea.id },
-      });
-
-      if (!res.ok) {
-        errorToast(res?.data?.message || 'Lỗi khi báo cáo bài viết');
-        return;
-      }
-
-      successToast('Báo cáo bài viết thành công');
-    });
-
-    router.refresh();
   };
 
   const handleHideClick = () => {
@@ -165,9 +147,9 @@ function FeedCard({ idea, user }: { idea: IdeaType; user: UserType }) {
             >
               {isLiked ? <AiFillDislike /> : <AiFillLike />} {totalLikes} Lượt thích
             </span>
-            <span className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md h-fit bg-gray-500 text-white">
+            <Button className="bg-gray-500 hover:bg-gray-600 text-white" onClick={() => setIsOpenDialog(true)}>
               <FaComments /> {idea.totalComments} Bình luận
-            </span>
+            </Button>
             <span className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md h-fit text-yellow-500">
               <FaStar /> {idea.totalRatings} Điểm đánh giá
             </span>
@@ -176,19 +158,11 @@ function FeedCard({ idea, user }: { idea: IdeaType; user: UserType }) {
             <Link href={linkTo.user.ideas.detail.replace('[ideaCode]', idea.id)} className="cursor-pointer">
               <Button variant={'outline'}>Xem chi tiết</Button>
             </Link>
-            {user.id === idea.createdBy ? (
-              <Link href={linkTo.user.ideas.edit.replace('[ideaCode]', idea.id)} className="cursor-pointer">
-                <Button variant={'outline'}>Chỉnh sửa</Button>
-              </Link>
-            ) : (
-              <Button variant={'destructive'} onClick={handleReportClick}>
-                Báo cáo
-              </Button>
-            )}
           </div>
         </div>
       </CardContent>
       <ShowLoading isPending={isPending} />
+      {isOpenDialog && <IdeaDetailDialog ideaId={idea.id} onClose={() => setIsOpenDialog(false)} />}
     </Card>
   );
 }

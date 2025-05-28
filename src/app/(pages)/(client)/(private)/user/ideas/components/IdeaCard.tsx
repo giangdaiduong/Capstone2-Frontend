@@ -108,7 +108,7 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
             <Button variant={'outline'}>Xem chi tiết</Button>
           </Link>
           {session?.user?.id === idea.createdBy && (
-            <Link href={''} className="cursor-pointer">
+            <Link href={linkTo.user.ideas.edit.replace('[ideaCode]', idea.id)} className="cursor-pointer">
               <Button variant={'outline'}>Chỉnh sửa</Button>
             </Link>
           )}
