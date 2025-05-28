@@ -6,6 +6,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { RoleServiceIds } from '@/api-base/services/role-services';
 import { RoleType } from '@/types/RoleTypes';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Quản lý tài khoản',
@@ -14,16 +16,19 @@ export const metadata: Metadata = {
 async function UserProfilePage() {
   const session = await getServerSession(authOptions);
 
-  const res = await httpServerApi.execService({ id: UserServiceIds.GetUserProfile }, { id: session?.user.id });
+  const res = await (
+    await httpServerApi()
+  ).execService({ id: UserServiceIds.GetUserProfile }, { id: session?.user.id });
 
-  if (!res.ok) {
-    throw new Error('Lỗi khi lấy thông tin tài khoản');
-  }
+  const resRoles = await (await httpServerApi()).execService({ id: RoleServiceIds.GetPublicRoles });
 
-  const resRoles = await httpServerApi.execService({ id: RoleServiceIds.GetPublicRoles });
-
-  if (!resRoles.ok) {
-    throw new Error(resRoles?.data?.message || 'Lỗi khi lấy danh sách vai trò');
+  if (!res.ok || !resRoles.ok) {
+    return (
+      <Alert variant="destructive" className="max-w-md mx-auto">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Lỗi khi lấy thông tin tài khoản</AlertTitle>
+      </Alert>
+    );
   }
 
   const roles = resRoles.data as RoleType[];
