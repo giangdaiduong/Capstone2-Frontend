@@ -6,6 +6,8 @@ export enum UserServiceIds {
   DeleteUser = 'user.deleteUser',
   GetUserById = 'user.getUserById',
   GetUserProfileById = 'user.getUserProfileById',
+  GetUserProfile = 'user.getUserProfile',
+  UpdateUserProfile = 'user.updateUserProfile',
 }
 
 export default [
@@ -31,6 +33,18 @@ export default [
     id: UserServiceIds.GetUserProfileById,
     url: 'v1/api/client/Users/profile/{id}',
     method: MethodAPI.get,
+    version: 1,
+  },
+  {
+    id: UserServiceIds.GetUserProfile,
+    url: 'v1/api/client/Users/get-by-id',
+    method: MethodAPI.get,
+    version: 1,
+  },
+  {
+    id: UserServiceIds.UpdateUserProfile,
+    url: 'v1/api/client/Users/{id}',
+    method: MethodAPI.patch,
     version: 1,
   },
 ] as ServiceApi[];

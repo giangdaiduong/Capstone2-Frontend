@@ -103,6 +103,7 @@ function RegisterPageClient({ role }: { role: RoleType }) {
         setIsOpenDialog(true);
       } catch (error) {
         console.error(error);
+        errorToast(error instanceof Error ? error.message : 'Đã xảy ra lỗi');
       }
     });
   };

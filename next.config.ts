@@ -1,5 +1,5 @@
-import linkTo from '@/utils/linkTo';
 import type { NextConfig } from 'next';
+import linkTo from '@/utils/linkTo';
 
 const nextConfig: NextConfig = {
   redirects: async () => {
