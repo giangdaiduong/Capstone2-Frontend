@@ -10,6 +10,8 @@ export type UserType = BaseEntity & {
   address: string;
   avatar: string;
   cccd: string;
+  birthday: Date;
+  roleId: string;
   cccdFront: string;
   cccdBack: string;
   createdOn: string;

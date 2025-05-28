@@ -18,7 +18,7 @@ async function handleProxy(request: NextRequest, path: string[]) {
   try {
     // Get session from next-auth
     const session = await getServerSession(authOptions);
-    const token = session?.token;
+    const token = session?.accessToken;
     const headers = new Headers(request.headers);
 
     if (token) {

@@ -2,10 +2,11 @@ import type { DriverInformation, ServiceApi } from '@alvin0/http-driver/dist/uti
 
 import authService from './services/auth-services';
 import roleService from './services/role-services';
+import userService from './services/user-services';
 
 const baseURL: string = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api') + '/proxy';
 
-export const services: ServiceApi[] = [...authService, ...roleService];
+export const services: ServiceApi[] = [...authService, ...roleService, ...userService];
 
 const driveConfig: DriverInformation = {
   baseURL: baseURL,
