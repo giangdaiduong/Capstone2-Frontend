@@ -1,9 +1,8 @@
 'use client';
 
-import { AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserType } from '@/types/UserType';
 import { RoleType } from '@/types/RoleTypes';
-import { Avatar } from '@radix-ui/react-avatar';
 import { formatDate } from 'date-fns';
 import { format } from 'date-fns';
 import { z } from 'zod';
