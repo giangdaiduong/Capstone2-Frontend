@@ -21,6 +21,12 @@ const CRITERIA: { id: number; label: string; point: number }[] = [
   { id: 7, label: 'Không vi phạm nội dung cấm (Không vi phạm đạo đức, pháp luật)', point: 1 },
   { id: 8, label: 'Định dạng chuẩn (Đảm bảo đúng yêu cầu trình bày)', point: 1 },
   { id: 9, label: 'Các giấy tờ liên quan khác (Có các giấy tờ khác liên quan đến ý tưởng)', point: 1 },
+  {
+    id: 10,
+    label:
+      'Phân tích vấn đề rõ ràng  (Bài đăng thể hiện rõ vấn đề cần giải quyết, bối cảnh cụ thể, lý do hình thành ý tưởng.)',
+    point: 1,
+  },
 ];
 
 type ScoreState = {
@@ -55,7 +61,7 @@ function ScoringDialog({ ideaId, onClose, onSuccess }: { ideaId: string; onClose
 
   return (
     <Dialog defaultOpen={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="sm:max-w-3xl max-h-[calc(100vh-100px)] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center font-bold text-2xl">Chấm điểm và xét duyệt đăng bài ý tưởng</DialogTitle>
         </DialogHeader>

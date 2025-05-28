@@ -4,10 +4,6 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { IdeaType } from '@/types/IdeaTypes';
 import { AlertCircle } from 'lucide-react';
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import linkTo from '@/utils/linkTo';
 import FeedCard from './components/FeedCard';
 
 export const metadata: Metadata = {
@@ -15,14 +11,6 @@ export const metadata: Metadata = {
 };
 
 async function FeedPage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect(linkTo.login);
-  }
-
-  const user = session.user;
-
   const feedRes = await (await httpServerApi()).execService({ id: FeedServiceIds.GetFeeds });
 
   if (!feedRes.ok) {
@@ -46,7 +34,7 @@ async function FeedPage() {
 
       <div className="p-4 flex flex-col gap-4 items-center">
         {ideas.length > 0 ? (
-          ideas.map(idea => <FeedCard key={idea.ideaCode} idea={idea} user={user} />)
+          ideas.map(idea => <FeedCard key={idea.ideaCode} idea={idea} />)
         ) : (
           <div className="text-center text-gray-500">Không có bài viết nào</div>
         )}

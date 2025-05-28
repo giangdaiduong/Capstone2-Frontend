@@ -15,6 +15,7 @@ import {
   FaPowerOff,
   FaUserCircle,
   FaKey,
+  FaRegNewspaper,
 } from 'react-icons/fa';
 import { RxSlash } from 'react-icons/rx';
 import clsx from 'clsx'; // Utility for conditionally joining CSS class names
@@ -51,6 +52,7 @@ const useActiveNavigation = () => {
     () => [
       { id: 'home', href: linkTo.home, label: 'Trang chủ', icon: FaHome },
       { id: 'flower', href: linkTo.follower, label: 'Người theo dõi', icon: FaUserPlus },
+      { id: 'new-feed', href: linkTo.newsFeed, label: 'News Feed', icon: FaRegNewspaper },
       { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore },
       { id: 'feed', href: linkTo.feed, label: 'Feed', icon: FaUsers },
     ],

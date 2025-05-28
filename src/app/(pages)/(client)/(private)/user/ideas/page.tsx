@@ -1,56 +1,64 @@
 import { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
-import { PlusIcon } from 'lucide-react';
+import { AlertCircle, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import linkTo from '@/utils/linkTo';
 import { httpServerApi } from '@/api-base';
 import { IdeaServiceIds } from '@/api-base/services/idea-services';
-import { GetIdeaResponseType } from '@/types/IdeaTypes';
-import IdeaPageClient from './page-client';
-import { PAGE_SIZE } from '@/utils/constants';
+import { IdeaType } from '@/types/IdeaTypes';
 import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import IdeaCard from './components/IdeaCard';
+import { Alert, AlertTitle } from '@/components/ui/alert';
 
 export const metadata: Metadata = {
   title: 'Ý tưởng đã đăng',
 };
 
-type SearchParams = Promise<{ page: string }>;
+async function IdeaPage() {
+  const session = await getServerSession(authOptions);
 
-async function IdeaPage({ searchParams }: { searchParams: SearchParams }) {
-  const { page } = await searchParams;
-  const pageNum = parseInt(page || '1', 10);
-
-  if (!page || isNaN(pageNum) || pageNum < 1) {
-    redirect(`${linkTo.user.ideas.base}?page=1`);
+  if (!session) {
+    redirect(linkTo.login);
   }
 
   const res = await (
     await httpServerApi()
-  ).execService(
-    { id: IdeaServiceIds.GetPublicIdeas },
-    {
-      PageIndex: pageNum - 1,
-      PageSize: PAGE_SIZE,
-    }
-  );
+  ).execService({ id: IdeaServiceIds.GetIdeaByUserId }, { userId: session.user.id });
 
   if (!res.ok) {
-    throw new Error(res?.data?.message || 'Lỗi khi lấy danh sách ý tưởng đã đăng');
+    return (
+      <Alert variant="destructive" className="max-w-md mx-auto">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Lỗi khi lấy danh sách ý tưởng</AlertTitle>
+      </Alert>
+    );
   }
 
-  const ideasRes = res.data as GetIdeaResponseType;
+  const ideasRes = res.data as IdeaType[];
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
-        <h1 className="text-2xl font-bold">Danh sách ý tưởng đã đăng</h1>
+        <h1 className="text-2xl font-bold">Ý tưởng của tôi</h1>
         <Link href={linkTo.user.ideas.create}>
           <Button>
             <PlusIcon /> Đăng ý tưởng mới
           </Button>
         </Link>
       </div>
-      <IdeaPageClient ideasRes={ideasRes} />
+      {ideasRes.length > 0 ? (
+        <>
+          {ideasRes.map(idea => {
+            return <IdeaCard key={idea.id} idea={idea} />;
+          })}
+        </>
+      ) : (
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-bold text-center">Không có ý tưởng đã đăng</h2>
+        </div>
+      )}
     </div>
   );
 }

@@ -39,6 +39,7 @@ const linkTo = {
   register: '/register',
   follower: '/follower',
   feed: '/feed',
+  newsFeed: '/news-feed',
   chat: '/chat',
   profile: '/profile',
   refreshToken: '/refresh-token',
