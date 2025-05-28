@@ -9,7 +9,6 @@ export type UserType = BaseEntity & {
   address: string;
   avatar: string;
   cccd: string;
-  birthday: Date;
   roleId: string;
   cccdFront: string;
   cccdBack: string;
@@ -19,4 +18,9 @@ export type UserType = BaseEntity & {
   accessTokenExpires?: number;
   expiresIn?: number;
   birthday: string;
+  preferredIndustries?: string;
+  preferredStages?: string;
+  preferredRegions?: string;
+  fundingRangeMin?: string;
+  fundingRangeMax?: string;
 };

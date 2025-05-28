@@ -88,3 +88,11 @@ export const editIdeaSchema = z.object({
   status: z.string(),
   isPublic: z.boolean(),
 });
+
+export type IdeaSuggestionType = {
+  ideaId: string;
+  title: string;
+  fullName: string;
+  region: string;
+  score: number;
+};

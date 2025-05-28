@@ -8,6 +8,7 @@ export enum UserServiceIds {
   GetUserProfileById = 'user.getUserProfileById',
   GetUserProfile = 'user.getUserProfile',
   UpdateUserProfile = 'user.updateUserProfile',
+  UpdatePreferenceIdea = 'user.updatePreferenceIdea',
 }
 
 export default [
@@ -44,6 +45,12 @@ export default [
   {
     id: UserServiceIds.UpdateUserProfile,
     url: 'v1/api/client/Users/{id}',
+    method: MethodAPI.patch,
+    version: 1,
+  },
+  {
+    id: UserServiceIds.UpdatePreferenceIdea,
+    url: 'v1/api/client/Users/preference-idea',
     method: MethodAPI.patch,
     version: 1,
   },

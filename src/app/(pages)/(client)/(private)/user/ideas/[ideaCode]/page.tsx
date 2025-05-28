@@ -81,9 +81,9 @@ export default async function IdeasDetailPage({
       redirectUrl = linkTo.feed;
       break;
     case 'profile':
-      redirectUrl = linkTo.profile;
+      redirectUrl = linkTo.newsFeed;
       break;
-    case 'idea':
+    case 'ideas':
       redirectUrl = linkTo.user.ideas.base;
       break;
     default:

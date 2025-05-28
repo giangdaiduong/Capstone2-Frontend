@@ -16,8 +16,10 @@ import {
   FaUserCircle,
   FaKey,
   FaRegNewspaper,
+  FaUserTie,
 } from 'react-icons/fa';
 import { RxSlash } from 'react-icons/rx';
+import { MdOutlinePayments } from 'react-icons/md';
 import clsx from 'clsx'; // Utility for conditionally joining CSS class names
 
 // --- UI Components from shadcn/ui ---
@@ -44,20 +46,35 @@ import { UserRole } from '@/utils/constants';
  * Custom hook to manage navigation items and determine the active path.
  * This separates navigation data and active state logic from the UI component.
  */
-const useActiveNavigation = () => {
+const useActiveNavigation = ({ session }: UserAuthSectionProps) => {
   const pathname = usePathname();
 
   // Định nghĩa các mục điều hướng ở đây, tách biệt khỏi component chính
-  const navItems: NavItemConfig[] = useMemo(
-    () => [
+  const navItems: NavItemConfig[] = useMemo(() => {
+    const items: NavItemConfig[] = [
       { id: 'home', href: linkTo.home, label: 'Trang chủ', icon: FaHome },
-      { id: 'flower', href: linkTo.follower, label: 'Người theo dõi', icon: FaUserPlus },
       { id: 'new-feed', href: linkTo.newsFeed, label: 'News Feed', icon: FaRegNewspaper },
-      { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore },
-      { id: 'feed', href: linkTo.feed, label: 'Feed', icon: FaUsers },
-    ],
-    []
-  );
+    ];
+
+    if (session?.user) {
+      items.push(
+        { id: 'flower', href: linkTo.follower, label: 'Người theo dõi', icon: FaUserPlus },
+        { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore },
+        { id: 'feed', href: linkTo.feed, label: 'Feed', icon: FaUsers }
+      );
+    }
+
+    if (session?.user?.roleName === UserRole.Investor) {
+      items.push({
+        id: 'investor',
+        href: linkTo.investor.listIdea,
+        label: 'Danh sách đầu tư',
+        icon: MdOutlinePayments,
+      });
+    }
+
+    return items;
+  }, [session]);
 
   const [activePath, setActivePath] = useState<string>('');
 
@@ -100,6 +117,15 @@ const UserAuthSection = memo(({ session }: UserAuthSectionProps) => {
         label: 'Trang quản trị',
         icon: FaHome,
         href: linkTo.admin.dashboard,
+      });
+    }
+
+    if (session?.user?.roleName === UserRole.Investor) {
+      items.push({
+        id: 'investor-edit',
+        label: 'Thông tin nhà đầu tư',
+        icon: FaUserTie,
+        href: linkTo.investor.profile,
       });
     }
 
@@ -227,7 +253,7 @@ GuestAuthLinks.displayName = 'GuestAuthLinks';
  */
 function HeaderClient() {
   const { data: session, status } = useSession(); // Lấy cả status để xử lý trạng thái loading
-  const { navItems, activePath } = useActiveNavigation(); // Sử dụng custom hook
+  const { navItems, activePath } = useActiveNavigation({ session: session as Session }); // Sử dụng custom hook
 
   return (
     <header className="bg-white shadow-md py-2 px-4 flex justify-between items-center z-10 relative">

@@ -13,6 +13,8 @@ export enum IdeaServiceIds {
   GetIdeaByUserId = 'idea.getIdeaByUserId',
   ReportIdea = 'idea.reportIdea',
   GetTopIdeas = 'idea.getTopIdeas',
+  GetIdeasSuggestion = 'idea.getIdeasSuggestion',
+  RateIdea = 'idea.rateIdea',
 }
 
 export default [
@@ -80,6 +82,18 @@ export default [
     id: IdeaServiceIds.GetTopIdeas,
     url: 'v1/api/client/Ideas/top-rated',
     method: MethodAPI.get,
+    version: 1,
+  },
+  {
+    id: IdeaServiceIds.GetIdeasSuggestion,
+    url: 'v1/api/client/Ideas/match-ideas',
+    method: MethodAPI.get,
+    version: 1,
+  },
+  {
+    id: IdeaServiceIds.RateIdea,
+    url: 'v1/api/client/Ideas/rate-idea',
+    method: MethodAPI.post,
     version: 1,
   },
 ] as ServiceApi[];

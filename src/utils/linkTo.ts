@@ -32,6 +32,16 @@ const userRoutes = () => {
   };
 };
 
+const investor = () => {
+  const base = '/investor';
+
+  return {
+    base,
+    listIdea: `${base}/list-ideas`,
+    profile: `${base}/profile`,
+  };
+};
+
 const linkTo = {
   home: '/',
   admin: adminRoutes(),
@@ -45,6 +55,7 @@ const linkTo = {
   refreshToken: '/refresh-token',
   logout: '/logout',
   user: userRoutes(),
+  investor: investor(),
   forgotPassword: '/forgot-password',
 };
 

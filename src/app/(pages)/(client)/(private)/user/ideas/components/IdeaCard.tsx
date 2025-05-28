@@ -57,7 +57,7 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
           <Link
             href={{
               pathname: linkTo.user.ideas.detail.replace('[ideaCode]', idea.id),
-              query: { from: 'profile' },
+              query: { from: 'ideas' },
             }}
             className="cursor-pointer"
           >

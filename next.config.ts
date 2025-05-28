@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         permanent: true,
         locale: false,
       },
+      {
+        source: linkTo.investor.base,
+        destination: linkTo.investor.listIdea,
+        permanent: true,
+        locale: false,
+      },
     ];
   },
   images: {
