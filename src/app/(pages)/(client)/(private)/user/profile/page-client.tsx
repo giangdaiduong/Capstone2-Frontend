@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserType } from '@/types/UserType';
 import { RoleType } from '@/types/RoleTypes';
 import { formatDate } from 'date-fns';
@@ -22,6 +22,7 @@ import { FaHouseMedical } from 'react-icons/fa6';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CloseAllToast, errorToast, successToast } from '@/lib/toastify';
 import { httpPageApi } from '@/api-base';
+import { Avatar } from '@radix-ui/react-avatar';
 
 export const userProfileSchema = z.object({
   fullName: z.string().min(1, 'Vui lòng nhập tên đầy đủ'),

@@ -153,7 +153,13 @@ function IdeaPublicCard({ idea, user }: { idea: IdeaType; user: UserType }) {
             </span>
           </div>
           <div className="flex flex-col md:flex-row gap-4">
-            <Link href={linkTo.user.ideas.detail.replace('[ideaCode]', idea.id)} className="cursor-pointer">
+            <Link
+              href={{
+                pathname: linkTo.user.ideas.detail.replace('[ideaCode]', idea.id),
+                query: { from: 'profile' },
+              }}
+              className="cursor-pointer"
+            >
               <Button variant={'outline'}>Xem chi tiết</Button>
             </Link>
             {user.id === idea.createdBy && (

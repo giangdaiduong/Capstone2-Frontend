@@ -15,6 +15,7 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
 type Params = Promise<{ ideaCode: string }>;
+type SearchParams = Promise<{ from: string }>;
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { ideaCode } = await params;
@@ -41,8 +42,15 @@ export async function generateMetadata({ params }: { params: Params }) {
   };
 }
 
-export default async function IdeasDetailPage({ params }: { params: Params }) {
+export default async function IdeasDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: SearchParams;
+}) {
   const { ideaCode } = await params;
+  const { from } = await searchParams;
 
   // Sửa lại BE sử dụng ideaCode thay vì ideaId
   const res = await (
@@ -63,12 +71,31 @@ export default async function IdeasDetailPage({ params }: { params: Params }) {
 
   const idea = { ...res.data, id: ideaCode } as IdeaType;
 
+  let redirectUrl;
+
+  switch (from) {
+    case 'news-feed':
+      redirectUrl = linkTo.newsFeed;
+      break;
+    case 'feed':
+      redirectUrl = linkTo.feed;
+      break;
+    case 'profile':
+      redirectUrl = linkTo.profile;
+      break;
+    case 'idea':
+      redirectUrl = linkTo.user.ideas.base;
+      break;
+    default:
+      redirectUrl = linkTo.home;
+  }
+
   return (
     <div className="flex flex-col gap-4">
-      <Link href={linkTo.user.ideas.base}>
+      <Link href={redirectUrl}>
         <Button className="bg-blue-500 hover:bg-blue-600">
           <FaArrowLeft />
-          Quay lại danh sách ý tưởng
+          Quay lại
         </Button>
       </Link>
       <Card className="bg-blue-100">

@@ -34,7 +34,7 @@ async function FeedPage() {
 
       <div className="p-4 flex flex-col gap-4 items-center">
         {ideas.length > 0 ? (
-          ideas.map(idea => <FeedCard key={idea.ideaCode} idea={idea} />)
+          ideas.map(idea => <FeedCard key={idea.ideaCode} idea={idea} from="feed" />)
         ) : (
           <div className="text-center text-gray-500">Không có bài viết nào</div>
         )}

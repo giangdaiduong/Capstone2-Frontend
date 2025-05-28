@@ -25,7 +25,7 @@ import { useRouter } from 'next/navigation';
 import { FeedServiceIds } from '@/api-base/services/feed-services';
 import IdeaDetailDialog from './IdeaDetailDialog';
 
-function FeedCard({ idea }: { idea: IdeaType }) {
+function FeedCard({ idea, from = 'news-feed' }: { idea: IdeaType; from?: string }) {
   const [isLiked, setIsLiked] = useState(false);
   const [totalLikes, setTotalLikes] = useState(idea.totalLikes);
   const [isPending, startTransition] = useTransition();
@@ -155,7 +155,13 @@ function FeedCard({ idea }: { idea: IdeaType }) {
             </span>
           </div>
           <div className="flex flex-col md:flex-row gap-4">
-            <Link href={linkTo.user.ideas.detail.replace('[ideaCode]', idea.id)} className="cursor-pointer">
+            <Link
+              href={{
+                pathname: linkTo.user.ideas.detail.replace('[ideaCode]', idea.id),
+                query: { from: from },
+              }}
+              className="cursor-pointer"
+            >
               <Button variant={'outline'}>Xem chi tiết</Button>
             </Link>
           </div>
