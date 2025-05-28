@@ -96,3 +96,17 @@ export type IdeaSuggestionType = {
   region: string;
   score: number;
 };
+
+export type InvestorType = {
+  investor: {
+    id: string;
+    fullName: string;
+    email: string;
+    preferredIndustries: string;
+    preferredStages: string;
+    fundingRangeMin: number;
+    fundingRangeMax: number;
+    preferredRegions: string;
+  };
+  score: number;
+};

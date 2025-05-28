@@ -142,3 +142,18 @@ export const PHILOSOPHIES = [
     position: 'Nhà sáng lập Microsoft',
   },
 ];
+
+export const getStageStyle = (stage: string) => {
+  switch (stage) {
+    case 'NEW':
+      return 'bg-green-100 text-green-600';
+    case 'MVP':
+      return 'bg-yellow-100 text-yellow-600';
+    case 'GROWTH':
+      return 'bg-blue-100 text-blue-600';
+    case 'EXPANSION':
+      return 'bg-purple-100 text-purple-600';
+    default:
+      return 'bg-gray-100 text-gray-600';
+  }
+};

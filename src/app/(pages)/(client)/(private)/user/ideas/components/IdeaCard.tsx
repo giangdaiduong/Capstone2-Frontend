@@ -8,9 +8,13 @@ import Link from 'next/link';
 import { AiFillLike } from 'react-icons/ai';
 import { FaComments, FaStar } from 'react-icons/fa';
 import linkTo from '@/utils/linkTo';
-import { IdeaStage } from '@/utils/constants';
+import { getStageStyle, IdeaStage } from '@/utils/constants';
+import { useState } from 'react';
+import MatchInvestorsDialog from './MatchInvestorsDialog';
 
 function IdeaCard({ idea }: { idea: IdeaType }) {
+  const [openMatchInvestorsDialog, setOpenMatchInvestorsDialog] = useState(false);
+
   return (
     <Card className="overflow-hidden bg-white shadow-md border-l-4 border-[#1A2B88] p-4 gap-2">
       <div className="flex justify-between mb-2">
@@ -54,6 +58,9 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
           </span>
         </div>
         <div className="flex flex-col md:flex-row gap-4">
+          <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => setOpenMatchInvestorsDialog(true)}>
+            Tìm nhà đầu tư
+          </Button>
           <Link
             href={{
               pathname: linkTo.user.ideas.detail.replace('[ideaCode]', idea.id),
@@ -63,28 +70,16 @@ function IdeaCard({ idea }: { idea: IdeaType }) {
           >
             <Button variant={'outline'}>Xem chi tiết</Button>
           </Link>
-          <Link href={linkTo.user.ideas.edit.replace('[ideaCode]', idea.id)} className="cursor-pointer">
-            <Button variant={'outline'}>Chỉnh sửa</Button>
+          <Link href={linkTo.user.ideas.edit.replace('[ideaCode]', idea.id)}>
+            <Button className="bg-amber-600 hover:bg-amber-700 text-white">Chỉnh sửa</Button>
           </Link>
         </div>
       </div>
+      {openMatchInvestorsDialog && (
+        <MatchInvestorsDialog ideaId={idea.id} onClose={() => setOpenMatchInvestorsDialog(false)} />
+      )}
     </Card>
   );
 }
 
 export default IdeaCard;
-
-const getStageStyle = (stage: string) => {
-  switch (stage) {
-    case 'NEW':
-      return 'bg-green-100 text-green-600';
-    case 'MVP':
-      return 'bg-yellow-100 text-yellow-600';
-    case 'GROWTH':
-      return 'bg-blue-100 text-blue-600';
-    case 'EXPANSION':
-      return 'bg-purple-100 text-purple-600';
-    default:
-      return 'bg-gray-100 text-gray-600';
-  }
-};

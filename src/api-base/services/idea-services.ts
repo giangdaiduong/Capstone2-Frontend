@@ -15,6 +15,7 @@ export enum IdeaServiceIds {
   GetTopIdeas = 'idea.getTopIdeas',
   GetIdeasSuggestion = 'idea.getIdeasSuggestion',
   RateIdea = 'idea.rateIdea',
+  GetInvestorMatchIdeas = 'idea.getInvestorMatchIdeas',
 }
 
 export default [
@@ -94,6 +95,12 @@ export default [
     id: IdeaServiceIds.RateIdea,
     url: 'v1/api/client/Ideas/rate-idea',
     method: MethodAPI.post,
+    version: 1,
+  },
+  {
+    id: IdeaServiceIds.GetInvestorMatchIdeas,
+    url: 'v1/api/client/Ideas/{ideaId}/match-investors',
+    method: MethodAPI.get,
     version: 1,
   },
 ] as ServiceApi[];
