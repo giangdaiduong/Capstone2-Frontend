@@ -39,7 +39,7 @@ function MatchInvestorsDialog({ ideaId, onClose }: { ideaId: string; onClose: ()
           </DialogTitle>
         </DialogHeader>
         <Separator />
-        <div className="p-4">
+        <div className="p-4 space-y-6">
           {investors.map(investor => (
             <Card
               key={investor.investor.id}
