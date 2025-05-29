@@ -47,7 +47,7 @@ function MatchInvestorsDialog({ ideaId, onClose }: { ideaId: string; onClose: ()
             >
               <div className="flex justify-between mb-2">
                 <div className="flex flex-col gap-2">
-                  <Link href={`${linkTo.profile.replace('[userId]', investor.investor.id)}`}>
+                  <Link href={`${linkTo.profile}/${investor.investor.id}`}>
                     <h3 className="text-xl font-bold text-gray-800">{investor.investor.fullName}</h3>
                   </Link>
                   <p className="text-md text-gray-500">
