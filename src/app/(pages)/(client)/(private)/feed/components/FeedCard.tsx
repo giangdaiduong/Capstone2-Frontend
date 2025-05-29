@@ -25,11 +25,21 @@ import { useRouter } from 'next/navigation';
 import { FeedServiceIds } from '@/api-base/services/feed-services';
 import IdeaDetailDialog from './IdeaDetailDialog';
 
-function FeedCard({ idea, from = 'news-feed' }: { idea: IdeaType; from?: string }) {
+function FeedCard({
+  idea,
+  from = 'news-feed',
+  isInvestor = false,
+}: {
+  idea: IdeaType;
+  from?: string;
+  isInvestor?: boolean;
+}) {
   const [isLiked, setIsLiked] = useState(false);
   const [totalLikes, setTotalLikes] = useState(idea.totalLikes);
   const [isPending, startTransition] = useTransition();
   const [isOpenDialog, setIsOpenDialog] = useState(false);
+  const [ratedIdeas, setRatedIdeas] = useState<Record<string, boolean>>({});
+  const [hoveredRating, setHoveredRating] = useState<Record<string, number>>({});
   const router = useRouter();
 
   const handleLikeClick = () => {
@@ -104,6 +114,30 @@ function FeedCard({ idea, from = 'news-feed' }: { idea: IdeaType; from?: string 
     router.refresh();
   };
 
+  const handleRate = (ideaId: string, rate: number) => {
+    startTransition(async () => {
+      const res = await httpPageApi.execService({ id: IdeaServiceIds.RateIdea }, { ideaId, rating: rate });
+
+      if (!res.ok) {
+        errorToast('Đánh giá thất bại');
+        return;
+      }
+
+      successToast('Đánh giá thành công');
+      setRatedIdeas(prev => ({
+        ...prev,
+        [ideaId]: true,
+      }));
+    });
+  };
+
+  const handleHover = (ideaId: string, rating: number) => {
+    setHoveredRating(prev => ({
+      ...prev,
+      [ideaId]: rating,
+    }));
+  };
+
   return (
     <Card className="w-[clamp(500px,75%,100%)]">
       <CardHeader>
@@ -137,7 +171,7 @@ function FeedCard({ idea, from = 'news-feed' }: { idea: IdeaType; from?: string 
         <div className="flex justify-center items-center p-2">
           <Image src={idea.imageUrls} alt={idea.title} width={500} height={500} />
         </div>
-        <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 p-2">
+        <div className="flex flex-col md:flex-row flex-wrap justify-between items-center text-sm text-gray-600 p-2 gap-2">
           <div className="flex flex-col md:flex-row gap-4">
             <span
               className="flex items-center gap-2 px-3 py-2 text-sm
@@ -155,6 +189,33 @@ function FeedCard({ idea, from = 'news-feed' }: { idea: IdeaType; from?: string 
             </span>
           </div>
           <div className="flex flex-col md:flex-row gap-4">
+            {isInvestor &&
+              (!ratedIdeas[idea.id] ? (
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map(rating => (
+                    <Button
+                      key={rating}
+                      variant="ghost"
+                      size="sm"
+                      className="p-1 h-auto hover:bg-gray-100"
+                      onMouseEnter={() => handleHover(idea.id, rating)}
+                      onMouseLeave={() => handleHover(idea.id, 0)}
+                      onClick={() => handleRate(idea.id, rating)}
+                    >
+                      <FaStar
+                        className={`text-xl transition-colors ${
+                          (hoveredRating[idea.id] || 0) >= rating ? 'text-yellow-400' : 'text-gray-300'
+                        }`}
+                      />
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 text-sm text-green-600 font-medium">
+                  <FaStar className="text-yellow-400" />
+                  <span>Đã đánh giá</span>
+                </div>
+              ))}
             <Link
               href={{
                 pathname: linkTo.user.ideas.detail.replace('[ideaCode]', idea.id),

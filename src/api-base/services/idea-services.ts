@@ -16,6 +16,7 @@ export enum IdeaServiceIds {
   GetIdeasSuggestion = 'idea.getIdeasSuggestion',
   RateIdea = 'idea.rateIdea',
   GetInvestorMatchIdeas = 'idea.getInvestorMatchIdeas',
+  GetIdeasForInvestor = 'idea.getIdeasForInvestor',
 }
 
 export default [
@@ -100,6 +101,12 @@ export default [
   {
     id: IdeaServiceIds.GetInvestorMatchIdeas,
     url: 'v1/api/client/Ideas/{ideaId}/match-investors',
+    method: MethodAPI.get,
+    version: 1,
+  },
+  {
+    id: IdeaServiceIds.GetIdeasForInvestor,
+    url: 'v1/api/client/Ideas/for-investor',
     method: MethodAPI.get,
     version: 1,
   },

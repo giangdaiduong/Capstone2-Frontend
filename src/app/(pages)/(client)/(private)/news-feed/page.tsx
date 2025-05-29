@@ -12,13 +12,29 @@ import linkTo from '@/utils/linkTo';
 import Link from 'next/link';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { UserRole } from '@/utils/constants';
 
 export const metadata: Metadata = {
   title: 'News Feed',
 };
 
 async function NewsFeedPage() {
-  const res = await (await httpServerApi()).execService({ id: IdeaServiceIds.GetPublicIdeas });
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect(linkTo.login);
+  }
+
+  const isInvestor = session?.user?.roleName === UserRole.Investor;
+
+  const res = await (
+    await httpServerApi()
+  ).execService({
+    id: isInvestor ? IdeaServiceIds.GetIdeasForInvestor : IdeaServiceIds.GetPublicIdeas,
+  });
   const userRes = await (await httpServerApi()).execService({ id: UserServiceIds.GetAllUsers });
 
   if (!res.ok || !userRes.ok) {
@@ -45,15 +61,17 @@ async function NewsFeedPage() {
         </div>
         <div className="p-4 flex flex-col gap-4 items-center">
           <div className="w-full">
-            <Link href={linkTo.user.ideas.create}>
-              <Button className="float-right">
-                <PlusIcon />
-                Thêm bài viết
-              </Button>
-            </Link>
+            {!isInvestor && (
+              <Link href={linkTo.user.ideas.create}>
+                <Button className="float-right">
+                  <PlusIcon />
+                  Thêm bài viết
+                </Button>
+              </Link>
+            )}
           </div>
           {ideasRes.items.length > 0 ? (
-            ideasRes.items.map(idea => <FeedCard key={idea.ideaCode} idea={idea} />)
+            ideasRes.items.map(idea => <FeedCard key={idea.ideaCode} idea={idea} isInvestor={isInvestor} />)
           ) : (
             <div className="text-center text-gray-500">Không có bài viết nào</div>
           )}
