@@ -10,6 +10,8 @@ export enum UserServiceIds {
   UpdateUserProfile = 'user.updateUserProfile',
   UpdatePreferenceIdea = 'user.updatePreferenceIdea',
   ChangePassword = 'user.changePassword',
+  ForgotPassword = 'user.forgotPassword',
+  ResetPassword = 'user.resetPassword',
 }
 
 export default [
@@ -59,6 +61,18 @@ export default [
     id: UserServiceIds.ChangePassword,
     url: 'v1/api/client/Users/change-password',
     method: MethodAPI.post,
+    version: 1,
+  },
+  {
+    id: UserServiceIds.ForgotPassword,
+    url: 'v1/api/client/Users/forgot-password?email={email}',
+    method: MethodAPI.post,
+    version: 1,
+  },
+  {
+    id: UserServiceIds.ResetPassword,
+    url: 'v1/api/client/Users/reset-password?otp={otp}&password={password}&confirmPassword={confirmPassword}',
+    method: MethodAPI.patch,
     version: 1,
   },
 ] as ServiceApi[];
