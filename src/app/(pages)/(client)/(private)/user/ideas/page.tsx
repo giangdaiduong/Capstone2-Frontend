@@ -11,6 +11,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import IdeaCard from './components/IdeaCard';
 import { Alert, AlertTitle } from '@/components/ui/alert';
+import { UserRole } from '@/utils/constants';
 
 export const metadata: Metadata = {
   title: 'Ý tưởng đã đăng',
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 async function IdeaPage() {
   const session = await getServerSession(authOptions);
 
-  if (!session) {
+  if (!session || session.user.roleName !== UserRole.Founder) {
     redirect(linkTo.login);
   }
 

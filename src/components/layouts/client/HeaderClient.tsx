@@ -59,9 +59,13 @@ const useActiveNavigation = ({ session }: UserAuthSectionProps) => {
     if (session?.user) {
       items.push(
         { id: 'flower', href: linkTo.follower, label: 'Người theo dõi', icon: FaUserPlus },
-        { id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore },
+
         { id: 'feed', href: linkTo.feed, label: 'Feed', icon: FaUsers }
       );
+    }
+
+    if (session?.user?.roleName === UserRole.Founder) {
+      items.push({ id: 'ideas', href: linkTo.user.ideas.base, label: 'Ý tưởng', icon: FaStore });
     }
 
     if (session?.user?.roleName === UserRole.Investor) {
