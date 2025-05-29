@@ -6,13 +6,15 @@ import { IdeaType } from '@/types/IdeaTypes';
 import linkTo from '@/utils/linkTo';
 import { formatDate } from 'date-fns';
 import Link from 'next/link';
-import { FaCalendarAlt, FaEye, FaUser } from 'react-icons/fa';
+import { FaCalendarAlt, FaEye, FaMapMarkerAlt, FaUser } from 'react-icons/fa';
 import { BiCategory } from 'react-icons/bi';
 import { FaArrowLeft } from 'react-icons/fa6';
 import Image from 'next/image';
 import IdeasComment from './page-client';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import { MdOutlinePriceCheck } from 'react-icons/md';
+import { getStageStyle, IdeaStage } from '@/utils/constants';
 
 type Params = Promise<{ ideaCode: string }>;
 type SearchParams = Promise<{ from: string }>;
@@ -119,6 +121,34 @@ export default async function IdeasDetailPage({
               <FaEye className="inline mr-1" /> {idea.totalViews} lượt xem
             </span>
           </div>
+          <div className="flex gap-2">
+            <div className="flex flex-wrap gap-4 text-sm text-gray-600 ml-2">
+              <span className="flex items-center">
+                <FaMapMarkerAlt className="inline mr-1" />
+                <strong>Khu vực: </strong> {idea.region}
+              </span>
+              <span className="flex items-center">
+                <MdOutlinePriceCheck className="inline mr-1" />
+                <strong>Mức vốn: </strong> {idea.price}
+              </span>
+              <span
+                className={`px-3 py-1 text-sm font-medium rounded-md h-fit text-center ${getStageStyle(idea.stage)}`}
+              >
+                {IdeaStage.find(stage => stage.key === idea.stage)?.value || 'Chưa xác định'}
+              </span>
+              <div className="flex items-center">
+                {idea.copyrightStatus ? (
+                  <span className={`px-3 py-1 text-sm font-medium rounded-md bg-green-100 text-green-600`}>
+                    Đã đăng ký bản quyền
+                  </span>
+                ) : (
+                  <span className={`px-3 py-1 text-sm font-medium rounded-md bg-gray-100 text-gray-600`}>
+                    Chưa đăng ký bản quyền
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
         </CardHeader>
       </Card>
       <Card>
@@ -129,9 +159,17 @@ export default async function IdeasDetailPage({
           <div className="whitespace-pre-line">{idea.description}</div>
         </CardContent>
         <CardFooter>
-          <div>
-            <h4 className="text-lg font-bold">Hình ảnh minh hoạ</h4>
+          <div className="w-full p-4">
+            <h4 className="text-xl font-bold text-blue-800">Hình ảnh minh hoạ</h4>
             <Image src={idea.imageUrls} alt={idea.title} width={500} height={500} />
+            {idea.copyrightStatus && idea.copyrightCertificate && (
+              <>
+                <div className="py-4">
+                  <div className="text-xl font-bold text-blue-800">Đã đăng ký bản quyền</div>
+                  <Image src={idea.copyrightCertificate} alt={idea.title} width={500} height={500} />
+                </div>
+              </>
+            )}
           </div>
         </CardFooter>
       </Card>
