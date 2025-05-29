@@ -17,6 +17,8 @@ export enum IdeaServiceIds {
   RateIdea = 'idea.rateIdea',
   GetInvestorMatchIdeas = 'idea.getInvestorMatchIdeas',
   GetIdeasForInvestor = 'idea.getIdeasForInvestor',
+  GetRequestIdeas = 'idea.getRequestIdeas',
+  DeleteIdea = 'idea.deleteIdea',
 }
 
 export default [
@@ -108,6 +110,18 @@ export default [
     id: IdeaServiceIds.GetIdeasForInvestor,
     url: 'v1/api/client/Ideas/for-investor',
     method: MethodAPI.get,
+    version: 1,
+  },
+  {
+    id: IdeaServiceIds.GetRequestIdeas,
+    url: 'v1/api/client/Ideas/request-idea',
+    method: MethodAPI.get,
+    version: 1,
+  },
+  {
+    id: IdeaServiceIds.DeleteIdea,
+    url: 'v1/api/client/Ideas/{id}',
+    method: MethodAPI.delete,
     version: 1,
   },
 ] as ServiceApi[];

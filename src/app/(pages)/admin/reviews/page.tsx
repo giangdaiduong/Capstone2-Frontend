@@ -4,10 +4,12 @@ import { IdeaServiceIds } from '@/api-base/services/idea-services';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { IdeaType } from '@/types/IdeaTypes';
 import ReviewsPageClient from './page-client';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 /**
  * Metadata used to configure the SEO information for the Review Page.
- * 
+ *
  * @remarks
  * This metadata is applied by Next.js to set HTML `<head>` tags such as the page title.
  */
@@ -25,13 +27,18 @@ export const metadata: Metadata = {
  */
 async function ReviewPage() {
   // Call the API to fetch all ideas
-  const res = await (await httpServerApi()).execService({ id: IdeaServiceIds.GetAllIdeas });
+  const res = await (await httpServerApi()).execService({ id: IdeaServiceIds.GetRequestIdeas });
 
   if (!res.ok) {
-    throw new Error(res?.data?.message || 'Lỗi khi lấy danh sách người dùng');
+    return (
+      <Alert variant="destructive" className="max-w-md mx-auto">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Lỗi khi lấy ý tưởng cần xét duyệt</AlertTitle>
+      </Alert>
+    );
   }
 
-  const ideas = res.data?.items as IdeaType[];
+  const ideas = res.data as IdeaType[];
 
   return (
     <Card>
