@@ -110,3 +110,9 @@ export type InvestorType = {
   };
   score: number;
 };
+
+export type GetSummaryResponseType = {
+  totalIdeas: number;
+  totalFounders: number;
+  totalInvestors: number;
+};

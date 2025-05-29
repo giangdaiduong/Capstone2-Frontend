@@ -19,6 +19,7 @@ export enum IdeaServiceIds {
   GetIdeasForInvestor = 'idea.getIdeasForInvestor',
   GetRequestIdeas = 'idea.getRequestIdeas',
   DeleteIdea = 'idea.deleteIdea',
+  GetSummary = 'idea.getSummary',
 }
 
 export default [
@@ -122,6 +123,12 @@ export default [
     id: IdeaServiceIds.DeleteIdea,
     url: 'v1/api/client/Ideas/{id}',
     method: MethodAPI.delete,
+    version: 1,
+  },
+  {
+    id: IdeaServiceIds.GetSummary,
+    url: 'v1/api/client/Ideas/summary',
+    method: MethodAPI.get,
     version: 1,
   },
 ] as ServiceApi[];
