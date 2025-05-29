@@ -6,10 +6,7 @@ import FeedCard from '@/app/(pages)/(client)/(private)/feed/components/FeedCard'
 import SearchUserClient from './searchUser.cient';
 import { UserServiceIds } from '@/api-base/services/user-services';
 import { UserType } from '@/types/UserType';
-import { Button } from '@/components/ui/button';
-import { PlusIcon } from 'lucide-react';
 import linkTo from '@/utils/linkTo';
-import Link from 'next/link';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { getServerSession } from 'next-auth';
@@ -18,22 +15,20 @@ import { redirect } from 'next/navigation';
 import { UserRole } from '@/utils/constants';
 
 export const metadata: Metadata = {
-  title: 'News Feed',
+  title: 'Dành cho Nhà đầu tư',
 };
 
 async function NewsFeedPage() {
   const session = await getServerSession(authOptions);
 
-  if (!session) {
+  if (!session || session?.user?.roleName !== UserRole.Investor) {
     redirect(linkTo.login);
   }
-
-  const isInvestor = session?.user?.roleName === UserRole.Investor;
 
   const res = await (
     await httpServerApi()
   ).execService({
-    id: IdeaServiceIds.GetPublicIdeas,
+    id: IdeaServiceIds.GetIdeasForInvestor,
   });
   const userRes = await (await httpServerApi()).execService({ id: UserServiceIds.GetAllUsers });
 
@@ -60,18 +55,8 @@ async function NewsFeedPage() {
           <SearchUserClient userList={users} />
         </div>
         <div className="p-4 flex flex-col gap-4 items-center">
-          <div className="w-full">
-            {!isInvestor && (
-              <Link href={linkTo.user.ideas.create}>
-                <Button className="float-right">
-                  <PlusIcon />
-                  Thêm bài viết
-                </Button>
-              </Link>
-            )}
-          </div>
           {ideasRes.items.length > 0 ? (
-            ideasRes.items.map(idea => <FeedCard key={idea.ideaCode} idea={idea} isInvestor={false} />)
+            ideasRes.items.map(idea => <FeedCard key={idea.ideaCode} idea={idea} isInvestor={true} />)
           ) : (
             <div className="text-center text-gray-500">Không có bài viết nào</div>
           )}

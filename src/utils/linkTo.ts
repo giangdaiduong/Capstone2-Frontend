@@ -38,6 +38,7 @@ const investor = () => {
   return {
     base,
     listIdea: `${base}/list-ideas`,
+    forInvestor: `${base}/for-investor`,
     profile: `${base}/profile`,
   };
 };

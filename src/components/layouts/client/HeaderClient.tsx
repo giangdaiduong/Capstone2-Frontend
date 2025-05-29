@@ -19,7 +19,7 @@ import {
   FaUserTie,
 } from 'react-icons/fa';
 import { RxSlash } from 'react-icons/rx';
-import { MdOutlinePayments } from 'react-icons/md';
+import { MdOutlinePayments, MdOutlineSportsScore } from 'react-icons/md';
 import clsx from 'clsx'; // Utility for conditionally joining CSS class names
 
 // --- UI Components from shadcn/ui ---
@@ -69,12 +69,20 @@ const useActiveNavigation = ({ session }: UserAuthSectionProps) => {
     }
 
     if (session?.user?.roleName === UserRole.Investor) {
-      items.push({
-        id: 'investor',
-        href: linkTo.investor.listIdea,
-        label: 'Danh sách đầu tư',
-        icon: MdOutlinePayments,
-      });
+      items.push(
+        {
+          id: 'for-investor',
+          href: linkTo.investor.forInvestor,
+          label: 'Danh cho nhà đầu tư',
+          icon: MdOutlineSportsScore,
+        },
+        {
+          id: 'investor',
+          href: linkTo.investor.listIdea,
+          label: 'Danh sách đầu tư',
+          icon: MdOutlinePayments,
+        }
+      );
     }
 
     return items;

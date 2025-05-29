@@ -5,6 +5,11 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { CategoryServiceIds } from '@/api-base/services/category-service';
 import EditIdeaPageClient from './page.client';
+import { authOptions } from '@/lib/auth';
+import linkTo from '@/utils/linkTo';
+import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
+import { UserRole } from '@/utils/constants';
 
 type Params = Promise<{ ideaCode: string }>;
 
@@ -34,6 +39,12 @@ export async function generateMetadata({ params }: { params: Params }) {
 }
 
 export default async function IdeasDetailPage({ params }: { params: Params }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session || session?.user?.roleName !== UserRole.Founder) {
+    redirect(linkTo.login);
+  }
+
   const { ideaCode } = await params;
 
   // Sửa lại BE sử dụng ideaCode thay vì ideaId
