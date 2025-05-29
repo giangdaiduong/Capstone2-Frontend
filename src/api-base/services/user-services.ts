@@ -9,6 +9,7 @@ export enum UserServiceIds {
   GetUserProfile = 'user.getUserProfile',
   UpdateUserProfile = 'user.updateUserProfile',
   UpdatePreferenceIdea = 'user.updatePreferenceIdea',
+  ChangePassword = 'user.changePassword',
 }
 
 export default [
@@ -52,6 +53,12 @@ export default [
     id: UserServiceIds.UpdatePreferenceIdea,
     url: 'v1/api/client/Users/preference-idea',
     method: MethodAPI.patch,
+    version: 1,
+  },
+  {
+    id: UserServiceIds.ChangePassword,
+    url: 'v1/api/client/Users/change-password',
+    method: MethodAPI.post,
     version: 1,
   },
 ] as ServiceApi[];
