@@ -12,10 +12,11 @@ import { IdeaType } from '@/types/IdeaTypes';
 import { IdeaStatus } from '@/utils/constants';
 import { ColumnDef } from '@tanstack/react-table';
 import { formatDate } from 'date-fns';
-import { Trash } from 'lucide-react';
+import { Eye, Trash } from 'lucide-react';
 import { useState, useTransition, useEffect } from 'react';
 import DeleteIdeaDialog from './components/DeleteIdeaDialog';
 import { useRouter } from 'next/navigation';
+import DetailIdeaDialog from './components/DetailIdeaDialog';
 
 /**
  * Client component for displaying and managing the review of ideas.
@@ -26,6 +27,7 @@ import { useRouter } from 'next/navigation';
 const IdeaPageClient = ({ ideas }: { ideas: IdeaType[] }) => {
   const [isPending, startTransition] = useTransition();
   const [ideasFilter, setIdeasFilter] = useState<IdeaType[]>([]);
+  const [ideaDetail, setIdeaDetail] = useState<IdeaType | null>(null);
   const [status, setStatus] = useState<string>('all');
   const [ideaId, setIdeaId] = useState<string>('');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
@@ -66,6 +68,22 @@ const IdeaPageClient = ({ ideas }: { ideas: IdeaType[] }) => {
   };
 
   /**
+   * Fetches and displays the details of a selected idea.
+   *
+   * @param id - The ID of the idea to be fetched.
+   */
+  const handleView = (id: string) => {
+    startTransition(async () => {
+      const res = await httpPageApi.execService({ id: IdeaServiceIds.GetIdeaById, params: { ideaId: id } });
+      if (res.ok) {
+        setIdeaDetail(res.data);
+      } else {
+        errorToast(res.data?.message || 'Lấy thông tin ý tưởng thất bại');
+      }
+    });
+  };
+
+  /**
    * Column definitions for the DataTable component.
    */
   const columns: ColumnDef<IdeaType>[] = [
@@ -103,6 +121,9 @@ const IdeaPageClient = ({ ideas }: { ideas: IdeaType[] }) => {
       header: () => <div className="text-center">Hành động</div>,
       cell: ({ row }) => (
         <div className="flex gap-2 flex-col sm:flex-row justify-center items-center">
+          <Button variant="outline" size="icon" onClick={() => handleView(row.original.id)}>
+            <Eye />
+          </Button>
           <Button variant="destructive" size="icon" onClick={() => handleOpenDeleteDialog(row.original.id)}>
             <Trash />
           </Button>
@@ -139,6 +160,7 @@ const IdeaPageClient = ({ ideas }: { ideas: IdeaType[] }) => {
       {isDeleteDialogOpen && (
         <DeleteIdeaDialog ideaId={ideaId} onClose={() => setIsDeleteDialogOpen(false)} handleDelete={handleDelete} />
       )}
+      {ideaDetail && <DetailIdeaDialog idea={ideaDetail} onClose={() => setIdeaDetail(null)} />}
       <ShowLoading isPending={isPending} />
     </div>
   );

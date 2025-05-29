@@ -7,28 +7,16 @@ import { IdeaType } from '@/types/IdeaTypes';
 import { formatDate } from 'date-fns';
 import { ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
 import { BiCategory } from 'react-icons/bi';
 import { FaCalendarAlt, FaMapMarkerAlt, FaTag, FaUser } from 'react-icons/fa';
 import { FaHashtag } from 'react-icons/fa6';
-import ScoringDialog from './ScoringDialog';
 import { getStageStyle, IdeaStage } from '@/utils/constants';
 import { MdOutlinePriceCheck } from 'react-icons/md';
 
-function ReviewIdeaDialog({ idea, onClose }: { idea: IdeaType; onClose: () => void }) {
-  const [isScoringDialogOpen, setIsScoringDialogOpen] = useState(false);
-
+function DetailIdeaDialog({ idea, onClose }: { idea: IdeaType; onClose: () => void }) {
   return (
     <Dialog defaultOpen={true} onOpenChange={onClose}>
-      <DialogContent
-        className="sm:max-w-2xl"
-        onEscapeKeyDown={e => {
-          e.preventDefault();
-        }}
-        onPointerDownOutside={e => {
-          e.preventDefault();
-        }}
-      >
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader className="relative p-2">
           <Button onClick={onClose} className="absolute left-0 top-0 bg-blue-600 hover:bg-blue-700 text-white">
             <ArrowLeft />
@@ -120,30 +108,13 @@ function ReviewIdeaDialog({ idea, onClose }: { idea: IdeaType; onClose: () => vo
         </div>
         <Separator />
         <div className="p-4 flex justify-around">
-          <Button variant="secondary">Liên hệ tác giả</Button>
-          <Button
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={() => setIsScoringDialogOpen(true)}
-            disabled={idea.isApproved}
-          >
-            Chấm điểm
+          <Button variant="secondary" onClick={onClose}>
+            Đóng
           </Button>
         </div>
       </DialogContent>
-      {isScoringDialogOpen && (
-        <ScoringDialog
-          ideaId={idea.id}
-          onClose={() => {
-            setIsScoringDialogOpen(false);
-          }}
-          onSuccess={() => {
-            setIsScoringDialogOpen(false);
-            onClose();
-          }}
-        />
-      )}
     </Dialog>
   );
 }
 
-export default ReviewIdeaDialog;
+export default DetailIdeaDialog;
